@@ -1,0 +1,236 @@
+/* =============================================
+   SKILL-ORBIT — editor.css
+   Styles for the lesson page: split pane layout, code editor, preview
+   ============================================= */
+
+/* ── Lesson Page Body ── */
+.lesson-page {
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Lesson Top Bar ── */
+.lesson-topbar {
+  height: var(--navbar-height);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: 0 var(--spacing-lg);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
+}
+
+.lesson-title-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.lesson-title-info h1 {
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+/* ── Lesson Layout (split pane) ── */
+.lesson-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Theory Panel (Left) ── */
+.lesson-theory-panel {
+  width: 380px;
+  min-width: 280px;
+  max-width: 480px;
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.theory-body {
+  padding: var(--spacing-lg);
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.theory-body h2 {
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+.theory-body p { margin-bottom: var(--spacing-md); }
+
+.theory-body code {
+  font-family: var(--font-code);
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.85em;
+  color: var(--color-primary-light);
+}
+
+.theory-code-example {
+  background: var(--bg-surface-3);
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-lg);
+  font-family: var(--font-code);
+  font-size: 0.85rem;
+}
+
+.theory-code-example pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+#tryItBtn {
+  margin: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+}
+
+/* ── Editor Panel (Right) ── */
+.lesson-editor-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-surface-3);
+}
+
+/* ── Editor Header ── */
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.editor-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* ── Code Editor ── */
+.editor-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.code-editor {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  border: none;
+  resize: none;
+  font-family: var(--font-code);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  padding: var(--spacing-lg);
+  outline: none;
+  tab-size: 2;
+  overflow: auto;
+}
+
+.code-editor.hidden { display: none; }
+
+/* ── Preview Panel ── */
+.preview-panel {
+  height: 45%;
+  border-top: 2px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background: white;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.preview-header .btn-icon { margin-left: auto; }
+
+#previewFrame {
+  flex: 1;
+  border: none;
+  background: white;
+}
+
+/* ── Lesson Footer ── */
+.lesson-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.lesson-progress-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-color);
+  transition: var(--transition);
+}
+
+.progress-dot.active    { background: var(--color-primary); width: 20px; border-radius: 4px; }
+.progress-dot.completed { background: var(--color-success); }
+
+/* ── Responsive (Mobile: Stack Vertically) ── */
+@media (max-width: 768px) {
+  .lesson-layout { flex-direction: column; }
+  .lesson-theory-panel {
+    width: 100%;
+    max-width: 100%;
+    height: 45%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .lesson-editor-panel { height: 55%; }
+  .preview-panel { height: 40%; }
+}

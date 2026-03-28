@@ -1,0 +1,37 @@
+{
+  "id": "css-01",
+  "module": "css",
+  "title": "What is CSS?",
+  "xp": 20,
+  "theory": "<h2>What is CSS?</h2><p><strong>CSS</strong> stands for <em>Cascading Style Sheets</em>. It is the language used to <strong>style</strong> HTML elements — controlling colors, fonts, layouts, sizes, spacing, and much more.</p><p>If HTML is the skeleton of a webpage, then CSS is the skin, clothes, and makeup. It transforms plain HTML into a beautiful, well-designed page.</p><h2>Three ways to add CSS</h2><p><strong>1. Inline:</strong> Using the <code>style</code> attribute directly on an element.<br><code>&lt;p style=\"color: red;\"&gt;Hello&lt;/p&gt;</code></p><p><strong>2. Internal:</strong> Using a <code>&lt;style&gt;</code> tag inside the <code>&lt;head&gt;</code>.</p><p><strong>3. External:</strong> Linking a separate <code>.css</code> file — the recommended approach.</p>",
+  "codeExample": "/* This is a CSS comment */\np {\n  color: royalblue;\n  font-size: 18px;\n  font-weight: bold;\n}\n\nh1 {\n  color: #7c3aed;\n  text-align: center;\n}",
+  "challenge": {
+    "instruction": "Style the paragraph to have the color 'tomato' and the heading to be centered.",
+    "startCode": "<!DOCTYPE html>\n<html>\n<head><style>\n  /* Write your CSS here */\n</style></head>\n<body>\n  <h1>Skill Orbit</h1>\n  <p>Learning CSS is fun!</p>\n</body>\n</html>",
+    "startCSS": "/* Add CSS in the HTML editor's <style> tag */",
+    "solution": "<style>",
+    "hint": "Target the <p> tag: p { color: tomato; } and h1 { text-align: center; }"
+  },
+  "quiz": [
+    {
+      "question": "What does CSS stand for?",
+      "options": [
+        "Creative Style Sheets",
+        "Cascading Style Sheets",
+        "Computer Style Syntax",
+        "Colorful Styling System"
+      ],
+      "correct": 1
+    },
+    {
+      "question": "Which is the RECOMMENDED way to add CSS?",
+      "options": [
+        "Inline styles",
+        "Style attribute",
+        "External stylesheet",
+        "Script tag"
+      ],
+      "correct": 2
+    }
+  ]
+}

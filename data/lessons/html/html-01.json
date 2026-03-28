@@ -1,0 +1,42 @@
+{
+  "id": "html-01",
+  "module": "html",
+  "title": "What is HTML?",
+  "xp": 20,
+  "theory": "<h2>What is HTML?</h2><p><strong>HTML</strong> stands for <em>HyperText Markup Language</em>. It is the standard language used to create web pages. HTML describes the <strong>structure</strong> of a web page using a series of elements called <strong>tags</strong>.</p><p>Think of HTML as the skeleton of a webpage — it gives structure to the content you see in your browser. Every website you visit is built with HTML at its core.</p><h2>How does HTML work?</h2><p>HTML documents are text files that your browser interprets and displays as a visual webpage. The browser reads the HTML tags and renders the content accordingly.</p><p>The most basic HTML document looks like this example below. Try clicking <strong>Try It in Editor</strong> to experiment!</p>",
+  "codeExample": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My First Page</title>\n  </head>\n  <body>\n    <h1>Hello, World!</h1>\n    <p>This is my first HTML page.</p>\n  </body>\n</html>",
+  "challenge": {
+    "instruction": "Create a paragraph that says 'I am learning HTML!' inside the body tag.",
+    "startCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Challenge</title>\n  </head>\n  <body>\n    <!-- Write your paragraph here -->\n  </body>\n</html>",
+    "startCSS": "/* No CSS needed for this lesson */",
+    "solution": "<p>I am learning HTML!</p>",
+    "hint": "Use the <p> tag: <p>Your text here</p>"
+  },
+  "quiz": [
+    {
+      "question": "What does HTML stand for?",
+      "options": [
+        "HyperText Markup Language",
+        "HyperText Making Language",
+        "High Tech Markup Language",
+        "HyperText Modeling Language"
+      ],
+      "correct": 0
+    },
+    {
+      "question": "What is the role of HTML in a webpage?",
+      "options": [
+        "It styles the webpage with colors",
+        "It provides the structure/skeleton of the webpage",
+        "It makes the page interactive",
+        "It connects to the database"
+      ],
+      "correct": 1
+    },
+    {
+      "question": "Which tag is used to write a paragraph in HTML?",
+      "options": ["<h1>", "<div>", "<p>", "<span>"],
+      "correct": 2
+    }
+  ]
+}

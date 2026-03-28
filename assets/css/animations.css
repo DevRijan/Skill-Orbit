@@ -1,0 +1,143 @@
+/* =============================================
+   SKILL-ORBIT — animations.css
+   Micro-animations, transitions, keyframes
+   ============================================= */
+
+/* ── Fade In Up ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Fade In ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Slide In Left ── */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+
+/* ── Pop ── */
+@keyframes pop {
+  0%   { transform: scale(0.95); }
+  60%  { transform: scale(1.05); }
+  100% { transform: scale(1);    }
+}
+
+/* ── Toast Slide Up ── */
+@keyframes toastSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Shimmer (skeleton loading) ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0;  }
+}
+
+/* ── Pulse Glow ── */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.2); }
+  50%       { box-shadow: 0 0 30px rgba(124, 58, 237, 0.5); }
+}
+
+/* ── Bounce ── */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ── Float ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+/* ── Rotate ── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Applied Animation Classes ── */
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.4s ease forwards;
+}
+
+.animate-pop {
+  animation: pop 0.3s ease forwards;
+}
+
+/* ── Staggered children ── */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.40s; }
+
+/* ── Hero elements ── */
+.hero-content { animation: fadeInUp 0.7s ease forwards; }
+.hero-visual  { animation: fadeInUp 0.7s 0.2s ease forwards; opacity: 0; }
+
+/* Code window floats subtly */
+.code-window {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ── Feature cards hover glow ── */
+.feature-card:hover .feature-icon {
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+/* ── XP Toast ── */
+.xp-toast {
+  animation: toastSlideUp 0.4s ease forwards;
+}
+
+/* ── Navbar scroll shadow ── */
+.navbar.scrolled {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* ── Loading Spinner ── */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── Skeleton Loader ── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card) 25%,
+    var(--bg-surface-2) 50%,
+    var(--bg-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--border-radius-sm);
+}

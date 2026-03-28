@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Skill-Orbit - Learn HTML & CSS interactively with hands-on lessons, quizzes, and a live code editor." />
+  <title>Skill-Orbit | Learn HTML & CSS</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fa-solid fa-orbit"></i> Skill<span>Orbit</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#curriculum">Curriculum</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="lesson.html" class="btn btn-primary">Start Learning</a>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🚀 Free & Interactive</div>
+      <h1>Learn <span class="gradient-text">HTML & CSS</span><br />The Right Way</h1>
+      <p class="hero-subtitle">
+        Master web design from scratch with interactive lessons, a live code editor,
+        and real projects — all in your browser.
+      </p>
+      <div class="hero-actions">
+        <a href="dashboard.html" class="btn btn-primary btn-lg">
+          <i class="fa-solid fa-rocket"></i> Start for Free
+        </a>
+        <a href="#curriculum" class="btn btn-outline btn-lg">
+          <i class="fa-solid fa-list"></i> View Curriculum
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span>25+</span> Lessons</div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span>2</span> Modules</div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span>100%</span> Free</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="code-window">
+        <div class="window-bar">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="window-title">index.html</span>
+        </div>
+        <pre class="code-preview"><code><span class="tag">&lt;h1</span> <span class="attr">class</span>=<span class="str">"title"</span><span class="tag">&gt;</span>
+  Hello, World!
+<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;p&gt;</span>Welcome to SkillOrbit<span class="tag">&lt;/p&gt;</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="section-header">
+      <h2>Why <span class="gradient-text">Skill-Orbit?</span></h2>
+      <p>Everything you need to become a web designer</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-code"></i></div>
+        <h3>Live Code Editor</h3>
+        <p>Write HTML & CSS and see changes instantly in a split-pane preview.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3>Structured Curriculum</h3>
+        <p>Learn step-by-step from basics to responsive design and animations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-trophy"></i></div>
+        <h3>Earn XP & Badges</h3>
+        <p>Complete lessons and quizzes to earn XP points and unlock badges.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <h3>Track Progress</h3>
+        <p>Your progress is saved automatically — pick up exactly where you left off.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curriculum Section -->
+  <section class="curriculum" id="curriculum">
+    <div class="section-header">
+      <h2>What You'll <span class="gradient-text">Learn</span></h2>
+      <p>A complete beginner-to-confident curriculum</p>
+    </div>
+    <div class="curriculum-grid">
+      <div class="module-card">
+        <div class="module-header html-header">
+          <i class="fa-brands fa-html5"></i>
+          <div>
+            <h3>HTML Module</h3>
+            <span>10 Lessons</span>
+          </div>
+        </div>
+        <ul class="lesson-list">
+          <li><i class="fa-solid fa-check-circle"></i> HTML Document Structure</li>
+          <li><i class="fa-solid fa-check-circle"></i> Elements & Tags</li>
+          <li><i class="fa-solid fa-check-circle"></i> Headings, Paragraphs & Links</li>
+          <li><i class="fa-solid fa-check-circle"></i> Images & Lists</li>
+          <li><i class="fa-solid fa-check-circle"></i> Tables & Forms</li>
+          <li><i class="fa-solid fa-check-circle"></i> Semantic HTML</li>
+        </ul>
+        <a href="dashboard.html" class="btn btn-primary">Start HTML →</a>
+      </div>
+      <div class="module-card">
+        <div class="module-header css-header">
+          <i class="fa-brands fa-css3-alt"></i>
+          <div>
+            <h3>CSS Module</h3>
+            <span>12 Lessons</span>
+          </div>
+        </div>
+        <ul class="lesson-list">
+          <li><i class="fa-solid fa-check-circle"></i> Selectors & Specificity</li>
+          <li><i class="fa-solid fa-check-circle"></i> Colors & Backgrounds</li>
+          <li><i class="fa-solid fa-check-circle"></i> Box Model</li>
+          <li><i class="fa-solid fa-check-circle"></i> Flexbox & Grid</li>
+          <li><i class="fa-solid fa-check-circle"></i> Responsive Design</li>
+          <li><i class="fa-solid fa-check-circle"></i> Transitions & Animations</li>
+        </ul>
+        <a href="dashboard.html" class="btn btn-css">Start CSS →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="nav-logo">
+        <i class="fa-solid fa-circle-nodes"></i> Skill<span>Orbit</span>
+      </div>
+      <p>Built with ❤️ for beginners learning web design.</p>
+      <p class="footer-note">© 2026 Skill-Orbit. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
