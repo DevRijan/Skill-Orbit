@@ -10,6 +10,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initNavbar();
+  initSidebar();
   initRouter();
 });
 
@@ -31,6 +32,10 @@ function initTheme() {
       toggle.innerHTML = isLight
         ? '<i class="fa-solid fa-sun"></i>'
         : '<i class="fa-solid fa-moon"></i>';
+      
+      if (window.updateEditorTheme) {
+        window.updateEditorTheme(isLight);
+      }
     });
   }
 }
@@ -46,6 +51,24 @@ function initNavbar() {
       navbar.classList.remove('scrolled');
     }
   });
+}
+
+// ── Sidebar Toggle ──────────────────────────────
+function initSidebar() {
+  const toggleBtn = document.getElementById('sidebarToggle');
+  const overlay = document.getElementById('sidebarOverlay');
+  
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-open');
+    });
+  }
+  
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      document.body.classList.remove('sidebar-open');
+    });
+  }
 }
 
 // ── Simple Hash Router ──────────────────────────

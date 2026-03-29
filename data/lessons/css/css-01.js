@@ -1,4 +1,4 @@
-{
+window.LESSON_DATA_css_01 = {
   "id": "css-01",
   "module": "css",
   "title": "What is CSS?",
@@ -34,4 +34,4 @@
       "correct": 2
     }
   ]
-}
+};

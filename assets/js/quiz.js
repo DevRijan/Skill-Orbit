@@ -16,13 +16,40 @@ function initQuiz(questions) {
   currentQIndex = 0;
   quizAnswered  = false;
 
+  const startBtn = document.getElementById('startQuizBtn');
+  const container = document.getElementById('quizContainer');
+  const section = document.getElementById('quizSection');
+
   if (!questions || questions.length === 0) {
-    const container = document.getElementById('quizContainer');
-    if (container) container.innerHTML = '<p class="quiz-intro">No quiz for this lesson yet.</p>';
+    if (container) container.innerHTML = '<p class="quiz-intro" style="padding: 20px;">No quiz for this lesson yet.</p>';
+    if (section) section.style.display = 'none';
     return;
   }
 
-  renderQuestion(0);
+  // Show the quiz section if it has content
+  if (section) section.style.display = 'block';
+
+  if (startBtn) {
+    // Clone node to clear previous listeners if any
+    const newBtn = startBtn.cloneNode(true);
+    startBtn.parentNode.replaceChild(newBtn, startBtn);
+    
+    newBtn.addEventListener('click', () => {
+      renderQuestion(0);
+      
+      // Auto-scroll to the top of the quiz container
+      setTimeout(() => {
+        const theoryContainer = document.querySelector('.lesson-theory-container');
+        const section = document.getElementById('quizSection');
+        if (theoryContainer && section) {
+          theoryContainer.scrollTo({
+            top: section.offsetTop - 20,
+            behavior: 'smooth'
+          });
+        }
+      }, 50);
+    });
+  }
 }
 
 // ── Render a question ─────────────────────────────

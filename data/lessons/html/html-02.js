@@ -1,4 +1,4 @@
-{
+window.LESSON_DATA_html_02 = {
   "id": "html-02",
   "module": "html",
   "title": "HTML Document Structure",
@@ -29,4 +29,4 @@
       "correct": 1
     }
   ]
-}
+};

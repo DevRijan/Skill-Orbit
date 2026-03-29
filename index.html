@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skill-Orbit - Learn HTML & CSS interactively with hands-on lessons, quizzes, and a live code editor." />
+  <meta name="description"
+    content="Skill-Orbit - Learn HTML & CSS interactively with hands-on lessons, quizzes, and a live code editor." />
   <title>Skill-Orbit | Learn HTML & CSS</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/animations.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+
 <body>
+
+  <!-- Custom Cursor -->
+  <div id="custom-cursor"></div>
+  <div id="custom-cursor-follower"></div>
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
@@ -158,6 +167,10 @@
     </div>
   </footer>
 
+  <canvas id="bg-canvas"></canvas>
   <script src="assets/js/app.js"></script>
+  <script src="assets/js/cursor.js"></script>
+  <script src="assets/js/visuals.js"></script>
 </body>
+
 </html>

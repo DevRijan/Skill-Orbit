@@ -1,4 +1,4 @@
-{
+window.LESSON_DATA_html_01 = {
   "id": "html-01",
   "module": "html",
   "title": "What is HTML?",
@@ -39,4 +39,4 @@
       "correct": 2
     }
   ]
-}
+};

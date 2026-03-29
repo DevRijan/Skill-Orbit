@@ -16,88 +16,105 @@
 </head>
 <body class="lesson-page">
 
+  <!-- Custom Cursor -->
+  <div id="custom-cursor"></div>
+  <div id="custom-cursor-follower"></div>
+
   <!-- Top Bar -->
   <header class="lesson-topbar">
-    <a href="dashboard.html" class="btn btn-icon" title="Back to Dashboard">
-      <i class="fa-solid fa-arrow-left"></i>
-    </a>
-    <div class="lesson-title-info">
-      <span class="lesson-module-badge" id="lessonModuleBadge">HTML</span>
-      <h1 id="lessonTitle">Loading Lesson...</h1>
+    <div class="topbar-left">
+      <a href="dashboard.html" class="btn btn-icon" title="Back to Dashboard">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div class="topbar-divider"></div>
+      <div class="lesson-title-info">
+        <span class="lesson-module-badge" id="lessonModuleBadge">HTML</span>
+        <h1 id="lessonTitle">Loading Lesson...</h1>
+      </div>
     </div>
-    <div class="topbar-actions">
-      <span class="xp-badge"><i class="fa-solid fa-bolt"></i> <span id="lessonXP">0</span> XP</span>
+    <div class="topbar-right">
+      <div class="xp-badge"><i class="fa-solid fa-bolt"></i> <span id="lessonXP">0</span> XP</div>
+      <div class="topbar-divider"></div>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon"></i>
       </button>
     </div>
   </header>
 
-  <!-- Lesson Layout: Theory + Editor -->
-  <div class="lesson-layout">
-
-    <!-- Left Panel: Theory -->
-    <aside class="lesson-theory-panel" id="theoryPanel">
-      <div class="panel-tabs">
-        <button class="tab-btn active" data-tab="theory" id="tabTheory">
-          <i class="fa-solid fa-book"></i> Theory
-        </button>
-        <button class="tab-btn" data-tab="challenge" id="tabChallenge">
-          <i class="fa-solid fa-dumbbell"></i> Challenge
-        </button>
-        <button class="tab-btn" data-tab="quiz" id="tabQuiz">
-          <i class="fa-solid fa-question-circle"></i> Quiz
-        </button>
+  <div class="lesson-wrapper">
+    <!-- Lesson Sidebar (W3Schools Style) -->
+    <aside class="lesson-sidebar" id="lessonSidebar">
+      <div class="sidebar-header-mini">
+        <i class="fa-solid fa-list-ul"></i> Curriculum
       </div>
-
-      <!-- Theory Content -->
-      <div class="tab-content active" id="theoryContent">
-        <div class="theory-body" id="theoryBody">
-          <p>Loading lesson content...</p>
-        </div>
-        <div class="theory-code-example" id="theoryCodeExample"></div>
-        <button class="btn btn-primary" id="tryItBtn">
-          <i class="fa-solid fa-play"></i> Try It in Editor
-        </button>
-      </div>
-
-      <!-- Challenge Content -->
-      <div class="tab-content" id="challengeContent">
-        <div class="challenge-instruction" id="challengeInstruction">
-          <i class="fa-solid fa-lightbulb"></i>
-          <p id="challengeText">Complete the theory first!</p>
-        </div>
-        <div class="challenge-hint" id="challengeHint" style="display:none;">
-          <i class="fa-solid fa-circle-info"></i>
-          <span id="hintText"></span>
-        </div>
-        <div class="challenge-actions">
-          <button class="btn btn-outline" id="hintBtn">
-            <i class="fa-solid fa-lightbulb"></i> Show Hint
-          </button>
-          <button class="btn btn-success" id="checkBtn">
-            <i class="fa-solid fa-check"></i> Check Answer
-          </button>
-        </div>
-        <div class="challenge-result" id="challengeResult" style="display:none;"></div>
-      </div>
-
-      <!-- Quiz Content -->
-      <div class="tab-content" id="quizContent">
-        <div id="quizContainer">
-          <p class="quiz-intro">Complete the challenge to unlock the quiz!</p>
-        </div>
-      </div>
+      <div id="lesson-sidebar-content" class="sidebar-lessons"></div>
     </aside>
 
-    <!-- Right Panel: Code Editor + Preview -->
-    <div class="lesson-editor-panel">
+    <!-- Lesson Layout: Full Screen Theory -->
+    <main class="lesson-theory-container">
+      <div class="theory-content-wrapper">
+        <div id="theoryBody" class="theory-body">
+          <p>Loading lesson content...</p>
+        </div>
+        <div id="theoryCodeExample" class="theory-code-example" style="display:none;"></div>
+        
+        <!-- Quiz Section (Appears at the end) -->
+        <div id="quizSection" class="quiz-section" style="display: none;">
+          <hr class="lesson-divider" />
+          <div class="quiz-header">
+            <h2><i class="fa-solid fa-clipboard-question"></i> Lesson Quiz</h2>
+            <p>Test your knowledge on what you just learned.</p>
+          </div>
+          <div id="quizContainer">
+            <button class="btn btn-primary" id="startQuizBtn">Take Quiz</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Floating Editor Button -->
+  <button class="btn-floating-editor pulse" id="openEditorBtn" aria-label="Open Code Editor">
+    <i class="fa-solid fa-code"></i>
+    <span class="fab-tooltip">Code Editor</span>
+  </button>
+
+  <!-- Editor Overlay -->
+  <div class="editor-overlay" id="editorOverlay">
+    <div class="editor-overlay-header">
+      <button class="btn btn-icon" id="closeEditorBtn" title="Back to Lesson">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="editor-challenge-info">
+        <i class="fa-solid fa-dumbbell"></i>
+        <span id="challengeText" class="truncate-text">Complete the theory first!</span>
+      </div>
+      <div class="editor-overlay-actions">
+        <button class="btn btn-outline btn-sm" id="hintBtn" title="Show Hint">
+          <i class="fa-solid fa-lightbulb"></i> <span class="hide-mobile">Hint</span>
+        </button>
+        <button class="btn btn-success btn-sm" id="checkBtn">
+          <i class="fa-solid fa-check"></i> <span class="hide-mobile">Check Code</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="challenge-hint-box" id="challengeHint" style="display:none;">
+      <i class="fa-solid fa-circle-info"></i>
+      <span id="hintText"></span>
+    </div>
+    <div class="challenge-result-box" id="challengeResult" style="display:none;"></div>
+
+    <div class="lesson-editor-panel-full">
       <div class="editor-header">
         <div class="editor-tabs">
           <button class="editor-tab active" id="editorTabHTML">HTML</button>
           <button class="editor-tab" id="editorTabCSS">CSS</button>
         </div>
         <div class="editor-actions">
+          <button class="btn btn-icon" id="fontDecreaseBtn" title="Decrease Font Size"><i class="fa-solid fa-minus"></i></button>
+          <button class="btn btn-icon" id="fontIncreaseBtn" title="Increase Font Size"><i class="fa-solid fa-plus"></i></button>
+          <div class="toolbar-divider"></div>
           <button class="btn btn-icon" id="resetBtn" title="Reset Code">
             <i class="fa-solid fa-rotate-left"></i>
           </button>
@@ -108,11 +125,16 @@
       </div>
 
       <div class="editor-body">
-        <textarea class="code-editor" id="htmlEditor" spellcheck="false" placeholder="<!-- Write your HTML here -->"></textarea>
-        <textarea class="code-editor hidden" id="cssEditor" spellcheck="false" placeholder="/* Write your CSS here */"></textarea>
+        <div class="code-editor" id="htmlEditorContainer"></div>
+        <div class="code-editor hidden" id="cssEditorContainer"></div>
       </div>
 
-      <div class="preview-panel">
+      <!-- Draggable Resizer -->
+      <div class="editor-resizer" id="editorResizer">
+        <div class="resizer-handle"></div>
+      </div>
+
+      <div class="preview-panel" id="previewPanel">
         <div class="preview-header">
           <i class="fa-solid fa-eye"></i> Live Preview
           <button class="btn btn-icon" id="refreshPreview" title="Refresh Preview">
@@ -126,13 +148,20 @@
 
   <!-- Lesson Navigation Footer -->
   <footer class="lesson-footer">
-    <button class="btn btn-outline" id="prevLessonBtn">
-      <i class="fa-solid fa-chevron-left"></i> Previous
-    </button>
-    <div class="lesson-progress-dots" id="lessonDots"></div>
-    <button class="btn btn-primary" id="nextLessonBtn">
-      Next <i class="fa-solid fa-chevron-right"></i>
-    </button>
+    <div class="footer-left">
+      <button class="btn btn-outline" id="prevLessonBtn">
+        <i class="fa-solid fa-chevron-left"></i> <span class="hide-mobile">Previous</span>
+      </button>
+    </div>
+    <div class="footer-center">
+      <div class="lesson-progress-dots" id="lessonDots"></div>
+      <div class="brand-note">Skill-Orbit &copy; 2026 • Interactive Learning</div>
+    </div>
+    <div class="footer-right">
+      <button class="btn btn-primary" id="nextLessonBtn">
+        <span class="hide-mobile">Next Lesson</span> <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
   </footer>
 
   <!-- XP Toast Notification -->
@@ -140,13 +169,18 @@
     <i class="fa-solid fa-bolt"></i> <span id="xpToastText">+20 XP Earned!</span>
   </div>
 
+  <canvas id="bg-canvas"></canvas>
+  <script src="data/curriculum.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.46.0/min/vs/loader.min.js"></script>
   <script src="assets/js/app.js"></script>
+  <script src="assets/js/cursor.js"></script>
   <script src="assets/js/progress.js"></script>
   <script src="assets/js/lessons.js"></script>
   <script src="assets/js/editor.js"></script>
   <script src="assets/js/quiz.js"></script>
   <script src="assets/js/gamification.js"></script>
+  <script src="assets/js/visuals.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       initLessonPage();

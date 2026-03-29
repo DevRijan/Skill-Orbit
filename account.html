@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Skill-Orbit Account Management - Manage your profile." />
+  <title>Account | Skill-Orbit</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .account-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-lg);
+      padding: var(--spacing-2xl);
+      max-width: 600px;
+      margin: 0 auto var(--spacing-2xl);
+    }
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: var(--spacing-xs);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      transition: var(--transition);
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+    .stats-card-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+    .stat-card-box {
+      background: rgba(124, 58, 237, 0.05);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      padding: var(--spacing-lg);
+      border-radius: var(--border-radius);
+      text-align: center;
+    }
+    .stat-card-box i {
+      font-size: 1.8rem;
+      color: var(--color-primary-light);
+      margin-bottom: var(--spacing-sm);
+    }
+    .stat-card-box .stat-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .stat-card-box .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="custom-cursor"></div>
+  <div id="custom-cursor-follower"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fa-solid fa-circle-nodes"></i> Skill<span>Orbit</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="account.html" class="active">Account</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button class="menu-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+        <div class="user-avatar">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Learner</span>
+          <span class="user-xp"><i class="fa-solid fa-bolt"></i> <span id="totalXP">0</span> XP</span>
+        </div>
+      </div>
+      <div class="sidebar-streak">
+        <i class="fa-solid fa-fire"></i>
+        <span><strong id="streakCount">0</strong> day streak</span>
+      </div>
+      <nav class="sidebar-nav">
+        <!-- Rendered modules usually go here, but omitted for account focus, or you can invoke renderSidebar() -->
+        <div class="sidebar-section">HTML</div>
+        <div id="html-sidebar-lessons" class="sidebar-lessons"></div>
+        <div class="sidebar-section">CSS</div>
+        <div id="css-sidebar-lessons" class="sidebar-lessons"></div>
+      </nav>
+    </aside>
+
+    <!-- Overlay Backdrop -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="dashboard-header" style="text-align: center;">
+        <h1>Your Account</h1>
+        <p>Manage your profile and track your ultimate learning progress.</p>
+      </div>
+
+      <section class="account-section animate-fadeInUp">
+        <h3 style="margin-bottom: var(--spacing-lg); text-align: center;"><i class="fa-solid fa-chart-line" style="color:var(--color-primary-light);"></i> Overall Progress</h3>
+        <div class="stats-card-group">
+          <div class="stat-card-box">
+            <i class="fa-solid fa-bolt"></i>
+            <div class="stat-val" id="accTotalXp">0</div>
+            <div class="stat-label">Total XP</div>
+          </div>
+          <div class="stat-card-box">
+            <i class="fa-solid fa-fire"></i>
+            <div class="stat-val" id="accStreak">0</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+          <div class="stat-card-box">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <div class="stat-val" id="accCompleted">0</div>
+            <div class="stat-label">Lessons Done</div>
+          </div>
+        </div>
+
+        <h3 style="margin-bottom: var(--spacing-md); text-align: center; margin-top: var(--spacing-2xl);"><i class="fa-solid fa-user-pen" style="color:var(--color-secondary);"></i> Edit Profile</h3>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="displayName">Display Name</label>
+            <input type="text" id="displayName" class="form-control" placeholder="E.g. Web Ninja" required />
+          </div>
+          <div class="form-group">
+            <label for="emailAddress">Email Address (Optional)</label>
+            <input type="email" id="emailAddress" class="form-control" placeholder="your@email.com" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: var(--spacing-md);">
+            Save Changes
+          </button>
+          <div id="saveMsg" style="text-align:center; margin-top:var(--spacing-sm); color:var(--color-success); font-weight:600; opacity:0; transition:0.3s;">Profile Saved Successfully!</div>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <canvas id="bg-canvas"></canvas>
+  <script src="data/curriculum.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/cursor.js"></script>
+  <script src="assets/js/progress.js"></script>
+  <script src="assets/js/lessons.js"></script>
+  <script src="assets/js/visuals.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fetch progress and user data
+      const progress = loadProgress();
+      const profile = JSON.parse(localStorage.getItem('skill-orbit-profile') || '{"name":"Learner","email":""}');
+      
+      // Populate sidebar stats (if we want to load dash items)
+      if (typeof loadDashboard === 'function') loadDashboard();
+
+      // Populate account fields
+      document.getElementById('displayName').value = profile.name;
+      document.getElementById('emailAddress').value = profile.email || '';
+      
+      document.getElementById('accTotalXp').textContent = progress.xp;
+      document.getElementById('accStreak').textContent = progress.streak;
+      document.getElementById('accCompleted').textContent = progress.completedLessons.length;
+
+      // Handle Form Submit
+      document.getElementById('profileForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newName = document.getElementById('displayName').value.trim() || 'Learner';
+        const newEmail = document.getElementById('emailAddress').value.trim();
+        
+        localStorage.setItem('skill-orbit-profile', JSON.stringify({
+          name: newName,
+          email: newEmail
+        }));
+        
+        // Update sidebar locally
+        const sbName = document.querySelector('.sidebar-user .user-name');
+        if (sbName) sbName.textContent = newName;
+        
+        // Show saved message
+        const msg = document.getElementById('saveMsg');
+        msg.style.opacity = '1';
+        setTimeout(() => { msg.style.opacity = '0'; }, 3000);
+      });
+    });
+  </script>
+</body>
+</html>
