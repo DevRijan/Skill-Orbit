@@ -102,3 +102,20 @@ function animateElement(el, animation = 'animate-fadeInUp') {
   void el.offsetWidth; // reflow
   el.classList.add(animation);
 }
+
+// ── Utility: Live Global XP Sync ────────────────
+window.updateLiveXPDisplay = function() {
+  if (typeof loadProgress !== 'function') return;
+  const progress = loadProgress();
+  const xpElements = document.querySelectorAll('#totalXP, .user-total-xp');
+  xpElements.forEach(el => {
+    el.textContent = progress.xp;
+    // Tiny bounce animation to show it updated live
+    el.style.transform = 'scale(1.2)';
+    el.style.display = 'inline-block';
+    el.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    setTimeout(() => {
+      el.style.transform = 'scale(1)';
+    }, 200);
+  });
+};

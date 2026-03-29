@@ -167,6 +167,50 @@
 }
 .auth-input::placeholder { color: rgba(255,255,255,0.2); }
 
+/* ── Password field with eye toggle ─────────────── */
+.auth-password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.auth-password-wrap .auth-input {
+  padding-right: 46px;
+}
+.auth-eye-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.auth-eye-btn:hover { color: #a78bfa; }
+
+/* ── Error message ───────────────────────────────── */
+.auth-error {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 10px;
+  color: #f87171;
+  font-size: 0.83rem;
+  font-weight: 600;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  display: none;
+  line-height: 1.4;
+}
+
+/* ── Spinner on submit button ────────────────────── */
+.auth-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
 .auth-submit-btn {
   width: 100%;
   justify-content: center;

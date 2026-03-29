@@ -137,6 +137,26 @@ window.LESSON_DATA_html_04 = {
         "You close all nested tags with a single </all> tag."
       ],
       "correct": 1
+    },
+    {
+      "question": "Why must you include a forward slash in a closing tag?",
+      "options": [
+        "To make the text bold.",
+        "To tell the browser the element has ended.",
+        "To link to another page.",
+        "To tell the browser the element is empty."
+      ],
+      "correct": 1
+    },
+    {
+      "question": "Is HTML explicitly case-sensitive (e.g., does it strictly break if you use <P> instead of <p>)?",
+      "options": [
+        "Yes, it will instantly crash.",
+        "No, but lowercase is highly recommended by web standards.",
+        "Yes, uppercase tags generate errors.",
+        "No, uppercase is actually the recommended standard."
+      ],
+      "correct": 1
     }
   ]
 };

@@ -298,7 +298,7 @@ function switchEditorTab(tab) {
 }
 
 // ── Challenge Checker ─────────────────────────────
-function checkChallenge() {
+async function checkChallenge() {
   const checkBtn = document.getElementById('checkBtn');
 
   // Handle Sandbox Reset
@@ -329,15 +329,16 @@ function checkChallenge() {
 
   if (correct) {
     // 1. Award lesson completion XP (10 XP, one-time)
-    const { xpAwarded: lessonXP } = markLessonComplete(currentLesson.id);
+    const { xpAwarded: lessonXP } = await markLessonComplete(currentLesson.id);
 
     // 2. Award challenge XP (10 XP, one-time)
     const { xpAwarded: challengeXP, alreadyEarned } =
       typeof awardChallengeXP === 'function'
-        ? awardChallengeXP(currentLesson.id)
+        ? await awardChallengeXP(currentLesson.id)
         : { xpAwarded: 0, alreadyEarned: false };
 
     const totalNew = (lessonXP || 0) + (challengeXP || 0);
+    if (typeof updateLiveXPDisplay === 'function') updateLiveXPDisplay();
 
     if (alreadyEarned) {
       result.className = 'challenge-result-box success animate-fadeInUp';

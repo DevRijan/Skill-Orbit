@@ -139,6 +139,26 @@ window.LESSON_DATA_html_02 = {
         "They instantly publish your code to Google."
       ],
       "correct": 2
+    },
+    {
+      "question": "What is VS Code?",
+      "options": [
+        "A popular web browser",
+        "A popular free code editor built by Microsoft",
+        "A premium word processor",
+        "A programming language"
+      ],
+      "correct": 1
+    },
+    {
+      "question": "Can you write HTML using the default Notepad application on Windows?",
+      "options": [
+        "Yes, any plain text editor can write HTML.",
+        "No, HTML requires a paid license.",
+        "Yes, but the browser will break it.",
+        "No, Notepad cannot save text files."
+      ],
+      "correct": 0
     }
   ]
 };

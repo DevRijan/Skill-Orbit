@@ -271,6 +271,7 @@
 
   <canvas id="bg-canvas"></canvas>
 
+  <script src="assets/js/api.js"></script>
   <script src="data/curriculum.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cursor.js"></script>
@@ -333,6 +334,9 @@
 
   window.addEventListener('authChanged', () => {
     updateDashboardHero();
+    buildCourseSwitcher();
+    switchCourse(activeCourseId, false);
+    renderDashboardBadges();
   });
 
   /* ── Hero ─────────────────────────────────── */

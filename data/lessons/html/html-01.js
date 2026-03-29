@@ -195,6 +195,26 @@ window.LESSON_DATA_html_01 = {
         "It converts the HTML tags into secure passwords."
       ],
       "correct": 0
+    },
+    {
+      "question": "Which of these is the correct format for an HTML opening tag?",
+      "options": [
+        "{h1}",
+        "(h1)",
+        "<h1>",
+        "[/h1]"
+      ],
+      "correct": 2
+    },
+    {
+      "question": "What does the 'H' in HTML stand for?",
+      "options": [
+        "HyperText",
+        "Home",
+        "Hyper",
+        "Host"
+      ],
+      "correct": 0
     }
   ]
 };

@@ -1,35 +1,36 @@
 // =============================================
-// SKILL-ORBIT — progress.js  v2
+// SKILL-ORBIT — progress.js  v3.0
 // Granular XP tracking: lesson + quiz + challenge
+// Syncs to backend when online, localStorage when offline.
 // =============================================
 
 const STORAGE_KEY = 'skill-orbit-progress';
 
-/**
- * Default progress data structure.
- * XP is split into 3 independent, one-time-earn sources.
- */
 const DEFAULT_PROGRESS = {
-  completedLessons: [],   // lesson IDs where theory was read
-  xp: 0,                  // total XP across all sources
-  badges: [],
-  streak: 0,
-  lastVisit: null,
-  activityLog: {},        // { 'YYYY-MM-DD': xpAmount }
-
-  // ── NEW Granular XP tracking ──────────────
-  lessonXP:    {},        // { 'html-01': 10 } — XP from lesson completion
-  quizXP:      {},        // { 'html-01': { '0': 1, '1': 0, '2': 1 } } — per question
-  challengeXP: {},        // { 'html-01': 10 } — XP from code challenge
+  completedLessons: [],
+  xp:               0,
+  badges:           [],
+  streak:           0,
+  lastVisit:        null,
+  activityLog:      {},
+  lessonXP:         {},
+  quizXP:           {},
+  challengeXP:      {},
 };
 
-// ── Load & Save ─────────────────────────────────
+// ── XP reward constants (must match backend) ─────────────────────────────────
+
+const LESSON_XP_REWARD    = 10;
+const CHALLENGE_XP_REWARD = 10;
+const QUIZ_XP_PER_Q       = 1;
+
+// ── localStorage Load & Save ─────────────────────────────────────────────────
+
 function loadProgress() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return { ...DEFAULT_PROGRESS };
   try {
     const p = JSON.parse(raw);
-    // Migrate older saves missing new fields
     if (!p.lessonXP)    p.lessonXP    = {};
     if (!p.quizXP)      p.quizXP      = {};
     if (!p.challengeXP) p.challengeXP = {};
@@ -42,26 +43,56 @@ function loadProgress() {
 
 function saveProgress(progress) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  // Sync current user to leaderboard after every save
   if (typeof syncLeaderboard === 'function') syncLeaderboard();
 }
 
-// ── Mark lesson complete (theory XP) ────────────
-// Awards LESSON_XP_REWARD exactly once per lesson.
-const LESSON_XP_REWARD    = 10;
-const CHALLENGE_XP_REWARD = 10;
-const QUIZ_XP_PER_Q       = 1;
+// ── Backend sync helpers ──────────────────────────────────────────────────────
 
-function markLessonComplete(lessonId) {
-  const progress = loadProgress();
-  const isNew = !progress.completedLessons.includes(lessonId);
-  let xpAwarded = 0;
+function isAPIOnline() {
+  return window.SkillOrbitAPI && window.SkillOrbitAPI.isOnline() && window.SkillOrbitAPI.isAuthenticated();
+}
 
-  if (isNew) {
+/**
+ * Pull latest progress from server and sync into localStorage.
+ * Called when the page loads and a user is authenticated.
+ */
+async function pullProgressFromServer() {
+  if (!isAPIOnline()) return;
+  try {
+    const res = await window.SkillOrbitAPI.progress.load();
+    const progress = res ? res.progress : null;
+    if (!progress) return;
+
+    // Map server field names → local field names
+    const merged = {
+      completedLessons: progress.completed_lessons || [],
+      xp:               progress.xp_total          || 0,
+      badges:           res.badges ? res.badges.map(b => b.badge_id || b) : [],
+      streak:           progress.streak             || 0,
+      lastVisit:        progress.last_visit         || null,
+      activityLog:      progress.activity_log       || {},
+      lessonXP:         progress.lesson_xp          || {},
+      quizXP:           progress.quiz_xp            || {},
+      challengeXP:      progress.challenge_xp       || {},
+    };
+
+    saveProgress(merged);
+    return merged;
+  } catch (err) {
+    console.warn('[progress] Failed to pull from server:', err.message);
+  }
+}
+
+// ── Mark lesson complete ──────────────────────────────────────────────────────
+
+async function markLessonComplete(lessonId) {
+  const progress  = loadProgress();
+  let xpAwarded   = 0;
+
+  if (!progress.completedLessons.includes(lessonId)) {
     progress.completedLessons.push(lessonId);
   }
 
-  // Award lesson XP only once
   if (!progress.lessonXP[lessonId]) {
     progress.lessonXP[lessonId] = LESSON_XP_REWARD;
     progress.xp += LESSON_XP_REWARD;
@@ -72,49 +103,92 @@ function markLessonComplete(lessonId) {
   progress.lastVisit = new Date().toISOString();
   updateStreak(progress);
   saveProgress(progress);
-  return { progress, xpAwarded };
+
+  // Sync to backend
+  let newBadges = [];
+  if (isAPIOnline()) {
+    try {
+      const res = await window.SkillOrbitAPI.progress.markLesson(lessonId);
+      // Use server's authoritative XP value
+      progress.xp    = res.xpTotal;
+      progress.streak = res.streak;
+      newBadges = res.newBadges || [];
+      saveProgress(progress);
+      // Show badge toasts for any newly unlocked badges
+      if (typeof showBadgeToast === 'function') {
+        newBadges.forEach(b => showBadgeToast(b));
+      }
+    } catch (err) {
+      console.warn('[progress] Lesson sync failed:', err.message);
+    }
+  }
+
+  return { progress, xpAwarded, newBadges };
 }
 
-// ── Award quiz XP for one question ──────────────
-// Returns { xpAwarded, alreadyAnswered }
-function awardQuizXP(lessonId, questionIndex) {
+// ── Award quiz XP for one question ───────────────────────────────────────────
+
+async function awardQuizXP(lessonId, questionIndex) {
   const progress = loadProgress();
   if (!progress.quizXP[lessonId]) progress.quizXP[lessonId] = {};
 
   const key = String(questionIndex);
-  // Already answered (correct or wrong) — no change
   if (key in progress.quizXP[lessonId]) {
     return { xpAwarded: 0, alreadyAnswered: true, earned: progress.quizXP[lessonId][key] };
   }
 
-  // Mark as correct — award 1 XP
   progress.quizXP[lessonId][key] = QUIZ_XP_PER_Q;
   progress.xp += QUIZ_XP_PER_Q;
   recordActivityXP(QUIZ_XP_PER_Q, progress);
   saveProgress(progress);
+
+  // Sync to backend
+  if (isAPIOnline()) {
+    try {
+      const res = await window.SkillOrbitAPI.progress.recordQuiz(lessonId, questionIndex, true);
+      progress.xp = res.xpTotal;
+      saveProgress(progress);
+    } catch (err) {
+      console.warn('[progress] Quiz XP sync failed:', err.message);
+    }
+  }
+
   return { xpAwarded: QUIZ_XP_PER_Q, alreadyAnswered: false, earned: QUIZ_XP_PER_Q };
 }
 
-// ── Record wrong quiz answer (locks out XP) ─────
-function recordQuizWrong(lessonId, questionIndex) {
+// ── Record wrong quiz answer ──────────────────────────────────────────────────
+
+async function recordQuizWrong(lessonId, questionIndex) {
   const progress = loadProgress();
   if (!progress.quizXP[lessonId]) progress.quizXP[lessonId] = {};
   const key = String(questionIndex);
   if (!(key in progress.quizXP[lessonId])) {
-    progress.quizXP[lessonId][key] = 0; // 0 = answered wrong, locked out
+    progress.quizXP[lessonId][key] = 0;
     saveProgress(progress);
   }
+
+  // Sync to backend
+  if (isAPIOnline()) {
+    try {
+      await window.SkillOrbitAPI.progress.recordQuiz(lessonId, questionIndex, false);
+    } catch (err) {
+      console.warn('[progress] Wrong quiz sync failed:', err.message);
+    }
+  }
+
   return { xpAwarded: 0 };
 }
 
-// ── Check if quiz question has been answered ─────
+// ── Check if quiz question answered ──────────────────────────────────────────
+
 function isQuizQuestionAnswered(lessonId, questionIndex) {
   const progress = loadProgress();
   const key = String(questionIndex);
   return progress.quizXP[lessonId] && (key in progress.quizXP[lessonId]);
 }
 
-// ── Get quiz XP totals for a lesson ─────────────
+// ── Get quiz XP summary for a lesson ─────────────────────────────────────────
+
 function getQuizXPSummary(lessonId) {
   const progress = loadProgress();
   const qxp = progress.quizXP[lessonId] || {};
@@ -127,22 +201,37 @@ function getQuizXPSummary(lessonId) {
   };
 }
 
-// ── Award challenge XP (code editor) ────────────
-function awardChallengeXP(lessonId) {
+// ── Award challenge XP ────────────────────────────────────────────────────────
+
+async function awardChallengeXP(lessonId) {
   const progress = loadProgress();
   if (progress.challengeXP[lessonId]) {
     return { xpAwarded: 0, alreadyEarned: true };
   }
+
   progress.challengeXP[lessonId] = CHALLENGE_XP_REWARD;
   progress.xp += CHALLENGE_XP_REWARD;
   recordActivityXP(CHALLENGE_XP_REWARD, progress);
   saveProgress(progress);
+
+  // Sync to backend
+  if (isAPIOnline()) {
+    try {
+      const res = await window.SkillOrbitAPI.progress.challenge(lessonId);
+      progress.xp = res.xpTotal;
+      saveProgress(progress);
+    } catch (err) {
+      console.warn('[progress] Challenge XP sync failed:', err.message);
+    }
+  }
+
   return { xpAwarded: CHALLENGE_XP_REWARD, alreadyEarned: false };
 }
 
-// ── Get full XP breakdown for a lesson ──────────
+// ── Get full XP breakdown for a lesson ───────────────────────────────────────
+
 function getLessonXPBreakdown(lessonId) {
-  const progress = loadProgress();
+  const progress   = loadProgress();
   const quizSummary = getQuizXPSummary(lessonId);
   return {
     lesson:    progress.lessonXP[lessonId]    || 0,
@@ -153,23 +242,24 @@ function getLessonXPBreakdown(lessonId) {
   };
 }
 
-// ── Check if lesson is complete ─────────────────
+// ── Utility checks ────────────────────────────────────────────────────────────
+
 function isLessonComplete(lessonId) {
   return loadProgress().completedLessons.includes(lessonId);
 }
 
-// ── Get total XP ────────────────────────────────
 function getTotalXP() {
   return loadProgress().xp;
 }
 
-// ── Streak Logic ────────────────────────────────
+// ── Streak Logic ──────────────────────────────────────────────────────────────
+
 function updateStreak(progress) {
   const today = new Date().toDateString();
   const last  = progress.lastVisit ? new Date(progress.lastVisit).toDateString() : null;
 
   if (!last || last === today) {
-    // Same day — no change
+    // same day — no change
   } else {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -182,30 +272,41 @@ function updateStreak(progress) {
   progress.lastVisit = new Date().toISOString();
 }
 
-// ── Get progress per module ──────────────────────
+// ── Module progress ───────────────────────────────────────────────────────────
+
 function getModuleProgress(moduleId, curriculum) {
   const progress = loadProgress();
   const moduleLessons = curriculum.filter(l => l.module === moduleId);
-  const completed = moduleLessons.filter(l => progress.completedLessons.includes(l.id));
+  const completed     = moduleLessons.filter(l => progress.completedLessons.includes(l.id));
   return {
-    total: moduleLessons.length,
+    total:     moduleLessons.length,
     completed: completed.length,
-    percent: moduleLessons.length ? Math.round((completed.length / moduleLessons.length) * 100) : 0,
+    percent:   moduleLessons.length ? Math.round((completed.length / moduleLessons.length) * 100) : 0,
   };
 }
 
-// ── Reset all progress ────────────────────────────
-function resetProgress() {
+// ── Reset ─────────────────────────────────────────────────────────────────────
+
+async function resetProgress() {
   localStorage.removeItem(STORAGE_KEY);
+
+  if (isAPIOnline()) {
+    try {
+      await window.SkillOrbitAPI.progress.reset();
+    } catch (err) {
+      console.warn('[progress] Reset sync failed:', err.message);
+    }
+  }
 }
 
-// ── Activity Log ─────────────────────────────────
+// ── Activity Log ──────────────────────────────────────────────────────────────
+
 function recordActivityXP(amount = 10, progress = null) {
   const p = progress || loadProgress();
   if (!p.activityLog) p.activityLog = {};
   const today = new Date().toISOString().slice(0, 10);
   p.activityLog[today] = (p.activityLog[today] || 0) + amount;
-  if (!progress) saveProgress(p); // only save if not part of larger save
+  if (!progress) saveProgress(p);
 }
 
 function getActivityLog() {
@@ -213,7 +314,7 @@ function getActivityLog() {
 }
 
 function getHeatmapData(days = 63) {
-  const log = getActivityLog();
+  const log    = getActivityLog();
   const result = [];
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date();

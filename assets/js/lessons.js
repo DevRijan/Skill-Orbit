@@ -453,12 +453,11 @@ function renderLesson(lesson) {
   const titleEl  = document.getElementById('lessonTitle');
   const badgeEl  = document.getElementById('lessonModuleBadge');
   const bodyEl   = document.getElementById('theoryBody');
-  const xpEl     = document.getElementById('lessonXP');
   const exampleEl = document.getElementById('theoryCodeExample');
 
   if (titleEl)  titleEl.textContent  = lesson.title;
   if (badgeEl)  badgeEl.textContent  = lesson.module.toUpperCase();
-  if (xpEl)     xpEl.textContent     = lesson.xp;
+  if (typeof updateLiveXPDisplay === 'function') updateLiveXPDisplay();
   if (bodyEl)   bodyEl.innerHTML     = lesson.theory;
   
   // Enhance snippets

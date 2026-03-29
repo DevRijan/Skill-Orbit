@@ -106,9 +106,8 @@
       <!-- Note -->
       <div class="lb-note">
         <i class="fa-solid fa-circle-info"></i>
-        <span>
-          <strong>Local Leaderboard:</strong> Rankings are shared between all profiles on this device.
-          Each profile's XP is updated automatically when they earn it. Create multiple profiles to compete!
+        <span id="lbNote">
+          <strong>Global Leaderboard:</strong> All registered learners compete together in real time. Complete lessons to earn XP and climb the rankings!
         </span>
       </div>
 
@@ -117,6 +116,7 @@
 
   <canvas id="bg-canvas"></canvas>
 
+  <script src="assets/js/api.js"></script>
   <script src="data/curriculum.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cursor.js"></script>
@@ -127,16 +127,15 @@
   <script src="assets/js/visuals.js"></script>
 
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     initAuth({ requireLogin: false });
-    // Sync current user to leaderboard before rendering
     syncLeaderboard();
-    renderLeaderboardPage();
+    await renderLeaderboardPage();
   });
 
-  window.addEventListener('authChanged', () => {
+  window.addEventListener('authChanged', async () => {
     syncLeaderboard();
-    renderLeaderboardPage();
+    await renderLeaderboardPage();
   });
 
   const MEDAL = ['🥇','🥈','🥉'];
@@ -144,14 +143,14 @@
 
   function getMyId() {
     const p = typeof getProfile === 'function' ? getProfile() : null;
-    if (!p) return null;
-    return p.name + '_' + (p.joinedAt || '').slice(0, 10);
+    if (!p) return p ? (p.id || null) : null;
+    return p.id || (p.name + '_' + (p.joinedAt || '').slice(0, 10));
   }
 
-  function renderLeaderboardPage() {
-    const board = typeof getLeaderboard === 'function' ? getLeaderboard() : [];
-    const myId  = getMyId();
-    const myRank = typeof getMyRank === 'function' ? getMyRank() : null;
+  async function renderLeaderboardPage() {
+    const board  = typeof getLeaderboard === 'function' ? await getLeaderboard() : [];
+    const myProfile = typeof getProfile === 'function' ? getProfile() : null;
+    const myId   = myProfile ? (myProfile.id || (myProfile.name + '_' + (myProfile.joinedAt || '').slice(0, 10))) : null;
 
     // Hero rank chip
     const myEntry = board.find(e => e.id === myId);

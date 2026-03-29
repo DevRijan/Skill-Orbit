@@ -146,7 +146,7 @@ function renderQuestion(index) {
 }
 
 // ── Handle answer ─────────────────────────────────
-function handleAnswer(selected, correctIndex, questionIndex, clickedBtn) {
+async function handleAnswer(selected, correctIndex, questionIndex, clickedBtn) {
   if (quizAnswered) return;
   quizAnswered = true;
 
@@ -164,7 +164,7 @@ function handleAnswer(selected, correctIndex, questionIndex, clickedBtn) {
     // Award XP
     let xpAwarded = 0;
     if (quizLessonId && typeof awardQuizXP === 'function') {
-      const result = awardQuizXP(quizLessonId, questionIndex);
+      const result = await awardQuizXP(quizLessonId, questionIndex);
       xpAwarded = result.xpAwarded;
     } else {
       xpAwarded = 1; // fallback
@@ -183,10 +183,11 @@ function handleAnswer(selected, correctIndex, questionIndex, clickedBtn) {
       counter.style.transform = 'scale(1.3)';
       setTimeout(() => counter.style.transform = 'scale(1)', 300);
     }
+    if (typeof updateLiveXPDisplay === 'function') updateLiveXPDisplay();
   } else {
     // Lock out XP for this question permanently
     if (quizLessonId && typeof recordQuizWrong === 'function') {
-      recordQuizWrong(quizLessonId, questionIndex);
+      await recordQuizWrong(quizLessonId, questionIndex);
     }
     if (feedback) feedback.innerHTML = `
       <div>

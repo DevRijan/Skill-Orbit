@@ -85,9 +85,10 @@ function renderGamification(progress, curriculum = []) {
  * @param {Array} curriculum
  * @returns {Array} newly earned badge IDs
  */
-function checkBadges(progress, curriculum = []) {
+async function checkBadges(progress, curriculum = []) {
   const newlyEarned = [];
 
+  // Offline/local evaluation
   BADGES.forEach(badge => {
     if (!progress.badges.includes(badge.id) && badge.condition(progress, curriculum)) {
       progress.badges.push(badge.id);
@@ -98,6 +99,25 @@ function checkBadges(progress, curriculum = []) {
   if (newlyEarned.length > 0) {
     saveProgress(progress);
     newlyEarned.forEach(b => showBadgeToast(b));
+  }
+  
+  // Sync to backend if online
+  if (window.SkillOrbitAPI && window.SkillOrbitAPI.isOnline() && window.SkillOrbitAPI.isAuthenticated()) {
+    try {
+      const res = await window.SkillOrbitAPI.badges.check();
+      if (res.newBadges && res.newBadges.length > 0) {
+        // Since backend already handles pushing server-side new badges to the local client indirectly on next fetch,
+        // we can optionally show toast here if the server returned new badges we didn't catch locally.
+        res.newBadges.forEach(b => {
+          if (!newlyEarned.find(e => e.id === b)) {
+            const def = BADGES.find(x => x.id === b);
+            if (def) showBadgeToast(def);
+          }
+        });
+      }
+    } catch (err) {
+      console.warn('[gamification] API badge check failed:', err.message);
+    }
   }
 
   return newlyEarned;

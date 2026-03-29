@@ -358,6 +358,7 @@
 
   <canvas id="bg-canvas"></canvas>
 
+  <script src="assets/js/api.js"></script>
   <script src="data/curriculum.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cursor.js"></script>
@@ -609,12 +610,22 @@
     }
 
     // ── Settings form ────────────────────────────
-    document.getElementById('settingsForm').addEventListener('submit', e => {
+    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const name   = document.getElementById('stName').value.trim() || 'Learner';
       const email  = document.getElementById('stEmail').value.trim();
       const picked = document.querySelector('#stAvatarGrid .settings-avatar-opt.selected');
       const avatar = picked ? picked.dataset.emoji : '🚀';
+
+      // Sync to backend if online
+      if (window.SkillOrbitAPI && window.SkillOrbitAPI.isOnline() && window.SkillOrbitAPI.isAuthenticated()) {
+        try {
+          await window.SkillOrbitAPI.auth.updateProfile({ name, avatar });
+        } catch (err) {
+          console.warn('[account] Profile update sync failed:', err.message);
+        }
+      }
+
       saveProfile({ name, email, avatar });
       updateNavAuth();
       render();

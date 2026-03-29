@@ -125,6 +125,26 @@ window.LESSON_DATA_html_05 = {
         "name=\"value\""
       ],
       "correct": 3
+    },
+    {
+      "question": "What specific attribute does an <a> anchor tag require to know where to navigate?",
+      "options": [
+        "src",
+        "url",
+        "link",
+        "href"
+      ],
+      "correct": 3
+    },
+    {
+      "question": "Can you stack multiple attributes in a single opening tag?",
+      "options": [
+        "Yes, separated entirely by spaces.",
+        "Yes, but you must use commas.",
+        "No, you can only have one attribute per tag.",
+        "No, additional attributes must go in the closing tag."
+      ],
+      "correct": 0
     }
   ]
 };

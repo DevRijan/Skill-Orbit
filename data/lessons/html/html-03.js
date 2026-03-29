@@ -70,7 +70,7 @@ window.LESSON_DATA_html_03 = {
 
     <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
 
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">What on Earth is `&lt;!DOCTYPE html&gt;`?</h2>
+    <h2 style="font-size: 2rem; margin-bottom: 20px;">What on Earth is <code>&lt;!DOCTYPE html&gt;</code>?</h2>
     
     <p style="font-size: 1.1rem; line-height: 1.8;">
       You may have noticed that very weird line at the very top of our code example: <code>&lt;!DOCTYPE html&gt;</code>. 
@@ -133,6 +133,26 @@ window.LESSON_DATA_html_03 = {
         "It acts as a secure password to edit the code.",
         "It loudly tells the browser: 'Prepare yourself, this is a modern HTML5 document!'",
         "It closes all open tags."
+      ],
+      "correct": 2
+    },
+    {
+      "question": "According to the lesson, what happens if you place visible tags like <h1> inside the <head>?",
+      "options": [
+        "It acts as a secret title.",
+        "The browser ignores it completely.",
+        "The text becomes bold automatically.",
+        "The browser gets confused and the website layout may break."
+      ],
+      "correct": 3
+    },
+    {
+      "question": "What is the 'Root Element' that acts as the top and bottom buns wrapping the entire blueprint?",
+      "options": [
+        "<body>",
+        "<head>",
+        "<html>",
+        "<!DOCTYPE>"
       ],
       "correct": 2
     }
