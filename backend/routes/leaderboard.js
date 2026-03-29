@@ -16,23 +16,30 @@ const { requireAuth, optionalAuth }            = require('../middleware/auth');
 router.get('/', optionalAuth, (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 50, 100);
-    const entries = getLeaderboard(limit);
+    const league = req.query.league;
+    const period = req.query.period || 'alltime';
+    const entries = getLeaderboard({ limit, league, period });
 
     const enriched = entries.map((row, index) => {
       const levelInfo = getLevelInfo(row.xp);
+      const badgeCount = queries.getBadgeCount.get(row.id);
+      const badgesCount = badgeCount ? badgeCount.count : 0;
       return {
-        rank:        index + 1,
-        id:          row.id,
-        name:        row.name,
-        avatar:      row.avatar,
-        xp:          row.xp,
-        streak:      row.streak,
+        rank:         index + 1,
+        id:           row.id,
+        name:         row.name,
+        avatar:       row.avatar,
+        xp:           row.xp,
+        weeklyXP:     period === 'weekly' ? (row.weeklyXP || 0) : undefined,
+        league:       row.league,
+        streak:       row.streak,
         lessonsCount: row.lessons_count,
-        level:       levelInfo.current.level,
-        levelTitle:  levelInfo.current.title,
-        joinedAt:    row.joined_at,
-        lastSeen:    row.last_seen,
-        isMe:        req.userId ? row.id === req.userId : false,
+        badgesCount:  badgesCount,
+        level:        levelInfo.current.level,
+        levelTitle:   levelInfo.current.title,
+        joinedAt:     row.joined_at,
+        lastSeen:     row.last_seen,
+        isMe:         req.userId ? row.id === req.userId : false,
       };
     });
 

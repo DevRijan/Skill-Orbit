@@ -6,6 +6,7 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
+const { getLevelInfo, getLeague } = require('../utils/levelCalc');
 
 const DB_DIR = path.join(__dirname);
 const DB_PATH = path.join(DB_DIR, 'skill-orbit.db');
@@ -68,6 +69,8 @@ const MIGRATIONS = [
   CREATE INDEX IF NOT EXISTS idx_progress_xp ON progress(xp_total DESC);
   CREATE INDEX IF NOT EXISTS idx_badges_user_id ON badges(user_id);
   `,
+  // v2 — Add league to progress
+  `ALTER TABLE progress ADD COLUMN league TEXT DEFAULT 'Bronze';`,
 ];
 
 // Run migrations
@@ -94,28 +97,67 @@ function runMigrations() {
 
 runMigrations();
 
+// ── Helper functions ──────────────────────────────────────────────────────────
+
+function calculateWeeklyXP(activityLogStr) {
+  const activityLog = JSON.parse(activityLogStr || '{}');
+  const dates = Object.keys(activityLog).sort();
+  if (dates.length === 0) return 0;
+
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const recentDates = dates.filter(d => new Date(d) >= sevenDaysAgo);
+  if (recentDates.length === 0) return 0;
+
+  const latestXP = activityLog[recentDates[recentDates.length - 1]];
+  const oldestXP = activityLog[recentDates[0]];
+  return latestXP - oldestXP;
+}
+
 // ── Leaderboard View (computed) ───────────────────────────────────────────────
 
 // Returns top N users joined with their progress stats
-function getLeaderboard(limit = 50) {
-  return db
-    .prepare(
-      `SELECT
-        u.id, u.name, u.avatar, u.joined_at,
-        COALESCE(p.xp_total, 0)          AS xp,
-        COALESCE(p.streak, 0)            AS streak,
-        COALESCE(p.last_visit, u.last_seen) AS last_seen,
-        COALESCE(
-          json_array_length(p.completed_lessons), 0
-        )                                AS lessons_count,
-        COALESCE(p.updated_at, u.joined_at) AS updated_at
-       FROM users u
-       LEFT JOIN progress p ON p.user_id = u.id
-       WHERE u.is_active = 1
-       ORDER BY xp DESC, u.joined_at ASC
-       LIMIT ?`
-    )
-    .all(limit);
+function getLeaderboard(options = {}) {
+  const { limit = 50, league, period = 'alltime' } = options;
+
+  let whereClause = 'WHERE u.is_active = 1';
+  const params = [];
+
+  if (league) {
+    whereClause += ' AND p.league = ?';
+    params.push(league);
+  }
+
+  const query = `SELECT
+    u.id, u.name, u.avatar, u.joined_at,
+    COALESCE(p.xp_total, 0)          AS xp,
+    COALESCE(p.league, 'Bronze')     AS league,
+    COALESCE(p.streak, 0)            AS streak,
+    COALESCE(p.last_visit, u.last_seen) AS last_seen,
+    COALESCE(
+      json_array_length(p.completed_lessons), 0
+    )                                AS lessons_count,
+    COALESCE(p.updated_at, u.joined_at) AS updated_at,
+    p.activity_log
+   FROM users u
+   LEFT JOIN progress p ON p.user_id = u.id
+   ${whereClause}
+   ORDER BY xp DESC, u.joined_at ASC
+   LIMIT ?`;
+
+  params.push(limit);
+  let rows = db.prepare(query).all(...params);
+
+  // If weekly, calculate weekly_xp and re-sort
+  if (period === 'weekly') {
+    rows = rows.map(row => {
+      const weeklyXP = calculateWeeklyXP(row.activity_log);
+      return { ...row, weeklyXP };
+    });
+    rows.sort((a, b) => b.weeklyXP - a.weeklyXP || a.joined_at.localeCompare(b.joined_at));
+  }
+
+  return rows;
 }
 
 function getUserRank(userId) {
@@ -152,13 +194,14 @@ const queries = {
     `UPDATE progress SET
        xp_total = ?, streak = ?, last_visit = ?,
        completed_lessons = ?, lesson_xp = ?, quiz_xp = ?,
-       challenge_xp = ?, activity_log = ?,
+       challenge_xp = ?, activity_log = ?, league = ?,
        updated_at = datetime('now')
      WHERE user_id = ?`
   ),
 
   // Badges
   getUserBadges:   db.prepare('SELECT badge_id, earned_at FROM badges WHERE user_id = ?'),
+  getBadgeCount:   db.prepare('SELECT COUNT(*) as count FROM badges WHERE user_id = ?'),
   awardBadge:      db.prepare('INSERT OR IGNORE INTO badges (user_id, badge_id) VALUES (?, ?)'),
   hasBadge:        db.prepare('SELECT 1 FROM badges WHERE user_id = ? AND badge_id = ?'),
 };

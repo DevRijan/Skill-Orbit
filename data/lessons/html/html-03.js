@@ -2,159 +2,408 @@ window.LESSON_DATA_html_03 = {
   "id": "html-03",
   "module": "html",
   "title": "HTML Document Structure",
-  "xp": 55,
+  "xp": 150,
   "theory": `
-    <div class="theory-hero">
-      <i class="fa-solid fa-layer-group theory-hero-icon" style="color: #c084fc;"></i>
-      <h2>The Mandatory Blueprint of Every Webpage</h2>
-      <p>Imagine trying to build a car by randomly attaching wheels to a steering wheel, tossing in an engine, and hoping it drives. It would fail instantly. Just like a car needs a specific chassis to hold everything together, an HTML document follows a strict, mandatory "parent-child" structure. If you miss one crucial part of this blueprint, the browser will be completely confused.</p>
-    </div>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">The Unbreakable Foundation</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      Before you can type a single visible word on your website, you are legally required (by the browser codes) to build out the foundational "Skeleton". Every professional HTML file on earth starts with these exact four key blocks. Memorize them, write them down, dream about them!
-    </p>
-
-    <div style="background: rgba(15, 23, 42, 0.6); border-radius: 16px; margin: 30px 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
-      <div style="padding: 20px; font-family: monospace; font-size: 1.2rem; background: #1e1e2e; color: #a6accd; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <span style="color: #f07178;">&lt;!DOCTYPE html&gt;</span><br>
-        <span style="color: #89ddff;">&lt;html&gt;</span><br>
-        &nbsp;&nbsp;<span style="color: #c3e88d;">&lt;head&gt;</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;My Site TITLE&lt;/title&gt;<br>
-        &nbsp;&nbsp;<span style="color: #c3e88d;">&lt;/head&gt;</span><br>
-        &nbsp;&nbsp;<span style="color: #fca7ea;">&lt;body&gt;</span><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;My Visible TEXT&lt;/h1&gt;<br>
-        &nbsp;&nbsp;<span style="color: #fca7ea;">&lt;/body&gt;</span><br>
-        <span style="color: #89ddff;">&lt;/html&gt;</span>
-      </div>
-    </div>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <div class="analogy-box" style="background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 12px; padding: 30px; margin: 40px 0;">
-      <div class="analogy-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-        <i class="fa-solid fa-burger" style="font-size: 2rem; color: #fbbf24;"></i>
-        <h3 style="margin: 0; color: #fbbf24; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px;">The Gourmet Burger Analogy</h3>
-      </div>
-      <p style="font-size: 1.1rem; line-height: 1.8;">Think of an HTML document exactly like building a massive, delicious <strong>Gourmet Burger</strong>:</p>
+    <style>
+      .html-interactive-lesson { font-family: 'Inter', sans-serif; color: #e2e8f0; }
+      .html-interactive-lesson h2 { font-size: 2rem; color: #f8fafc; margin-bottom: 0.5rem; }
+      .html-interactive-lesson p { font-size: 1.1rem; line-height: 1.7; color: #cbd5e1; margin-bottom: 2rem; }
       
-      <div style="margin-top: 25px;">
-        <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: flex-start;">
-          <div style="font-size: 2rem; color: #fb923c;"><i class="fa-solid fa-bread-slice"></i></div>
-          <div>
-            <h4 style="margin: 0 0 5px 0; color: #fb923c; font-size: 1.3rem;">1. <code>&lt;html&gt;</code> (The Buns)</h4>
-            <p style="margin: 0; line-height: 1.6; color: #cbd5e1;">It wraps everything together. The <code>&lt;html&gt;</code> tag is the top bun, and <code>&lt;/html&gt;</code> is the bottom bun. If anything falls out of the buns, it isn't part of the burger. This is called the <strong>Root Element</strong>, and 100% of your website must go between these two buns.</p>
-          </div>
-        </div>
+      .ib-block { background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 2rem; margin-bottom: 3rem; }
+      .ib-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+      .ib-badge { background: #3b82f6; color: white; padding: 0.3rem 0.8rem; border-radius: 99px; font-weight: 600; font-size: 0.9rem; }
+      .ib-title { font-size: 1.5rem; font-weight: 700; color: #f1f5f9; margin: 0; }
+      
+      .ib-workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; }
+      @media (max-width: 768px) { .ib-workspace { grid-template-columns: 1fr; } }
+      .ib-panel { background: #1e293b; border-radius: 12px; padding: 1.5rem; border: 1px solid #334155; }
+      .ib-panel h3 { font-size: 1rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-top: 0; margin-bottom: 1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
+      
+      /* Specific block styling */
+      .canvas-editor textarea { width: 100%; height: 100px; background: #0f172a; color: #f8fafc; border: 1px solid #475569; padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 1.2rem; resize: none; margin-bottom: 1rem; }
+      .canvas-render { background: white; color: black; padding: 1rem; min-height: 100px; border-radius: 8px; font-family: sans-serif; position: relative; overflow: hidden; }
+      
+      .brain-scanner { position: absolute; top:0; left:0; width: 100%; height: 5px; background: rgba(239, 68, 68, 0.5); animation: scan 2s linear infinite; display: none; }
+      @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+      
+      .ib-btn { background: #3b82f6; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+      .ib-btn:hover { background: #2563eb; }
+      .ib-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .ib-feedback { margin-top: 1.5rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; border-radius: 4px; display: none; }
+      
+      .html-wrap-box { border: 2px dashed #475569; padding: 2rem; text-align: center; border-radius: 12px; transition: 0.3s; }
+      .html-wrap-box.active { border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.1); }
+      
+      .split-zones { display: flex; flex-direction: column; gap: 1rem; }
+      .zone { border: 2px dashed #475569; padding: 1rem; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+      .zone:hover { border-color: #64748b; }
+      .zone.head { background: #0f172a; color: #94a3b8; }
+      .zone.body { background: #e2e8f0; color: #0f172a; font-weight: bold; }
+      
+      .mock-browser { background: #0f172a; border-radius: 8px; border: 1px solid #334155; overflow: hidden; }
+      .mock-tab-bar { background: #1e293b; padding: 0.5rem 1rem; display: flex; gap: 0.5rem; border-bottom: 1px solid #334155; }
+      .mock-tab { background: #334155; padding: 0.3rem 1rem; border-radius: 6px 6px 0 0; font-size: 0.8rem; color: white; min-width: 100px; }
+      .mock-viewport { background: white; padding: 1rem; min-height: 150px; color: black; }
+      
+      .doctype-switch { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+      .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+      .switch input { opacity: 0; width: 0; height: 0; }
+      .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+      .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+      input:checked + .slider { background-color: #3b82f6; }
+      input:checked + .slider:before { transform: translateX(26px); }
+      
+      .dom-tree { font-family: monospace; font-size: 1.1rem; }
+      .dom-node { margin-left: 1.5rem; cursor: pointer; transition: 0.2s; padding: 0.2rem 0.5rem; border-radius: 4px; }
+      .dom-node:hover, .dom-node.active { background: rgba(59, 130, 246, 0.2); }
+      
+      .puzzle-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+      .p-tag { background: #475569; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; user-select: none; }
+      .p-tag.active { background: #3b82f6; }
+      
+      .error-line { border-bottom: 2px wavy #ef4444; color: #f87171; cursor: pointer; padding-bottom: 2px; }
+    </style>
 
-        <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: flex-start;">
-          <div style="font-size: 2rem; color: #a3e635;"><i class="fa-solid fa-brain"></i></div>
-          <div>
-            <h4 style="margin: 0 0 5px 0; color: #a3e635; font-size: 1.3rem;">2. <code>&lt;head&gt;</code> (The Brain & Secret Recipe)</h4>
-            <p style="margin: 0; line-height: 1.6; color: #cbd5e1;">You don't "see" the Head inside the burger, but it contains all the vital instructions. The Head holds things that are completely <strong>Invisible</strong> to the user on the page—like the page <code>&lt;title&gt;</code> that shows up in the browser tab, secret SEO keywords for Google to read, and links to your CSS paint cans.</p>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 20px; align-items: flex-start;">
-          <div style="font-size: 2rem; color: #f87171;"><i class="fa-solid fa-drumstick-bite"></i></div>
-          <div>
-            <h4 style="margin: 0 0 5px 0; color: #f87171; font-size: 1.3rem;">3. <code>&lt;body&gt;</code> (The Meat & Fillings)</h4>
-            <p style="margin: 0; line-height: 1.6; color: #cbd5e1;">This is the part you actually see, bite into, and interact with! <strong>100% of the visible web page lives inside the Body.</strong> If you want a user to read a sentence, click a button, or look at a picture, it MUST go between the <code>&lt;body&gt;</code> and <code>&lt;/body&gt;</code> tags.</p>
-          </div>
-        </div>
-      </div>
+    <div class="theory-hero text-center mb-5">
+      <i class="fa-solid fa-code theory-hero-icon" style="color: #3b82f6;"></i>
+      <h2 style="font-size: 2.5rem; font-weight: 800;">HTML Document Structure</h2>
+      <p style="font-size: 1.2rem;">Learn the invisible blueprint of the web through hands-on interaction. <strong>Do not just read. Interact!</strong></p>
     </div>
 
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
+    <div class="html-interactive-lesson">
 
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">What on Earth is <code>&lt;!DOCTYPE html&gt;</code>?</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      You may have noticed that very weird line at the very top of our code example: <code>&lt;!DOCTYPE html&gt;</code>. 
-    </p>
+      <!-- BLOCK 1: Raw Canvas -->
+      <section class="ib-block" id="block-1">
+        <div class="ib-header"><h3 class="ib-title">The Raw Canvas</h3></div>
+        <p>What happens when you type text without HTML? Try typing <strong>"Hello Web!"</strong> below and hit Render.</p>
+        <div class="ib-workspace">
+          <div class="ib-panel">
+            <h3>Text Input</h3>
+            <div class="canvas-editor"><textarea id="b1-input" placeholder="Type text here..."></textarea></div>
+            <button class="ib-btn" id="b1-btn">Render</button>
+          </div>
+          <div class="ib-panel">
+            <h3>Browser View</h3>
+            <div class="canvas-render" id="b1-render">
+              <div class="brain-scanner" id="b1-scanner"></div>
+              <span id="b1-output" style="color:#aaa;">Nothing yet...</span>
+            </div>
+          </div>
+        </div>
+        <div class="ib-feedback" id="b1-feedback">
+          <strong>Explanation:</strong> The browser shows your text, but it's completely confused! Notice the scanning brain? Without HTML tags, it doesn't know if this is a title, a paragraph, or a button. It needs structure!
+        </div>
+      </section>
 
-    <div class="callout callout-info" style="margin: 25px 0;">
-      <i class="fa-solid fa-bullhorn"></i>
-      <div>
-        <strong>It is NOT a tag!</strong> It doesn't have a closing tag. It is practically screaming an announcement to the browser. It translates to: <em>"Hey Browser! I am not an ancient text file from 1999! I am a modern HTML5 document. Please prepare to render my awesome new code rules!"</em>
-      </div>
-    </div>
+      <!-- BLOCK 2: HTML Wrapper -->
+      <section class="ib-block" id="block-2">
+        <div class="ib-header"><h3 class="ib-title">The Universal Wrapper</h3></div>
+        <p>You must wrap everything inside an <code>&lt;html&gt;</code> container so the browser stops panicking. Click the 'Wrap Document' button.</p>
+        <div class="ib-workspace">
+          <div class="ib-panel" style="display:flex; align-items:center; justify-content:center;">
+             <button class="ib-btn" id="b2-btn"><i class="fa-solid fa-box"></i> Wrap Document</button>
+          </div>
+          <div class="ib-panel">
+            <h3>Structure</h3>
+            <div class="html-wrap-box" id="b2-box">
+              Hello Web!
+            </div>
+          </div>
+        </div>
+        <div class="ib-feedback" id="b2-feedback" style="border-left-color: #22c55e;">
+          <strong>Explanation:</strong> Boom! You just told the browser: <em>"Everything inside here is web code."</em> The <code>&lt;html&gt;</code> tag is the master container. Nothing is allowed to live outside of it!
+        </div>
+      </section>
 
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      Without this tiny, one-line declaration on line #1, some strict browsers might enter "Quirks Mode" and render your beautiful website like a broken geocities page from twenty years ago. Always include it!
-    </p>
+      <!-- BLOCK 3: Head vs Body -->
+      <section class="ib-block" id="block-3">
+        <div class="ib-header"><h3 class="ib-title">The Brain vs The Brawn</h3></div>
+        <p>Every HTML document must be split into two pieces: The <strong>Head</strong> (Invisible Brain) and the <strong>Body</strong> (Visible Canvas). Click a zone below to send a "Visible Image" into it.</p>
+        <div class="ib-workspace">
+          <div class="ib-panel split-zones">
+            <div class="zone head" id="b3-head-zone">&lt;head&gt; (Invisible Brain)</div>
+            <div class="zone body" id="b3-body-zone">&lt;body&gt; (Visible Canvas)</div>
+          </div>
+          <div class="ib-panel">
+            <h3>Result</h3>
+            <div class="mock-browser">
+              <div class="mock-tab-bar"><div class="mock-tab">Browser Tab</div></div>
+              <div class="mock-viewport" id="b3-viewport" style="display:flex; justify-content:center; align-items:center;">
+                <span style="color:#aaa;">Blank Page</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ib-feedback" id="b3-feedback">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
 
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
+      <!-- BLOCK 4: Title -->
+      <section class="ib-block" id="block-4">
+        <div class="ib-header"><h3 class="ib-title">Identity Crisis (The Title)</h3></div>
+        <p>If the Head is invisible, what goes inside it? Hidden data! Type a title into the <code>&lt;title&gt;</code> tag and watch where it appears.</p>
+        <div class="ib-workspace">
+          <div class="ib-panel">
+            <h3>Head Editor</h3>
+            <code>
+              &lt;head&gt;<br>
+              &nbsp;&nbsp;&lt;title&gt;<input type="text" id="b4-input" style="background:#0f172a; color:#f8fafc; border:1px solid #475569; padding:0.2rem; width:150px;">&lt;/title&gt;<br>
+              &lt;/head&gt;
+            </code>
+          </div>
+          <div class="ib-panel">
+            <h3>Browser</h3>
+            <div class="mock-browser">
+              <div class="mock-tab-bar"><div class="mock-tab" id="b4-tab" style="transition:0.3s;">Untilted</div></div>
+              <div class="mock-viewport"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ib-feedback" id="b4-feedback">
+          <strong>Explanation:</strong> See that? The title never appeared on the white page. It appeared in the Browser Tab! The <code>&lt;head&gt;</code> holds Meta-Data (data about data), like SEO keywords and tab titles.
+        </div>
+      </section>
 
-    <div class="callout callout-warning" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-left: 5px solid #ef4444; margin: 40px 0;">
-      <i class="fa-solid fa-skull-crossbones" style="color: #ef4444; font-size: 1.5rem;"></i>
-      <div>
-        <strong style="color: #fca5a5; font-size: 1.2rem; display: block; margin-bottom: 8px;">The Ultimate Rookie Mistake</strong>
-        <p style="margin: 0; line-height: 1.6; color: rgba(255,255,255,0.9);">Never, ever, EVER place visible tags like <code>&lt;h1&gt;</code> headings or <code>&lt;img&gt;</code> images inside the <code>&lt;head&gt;</code>. They explicitly belong inside the <code>&lt;body&gt;</code>! If you mix up the brain and the meat, your browser will try to forcefully fix it or your website layout will violently break.</p>
-      </div>
+      <!-- BLOCK 5: DOCTYPE -->
+      <section class="ib-block" id="block-5">
+        <div class="ib-header"><h3 class="ib-title">Speaking the Language</h3></div>
+        <p>Browsers are old. Unless you tell them you are using modern HTML, they will run in "Old Quirks Mode" and destroy your layout. Toggle the DOCTYPE pass!</p>
+        <div class="ib-workspace">
+          <div class="ib-panel">
+            <h3>Line 1: DOCTYPE Pass</h3>
+            <div class="doctype-switch">
+              <label class="switch"><input type="checkbox" id="b5-toggle"><span class="slider"></span></label>
+              <strong id="b5-status" style="color:#f87171;">MISSING</strong>
+            </div>
+            <code style="color:#aaa;">&lt;html&gt;...</code>
+          </div>
+          <div class="ib-panel">
+            <h3>Website Layout</h3>
+            <div class="mock-browser">
+              <div class="mock-viewport" id="b5-viewport" style="font-family:'Times New Roman'; background:#fef3c7; border: 5px outset #d97706; padding:0.5rem;">
+                <h1 style="text-align:right; font-size:1rem; margin:0;">Welcome</h1>
+                <p>To my completely broken 1999 layout.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ib-feedback" id="b5-feedback">
+          <strong>Explanation:</strong> <code>&lt;!DOCTYPE html&gt;</code> isn't an HTML tag, it's an announcement! Always place it at the absolute top of the file to force the browser into Modern HTML5 Standard Mode.
+        </div>
+      </section>
+
+      <!-- BLOCK 6: DOM Tree -->
+      <section class="ib-block" id="block-6">
+        <div class="ib-header"><h3 class="ib-title">The DOM Family Tree</h3></div></div>
+        <p>Because tags wrap inside each other, they create a Family Tree (Document Object Model). Hover over the tags in the code to see their structural relationship!</p>
+        <div class="ib-workspace">
+          <div class="ib-panel">
+            <h3>Code</h3>
+            <code style="font-size: 1.1rem; line-height:1.5;">
+              <span class="dom-code" data-target="html">&lt;html&gt;</span><br>
+              <span class="dom-code" data-target="head">&nbsp;&nbsp;&lt;head&gt;</span><br>
+              <span class="dom-code" data-target="title">&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Page&lt;/title&gt;</span><br>
+              <span class="dom-code" data-target="head">&nbsp;&nbsp;&lt;/head&gt;</span><br>
+              <span class="dom-code" data-target="body">&nbsp;&nbsp;&lt;body&gt;</span><br>
+              <span class="dom-code" data-target="h1">&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Hi&lt;/h1&gt;</span><br>
+              <span class="dom-code" data-target="body">&nbsp;&nbsp;&lt;/body&gt;</span><br>
+              <span class="dom-code" data-target="html">&lt;/html&gt;</span>
+            </code>
+          </div>
+          <div class="ib-panel">
+            <h3>DOM Tree</h3>
+             <div class="dom-tree">
+               <div class="dom-node" id="node-html">📁 html (Parent)
+                 <div class="dom-node" id="node-head">📁 head (Child)
+                   <div class="dom-node" id="node-title">📄 title (Grandchild)</div>
+                 </div>
+                 <div class="dom-node" id="node-body">📁 body (Child)
+                   <div class="dom-node" id="node-h1">📄 h1 (Grandchild)</div>
+                 </div>
+               </div>
+             </div>
+          </div>
+        </div>
+        <div class="ib-feedback" id="b6-feedback" style="display:block;">
+          <strong>Concept:</strong> <code>html</code> is the ultimate parent. <code>head</code> and <code>body</code> are siblings! CSS and Javascript use this tree to style and animate specific elements.
+        </div>
+      </section>
+
+      <!-- BLOCK 7: The Puzzle -->
+      <section class="ib-block" id="block-7">
+        <div class="ib-header"><h3 class="ib-title">The Interlocking Puzzle</h3></div>
+        <p>Because HTML is a tree, you must close tags in the reverse order you opened them. Build this exact sentence by clicking the blocks in order: <strong>"&lt;p&gt;&lt;strong&gt;Bold&lt;/strong&gt;&lt;/p&gt;"</strong></p>
+        <div class="ib-workspace">
+          <div class="ib-panel">
+            <h3>Tag Blocks</h3>
+            <div class="puzzle-tags">
+              <div class="p-tag" data-tag="&lt;p&gt;">&lt;p&gt;</div>
+              <div class="p-tag" data-tag="&lt;strong&gt;">&lt;strong&gt;</div>
+              <div class="p-tag" data-tag="Bold Text">Bold Text</div>
+              <div class="p-tag" data-tag="&lt;/p&gt;">&lt;/p&gt;</div>
+              <div class="p-tag" data-tag="&lt;/strong&gt;">&lt;/strong&gt;</div>
+            </div>
+            <button class="ib-btn btn-outline btn-sm mt-3" id="b7-reset">Reset</button>
+          </div>
+          <div class="ib-panel">
+             <h3>Your Assembly:</h3>
+             <div id="b7-assembly" style="background:#0f172a; padding:1rem; border-radius:8px; min-height:50px; font-family:monospace; font-size:1.2rem; color:#c3e88d;"></div>
+          </div>
+        </div>
+        <div class="ib-feedback" id="b7-feedback">
+          <!-- populated dynamically -->
+        </div>
+      </section>
+
+      </section>
+
     </div>
   `,
-  "codeExample": "<!-- Line 1: The Declaration! -->\n<!DOCTYPE html>\n\n<!-- The Top Bun! -->\n<html>\n\n  <!-- The Brain! -->\n  <head>\n    <!-- The title below shows up in the browser tab! -->\n    <title>My Cool Page Title</title>\n  </head>\n\n  <!-- The Meat! (Everything we actually see onscreen) -->\n  <body>\n    <h1>Welcome to the Body Zone!</h1>\n    <p>Everything in here is visible to the user.</p>\n  </body>\n\n<!-- The Bottom Bun! -->\n</html>",
+  "codeExample": "", // We don't need code example wrapper as we have a full builder challenge next
   "challenge": {
-    "instruction": "I have provided the DOCTYPE and the <html> buns. You need to structure the inside! Create the <head> tags and inside them put a <title> tag with the text 'My First Blueprint'. Below the head, create the <body> tags and inside them put an <h1> that says 'Structure Completed!'.",
-    "startCode": "<!DOCTYPE html>\n<html>\n  <!-- Build the Brain (head) here -->\n\n  \n  <!-- Build the Meat (body) here -->\n\n\n</html>",
-    "startCSS": "body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; background: #0f172a; color: white; font-family: system-ui; } h1 { font-size: 3rem; background: linear-gradient(90deg, #c084fc, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }",
-    "solution": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My First Blueprint</title>\n  </head>\n  <body>\n    <h1>Structure Completed!</h1>\n  </body>\n</html>",
-    "hint": "Check the theory example! <head> title goes inside </head>. Then <body> h1 goes inside </body>."
+    "instruction": "The Master Architect Challenge: Build the exact 4-part skeleton from scratch. 1. DOCTYPE, 2. html, 3. head, 4. body.",
+    "startCode": "<!-- Build your structural skeleton below -->\n\n",
+    "solution": "<!DOCTYPE html>\n<html>\n  <head>\n  </head>\n  <body>\n  </body>\n</html>",
+    "hint": "Remember the order: First the DOCTYPE declaration. Then the <html> buns. Inside the buns, put the <head> brain first, and the <body> meat below it."
   },
   "quiz": [
     {
-      "question": "Which tag acts like the 'Buns' of the burger, wrapping around every single piece of content on the page?",
-      "options": [
-        "<head>",
-        "<body>",
-        "<html>",
-        "<!DOCTYPE>"
-      ],
+      "question": "Which tag acts like the 'Buns' wrapping around every single piece of content on the page?",
+      "options": ["<head>", "<body>", "<html>", "<!DOCTYPE>"],
       "correct": 2
     },
     {
-      "question": "Where do you put information that is strictly invisible on the webpage itself (like the Document Title for the browser tab)?",
-      "options": [
-        "In the <body> tag",
-        "In the <head> tag",
-        "Inside a hidden <h1> tag",
-        "At the very bottom below </html>"
-      ],
+      "question": "Where does invisible meta-data (like the browser tab <title>) go?",
+      "options": ["In the <body> tag", "In the <head> tag", "Inside a hidden <h1> tag", "Below </html>"],
       "correct": 1
     },
     {
-      "question": "What is the primary purpose of the <!DOCTYPE html> declaration at the very top of line 1?",
-      "options": [
-        "It generates a document title automatically.",
-        "It acts as a secure password to edit the code.",
-        "It loudly tells the browser: 'Prepare yourself, this is a modern HTML5 document!'",
-        "It closes all open tags."
-      ],
+      "question": "What is the primary purpose of <!DOCTYPE html>?",
+      "options": ["It generates a website title.", "It acts as a secure password.", "It forces the browser to run in modern HTML5 standard mode.", "It closes open tags."],
       "correct": 2
     },
     {
-      "question": "According to the lesson, what happens if you place visible tags like <h1> inside the <head>?",
-      "options": [
-        "It acts as a secret title.",
-        "The browser ignores it completely.",
-        "The text becomes bold automatically.",
-        "The browser gets confused and the website layout may break."
-      ],
-      "correct": 3
-    },
-    {
-      "question": "What is the 'Root Element' that acts as the top and bottom buns wrapping the entire blueprint?",
-      "options": [
-        "<body>",
-        "<head>",
-        "<html>",
-        "<!DOCTYPE>"
-      ],
-      "correct": 2
+      "question": "True or False: The <body> tag is a child of the <html> tag.",
+      "options": ["True", "False"],
+      "correct": 0
     }
-  ]
+  ],
+  "onRender": function() {
+    // --- Block 1 ---
+    const btn1 = document.getElementById('b1-btn');
+    btn1.onclick = () => {
+      const val = document.getElementById('b1-input').value;
+      if (!val) return;
+      document.getElementById('b1-output').textContent = val;
+      document.getElementById('b1-scanner').style.display = 'block';
+      document.getElementById('b1-feedback').style.display = 'block';
+    };
+
+    // --- Block 2 ---
+    const btn2 = document.getElementById('b2-btn');
+    btn2.onclick = () => {
+      const box = document.getElementById('b2-box');
+      box.classList.add('active');
+      box.innerHTML = `<strong>&lt;html&gt;</strong><br><br>Hello Web!<br><br><strong>&lt;/html&gt;</strong>`;
+      document.getElementById('b2-feedback').style.display = 'block';
+      btn2.disabled = true;
+      btn2.innerHTML = '<i class="fa-solid fa-check"></i> Wrapped';
+    };
+
+    // --- Block 3 ---
+    document.getElementById('b3-head-zone').onclick = () => {
+      document.getElementById('b3-feedback').innerHTML = '<strong style="color:#ef4444;">Error:</strong> Visible elements DO NOT belong in the Brain! The layout breaks!';
+      document.getElementById('b3-feedback').style.display = 'block';
+      document.getElementById('b3-feedback').style.borderLeftColor = '#ef4444';
+      document.getElementById('b3-viewport').innerHTML = '<span style="color:red; font-size:2rem;">💥 GLITCH</span>';
+    };
+    document.getElementById('b3-body-zone').onclick = () => {
+      document.getElementById('b3-feedback').innerHTML = '<strong>Correct!</strong> The text goes in the body, and it appears safely on the screen.';
+      document.getElementById('b3-feedback').style.display = 'block';
+      document.getElementById('b3-feedback').style.borderLeftColor = '#22c55e';
+      document.getElementById('b3-viewport').innerHTML = '<h2>Visible Image!</h2>';
+    };
+
+    // --- Block 4 ---
+    const b4Input = document.getElementById('b4-input');
+    b4Input.oninput = (e) => {
+      document.getElementById('b4-tab').textContent = e.target.value || 'Untilted';
+      if (e.target.value.length > 3) {
+        document.getElementById('b4-feedback').style.display = 'block';
+        document.getElementById('b4-tab').style.background = '#3b82f6';
+      }
+    };
+
+    // --- Block 5 ---
+    document.getElementById('b5-toggle').onchange = (e) => {
+      const vp = document.getElementById('b5-viewport');
+      const st = document.getElementById('b5-status');
+      if (e.target.checked) {
+        vp.style.fontFamily = 'Inter, sans-serif';
+        vp.style.background = 'white';
+        vp.style.border = '1px solid #e2e8f0';
+        vp.innerHTML = '<h1 style="color:#333;">Welcome</h1><p style="color:#666;">To my perfectly clean modern layout.</p>';
+        st.textContent = 'PRESENT';
+        st.style.color = '#22c55e';
+        document.getElementById('b5-feedback').style.display = 'block';
+      } else {
+        vp.style.fontFamily = "'Times New Roman'";
+        vp.style.background = '#fef3c7';
+        vp.style.border = '5px outset #d97706';
+        vp.innerHTML = '<h1 style="text-align:right; font-size:1rem; margin:0;">Welcome</h1><p>To my completely broken 1999 layout.</p>';
+        st.textContent = 'MISSING';
+        st.style.color = '#f87171';
+      }
+    };
+
+    // --- Block 6 ---
+    document.querySelectorAll('.dom-code').forEach(el => {
+      el.onmouseenter = () => {
+        document.querySelectorAll('.dom-node').forEach(n => n.classList.remove('active'));
+        const target = document.getElementById('node-' + el.dataset.target);
+        if (target) {
+          target.classList.add('active');
+          if (el.dataset.target === 'html') {
+             document.getElementById('node-head').classList.add('active');
+             document.getElementById('node-body').classList.add('active');
+          }
+        }
+      };
+      el.onmouseleave = () => {
+        document.querySelectorAll('.dom-node').forEach(n => n.classList.remove('active'));
+      };
+    });
+
+    // --- Block 7 ---
+    let b7Str = [];
+    const b7Tgt = "<code>&lt;p&gt;</code><code>&lt;strong&gt;</code><code>Bold Text</code><code>&lt;/strong&gt;</code><code>&lt;/p&gt;</code>";
+    const updateB7 = () => {
+      const out = b7Str.map(s => `<code>${s.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`).join('');
+      document.getElementById('b7-assembly').innerHTML = out;
+      if (out === b7Tgt) {
+        document.getElementById('b7-feedback').innerHTML = '<strong>Perfect Nesting!</strong> You closed the innermost tag before closing the parent tag.';
+        document.getElementById('b7-feedback').style.display = 'block';
+        document.getElementById('b7-feedback').style.borderLeftColor = '#22c55e';
+      } else if (b7Str.length === 5) {
+        document.getElementById('b7-feedback').innerHTML = '<strong style="color:#ef4444;">Invalid Nesting!</strong> Tags crossed over each other. Reset and try again! (Rule: First in, Last out)';
+        document.getElementById('b7-feedback').style.display = 'block';
+        document.getElementById('b7-feedback').style.borderLeftColor = '#ef4444';
+      }
+    };
+    document.querySelectorAll('.p-tag').forEach(tag => {
+      tag.onclick = (e) => {
+        if (e.target.classList.contains('active')) return;
+        b7Str.push(e.target.dataset.tag);
+        e.target.classList.add('active');
+        updateB7();
+      }
+    });
+    document.getElementById('b7-reset').onclick = () => {
+      b7Str = [];
+      document.querySelectorAll('.p-tag').forEach(t => t.classList.remove('active'));
+      document.getElementById('b7-feedback').style.display = 'none';
+      updateB7();
+    };
+  }
 };

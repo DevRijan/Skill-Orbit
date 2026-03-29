@@ -116,8 +116,12 @@ const SkillOrbitAPI = (() => {
 
   // ── Leaderboard API ─────────────────────────
 
-  async function getLeaderboard(limit = 50) {
-    return apiFetch('GET', `/leaderboard?limit=${limit}`);
+  async function getLeaderboard(options = {}) {
+    const { limit = 50, league, period = 'alltime' } = options;
+    const params = new URLSearchParams({ limit });
+    if (league) params.set('league', league);
+    if (period) params.set('period', period);
+    return apiFetch('GET', `/leaderboard?${params.toString()}`);
   }
 
   async function getMyRank() {

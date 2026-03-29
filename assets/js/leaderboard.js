@@ -6,13 +6,35 @@
 
 const LEADERBOARD_KEY = 'skill-orbit-leaderboard';
 
+const LEAGUE_THRESHOLDS = [
+  { league: 'Bronze',   minXP: 0    },
+  { league: 'Silver',   minXP: 100  },
+  { league: 'Gold',     minXP: 250  },
+  { league: 'Platinum', minXP: 500  },
+  { league: 'Diamond',  minXP: 1000 },
+];
+
+function getLeague(xp) {
+  for (let i = LEAGUE_THRESHOLDS.length - 1; i >= 0; i--) {
+    if (xp >= LEAGUE_THRESHOLDS[i].minXP) {
+      return LEAGUE_THRESHOLDS[i].league;
+    }
+  }
+  return 'Bronze';
+}
+
+let currentLeague = '';
+let currentPeriod = 'alltime';
+
 // ── Get Leaderboard ───────────────────────────────────────────────────────────
 // Returns sorted leaderboard: online = real API, offline = localStorage fallback.
 
-async function getLeaderboard() {
+async function getLeaderboard(options = {}) {
+  const opts = { limit: 50, ...options };
+
   if (window.SkillOrbitAPI && window.SkillOrbitAPI.isOnline()) {
     try {
-      const res = await window.SkillOrbitAPI.leaderboard.getAll(50);
+      const res = await window.SkillOrbitAPI.leaderboard.getAll(opts);
       return res.leaderboard || [];
     } catch (err) {
       console.warn('[leaderboard] API fetch failed, using cache:', err.message);
@@ -24,7 +46,14 @@ async function getLeaderboard() {
   if (!raw) return [];
   try {
     const entries = JSON.parse(raw);
-    return entries.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+    // Filter by league if provided
+    let filtered = entries;
+    if (opts.league) {
+      filtered = entries.filter(e => e.league === opts.league);
+    }
+    // Sort by XP (offline doesn't have weekly)
+    filtered.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+    return filtered.slice(0, opts.limit);
   } catch {
     return [];
   }
@@ -97,6 +126,7 @@ function syncLeaderboard() {
     badgesCount:  earnedBadges,
     level:        typeof getLevelInfo === 'function' ? getLevelInfo(progress.xp || 0).current.level : 1,
     levelTitle:   typeof getLevelInfo === 'function' ? getLevelInfo(progress.xp || 0).current.title : 'Beginner',
+    league:       getLeague(progress.xp || 0),
     joinedAt:     profile.joinedAt || new Date().toISOString(),
     lastSeen:     new Date().toISOString(),
   };

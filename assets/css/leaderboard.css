@@ -103,6 +103,54 @@
   padding: 40px 64px;
 }
 
+/* ── Filters ──────────────────────────────────── */
+.lb-filters {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.lb-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lb-filter-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.lb-filter-group select {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: var(--text);
+  font-size: 0.85rem;
+  min-width: 120px;
+}
+.period-toggle {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.period-toggle button {
+  background: rgba(255,255,255,0.05);
+  border: none;
+  padding: 6px 16px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.period-toggle button.active {
+  background: rgba(124,58,237,0.2);
+  color: #a78bfa;
+}
+
 /* ── Top Podium ───────────────────────────────── */
 .lb-podium {
   display: flex;
@@ -154,6 +202,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.podium-league {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
 }
 .podium-xp { font-size: 1.3rem; font-weight: 900; color: #fbbf24; letter-spacing: -0.02em; }
 .podium-level { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }

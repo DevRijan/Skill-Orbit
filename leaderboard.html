@@ -56,6 +56,7 @@
           <div class="lb-my-rank-num" id="myRankNum">—</div>
           <div class="lb-my-rank-label">Your Rank</div>
           <div style="margin-top:10px;font-size:0.82rem;font-weight:700;color:#fbbf24;" id="myXPDisplay">0 XP</div>
+          <div style="margin-top:5px;font-size:0.75rem;font-weight:600;color:#10b981;" id="myLeagueDisplay">Bronze</div>
         </div>
       </div>
     </section>
@@ -84,6 +85,28 @@
           <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">🏆 Max Per Lesson</div>
           <div style="font-size:1.3rem;font-weight:900;color:#f97316;">30 XP</div>
           <div style="font-size:0.75rem;color:var(--text-muted);">10 lesson + 10 quiz + 10 challenge</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="lb-filters">
+        <div class="lb-filter-group">
+          <label for="leagueSelect">League:</label>
+          <select id="leagueSelect">
+            <option value="">All Leagues</option>
+            <option value="Bronze">Bronze</option>
+            <option value="Silver">Silver</option>
+            <option value="Gold">Gold</option>
+            <option value="Platinum">Platinum</option>
+            <option value="Diamond">Diamond</option>
+          </select>
+        </div>
+        <div class="lb-filter-group">
+          <label>Period:</label>
+          <div class="period-toggle">
+            <button id="alltimeBtn" class="active">All Time</button>
+            <button id="weeklyBtn">This Week</button>
+          </div>
         </div>
       </div>
 
@@ -147,18 +170,24 @@
     return p.id || (p.name + '_' + (p.joinedAt || '').slice(0, 10));
   }
 
+  let currentLeague = '';
+  let currentPeriod = 'alltime';
+
   async function renderLeaderboardPage() {
-    const board  = typeof getLeaderboard === 'function' ? await getLeaderboard() : [];
+    const board  = typeof getLeaderboard === 'function' ? await getLeaderboard({ league: currentLeague, period: currentPeriod }) : [];
     const myProfile = typeof getProfile === 'function' ? getProfile() : null;
     const myId   = myProfile ? (myProfile.id || (myProfile.name + '_' + (myProfile.joinedAt || '').slice(0, 10))) : null;
+    const myRank = typeof getMyRank === 'function' ? await getMyRank() : null;
 
     // Hero rank chip
     const myEntry = board.find(e => e.id === myId);
     const rankChip = document.getElementById('myRankChip');
     if (myEntry && rankChip) {
       rankChip.style.display = 'block';
-      document.getElementById('myRankNum').textContent  = '#' + myRank;
-      document.getElementById('myXPDisplay').textContent = myEntry.xp + ' XP';
+      document.getElementById('myRankNum').textContent  = '#' + (myRank || '?');
+      const myXP = currentPeriod === 'weekly' ? (myEntry.weeklyXP || 0) : myEntry.xp;
+      document.getElementById('myXPDisplay').textContent = myXP + (currentPeriod === 'weekly' ? ' Weekly XP' : ' XP');
+      document.getElementById('myLeagueDisplay').textContent = myEntry.league;
     }
 
     // Label
@@ -197,7 +226,8 @@
         <div class="podium-medal">${MEDAL[i] || rankNum}</div>
         <div class="podium-avatar">${user.avatar}</div>
         <div class="podium-name" title="${user.name}">${user.name}</div>
-        <div class="podium-xp">${user.xp.toLocaleString()} XP</div>
+        <div class="podium-league">${user.league}</div>
+        <div class="podium-xp">${(currentPeriod === 'weekly' ? (user.weeklyXP || 0) : user.xp).toLocaleString()} ${currentPeriod === 'weekly' ? 'Weekly XP' : 'XP'}</div>
         <div class="podium-level">Lv.${user.level} ${user.levelTitle}</div>
         ${isYou ? '<div class="you-tag">You</div>' : ''}
       `;
@@ -229,7 +259,8 @@
           <th class="hide-mobile">Streak</th>
           <th class="hide-mobile">Lessons</th>
           <th class="hide-mobile">Badges</th>
-          <th>XP</th>
+          <th>League</th>
+          <th>${currentPeriod === 'weekly' ? 'Weekly XP' : 'XP'}</th>
         </tr>
       </thead>
       <tbody id="lbTbody"></tbody>`;
@@ -269,13 +300,32 @@
         <td class="lb-stat-cell hide-mobile">🔥 ${user.streak}</td>
         <td class="lb-stat-cell hide-mobile">📚 ${user.lessonsCount}</td>
         <td class="lb-stat-cell hide-mobile">🏅 ${user.badgesCount}</td>
-        <td><span class="lb-xp-val">${user.xp.toLocaleString()}</span></td>
+        <td class="lb-stat-cell">${user.league}</td>
+        <td><span class="lb-xp-val">${(currentPeriod === 'weekly' ? (user.weeklyXP || 0) : user.xp).toLocaleString()}</span></td>
       `;
 
       tbody.appendChild(tr);
     });
   }
-  </script>
 
-</body>
+  // Event listeners for filters
+  document.getElementById('leagueSelect').addEventListener('change', async () => {
+    currentLeague = document.getElementById('leagueSelect').value;
+    await renderLeaderboardPage();
+  });
+
+  document.getElementById('alltimeBtn').addEventListener('click', async () => {
+    currentPeriod = 'alltime';
+    document.getElementById('alltimeBtn').classList.add('active');
+    document.getElementById('weeklyBtn').classList.remove('active');
+    await renderLeaderboardPage();
+  });
+
+  document.getElementById('weeklyBtn').addEventListener('click', async () => {
+    currentPeriod = 'weekly';
+    document.getElementById('weeklyBtn').classList.add('active');
+    document.getElementById('alltimeBtn').classList.remove('active');
+    await renderLeaderboardPage();
+  });
+
 </html>

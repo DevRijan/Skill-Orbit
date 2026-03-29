@@ -495,6 +495,11 @@ function renderLesson(lesson) {
   if (hintText && lesson.challenge) {
     hintText.textContent = lesson.challenge.hint || 'No hint available.';
   }
+
+  // Hook for custom interactive lesson logic
+  if (typeof lesson.onRender === 'function') {
+    setTimeout(() => lesson.onRender(), 50);
+  }
 }
 
 function renderLessonNav(currentId) {
