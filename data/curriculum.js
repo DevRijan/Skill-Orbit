@@ -5,100 +5,35 @@ window.SKILL_ORBIT_CURRICULUM = [
     "module": "html",
     "section": "HTML Basic",
     "title": "What is HTML?",
-    "xp": 20,
-    "theory": `
-<h1>Lesson 1: Introduction to HTML</h1>
-<p>
-Welcome to your first step into the world of web development.
-In this lesson, you will learn what <span class="term h-tag">HTML</span> is, why it exists,
-and how websites are built using it.
-</p>
-<div class="callout callout-info">
-  <i class="fa-solid fa-circle-info"></i>
-  <div>
-    <strong>Did you know?</strong> HTML is the standard markup language for documents designed to be displayed in a web browser. It was first created by Tim Berners-Lee in 1991.
-  </div>
-</div>
-<hr>
-<h2>What is HTML?</h2>
-<p>
-HTML stands for <b>HyperText Markup Language</b>. It is the language used to structure content on a webpage.
-It tells the browser what is a heading, what is a paragraph, where images go, and more.
-</p>
-<hr>
-<h2>Real World Example: HTML is Like a House Structure</h2>
-<p>
-Imagine building a house. Before decorating, you need structure (walls, rooms, roof). 
-In web development, HTML is that structure. CSS is the paint and decoration, and JavaScript is the electricity and plumbing that makes things work.
-</p>
-<img src="assets/images/content_image/HTML/HouseAnalogy.webp" alt="House and HTML analogy" width="500">
-<hr>
-<h2>How HTML Works</h2>
-<p>
-HTML uses special words called <b>tags</b>. Tags tell the browser how to display content.
-Example: <code>&lt;p&gt;This is a paragraph&lt;/p&gt;</code>.
-</p>
-`,
-    "codeExample": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My First Page</title>\n  </head>\n  <body>\n    <h1>Hello, World!</h1>\n    <p>This is my first HTML page.</p>\n  </body>\n</html>",
-    "challenge": {
-      "instruction": "Create a paragraph that says 'I am learning HTML!' inside the body tag.",
-      "startCode": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Challenge</title>\n  </head>\n  <body>\n    <!-- Write your paragraph here -->\n  </body>\n</html>",
-      "solution": "<p>I am learning HTML!</p>",
-      "hint": "Use the <p> tag: <p>Your text here</p>"
-    },
-    "quiz": [
-      {
-        "question": "What does HTML stand for?",
-        "options": ["HyperText Markup Language", "HyperText Making Language", "High Tech Markup Language", "HyperText Modeling Language"],
-        "correct": 0
-      }
-    ]
+    "xp": 20
   },
   {
     "id": "html-02",
     "module": "html",
     "section": "HTML Basic",
     "title": "HTML Editors",
-    "xp": 15,
-    "theory": `<h1>HTML Editors</h1><p>A simple text editor is all you need to learn HTML. However, professional developers use specialized <b>Code Editors</b> like VS Code, Sublime Text, or Atom.</p><p>For this course, you can use our built-in <b>Skill-Orbit Editor</b> to write and run your code instantly!</p>`
+    "xp": 15
   },
   {
     "id": "html-03",
     "module": "html",
     "section": "HTML Basic",
     "title": "HTML Document Structure",
-    "xp": 30,
-    "theory": `
-<h1>HTML Document Structure</h1>
-<p>Every HTML page follows a strict, standard structure. Think of it as the <b>skeleton</b> of your website.</p>
-<hr>
-<h2>The Burger Analogy</h2>
-<p>Just like a burger has layers, an HTML document has sections: <code>&lt;html&gt;</code> is the box, <code>&lt;head&gt;</code> is the label, and <code>&lt;body&gt;</code> is the meat!</p>
-<img src="assets/images/content_image/HTML/BurgerAnalogy.png" alt="Burger Analogy - HTML Structure" width="600">
-`,
-    "codeExample": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>My Awesome Website</title>\n  </head>\n  <body>\n    <h1>Welcome to Skill-Orbit!</h1>\n    <p>This is the visible part of the page.</p>\n  </body>\n</html>",
-    "challenge": {
-      "instruction": "Set the document title to 'My First Page' inside the head, and add an <h1> heading with 'Hello World' inside the body.",
-      "startCode": "<!DOCTYPE html>\n<html>\n  <head>\n  </head>\n  <body>\n  </body>\n</html>",
-      "solution": "<title>My First Page</title>",
-      "hint": "Use <title>My First Page</title> and <h1>Hello World</h1>."
-    }
+    "xp": 30
   },
   {
     "id": "html-04",
     "module": "html",
     "section": "HTML Basic",
     "title": "HTML Elements",
-    "xp": 25,
-    "theory": `<h1>HTML Elements</h1><p>An HTML element is defined by a start tag, some content, and an end tag: <code>&lt;tagname&gt; Content goes here... &lt;/tagname&gt;</code></p><p>Some elements have no content (like the <code>&lt;br&gt;</code> element). These are called empty elements.</p>`
+    "xp": 25
   },
   {
     "id": "html-05",
     "module": "html",
     "section": "HTML Basic",
     "title": "HTML Attributes",
-    "xp": 25,
-    "theory": `<h1>HTML Attributes</h1><p>Attributes provide additional information about elements. They are always specified in the start tag and usually come in name/value pairs like: <code>name="value"</code>.</p><ul><li>The <code>href</code> attribute of <code>&lt;a&gt;</code> specifies the URL of the page the link goes to.</li><li>The <code>src</code> attribute of <code>&lt;img&gt;</code> specifies the path to the image.</li></ul>`
+    "xp": 25
   },
   {
     "id": "html-06",

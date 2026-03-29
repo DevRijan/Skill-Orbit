@@ -3,74 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skill-Orbit Account Management - Manage your profile." />
-  <title>Account | Skill-Orbit</title>
+  <meta name="description" content="Skill-Orbit Account — XP, streak, badges and profile management." />
+  <title>My Account | Skill-Orbit</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/animations.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/auth.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    .account-section {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius-lg);
-      padding: var(--spacing-2xl);
-      max-width: 600px;
-      margin: 0 auto var(--spacing-2xl);
-    }
-    .form-group {
-      margin-bottom: var(--spacing-lg);
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: var(--spacing-xs);
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .form-control {
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--bg-surface-2);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius-sm);
-      color: var(--text-primary);
-      font-family: var(--font-body);
-      font-size: 1rem;
-      transition: var(--transition);
-      outline: none;
-    }
-    .form-control:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-    }
-    .stats-card-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-xl);
-    }
-    .stat-card-box {
-      background: rgba(124, 58, 237, 0.05);
-      border: 1px solid rgba(124, 58, 237, 0.2);
-      padding: var(--spacing-lg);
-      border-radius: var(--border-radius);
-      text-align: center;
-    }
-    .stat-card-box i {
-      font-size: 1.8rem;
-      color: var(--color-primary-light);
-      margin-bottom: var(--spacing-sm);
-    }
-    .stat-card-box .stat-val {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text-primary);
-    }
-    .stat-card-box .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    /* Page-level tweaks */
+    body { overflow-x: hidden; }
+    /* Make bg-canvas cover account page too */
+    #bg-canvas { opacity: 0.7; }
+    /* XP toast overlay for account page */
+    #xpToast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: linear-gradient(135deg,#7c3aed,#0ea5e9);
+      color:#fff; padding:14px 24px; border-radius:50px;
+      font-weight:700; font-size:0.9rem;
+      box-shadow:0 8px 32px rgba(124,58,237,0.5);
+      display:none; align-items:center; gap:8px; z-index:9999;
     }
   </style>
 </head>
@@ -95,133 +48,609 @@
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
           <i class="fa-solid fa-moon"></i>
         </button>
-        <button class="menu-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
-          <i class="fa-solid fa-bars"></i>
-        </button>
       </div>
     </div>
   </nav>
 
-  <div class="dashboard-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-user">
-        <div class="user-avatar">
-          <i class="fa-solid fa-user"></i>
+  <!-- ═══ FULL-WIDTH ACCOUNT LAYOUT ═══ -->
+  <div class="account-page-root">
+
+    <!-- ── LEFT PROFILE SIDEBAR ── -->
+    <aside class="acc-profile-sidebar" id="accSidebar">
+
+      <!-- Avatar + Identity -->
+      <div class="acc-sidebar-avatar-wrap">
+        <div class="acc-sidebar-avatar" id="sidebarAvatar">🚀</div>
+        <div class="acc-sidebar-name" id="sidebarName">Learner</div>
+        <div class="acc-sidebar-email" id="sidebarEmail" style="display:none;"></div>
+        <div class="acc-sidebar-joined" id="sidebarJoined">
+          <i class="fa-solid fa-calendar-days"></i> <span id="joinedText">Joined today</span>
         </div>
-        <div class="user-info">
-          <span class="user-name" id="sidebarUserName">Learner</span>
-          <span class="user-xp"><i class="fa-solid fa-bolt"></i> <span id="totalXP">0</span> XP</span>
+        <!-- Level pill -->
+        <div class="acc-level-pill" id="sidebarLevelPill">
+          <i class="fa-solid fa-star"></i> Level 1 — Beginner
+        </div>
+        <!-- XP bar -->
+        <div class="acc-xp-bar-wrap">
+          <div class="acc-xp-bar-labels">
+            <span id="xpBarLeft">0 XP</span>
+            <span id="xpBarRight">→ 100 XP</span>
+          </div>
+          <div class="acc-xp-bar-track">
+            <div class="acc-xp-bar-fill" id="xpBarFill" style="width:0%;"></div>
+          </div>
         </div>
       </div>
-      <div class="sidebar-streak">
-        <i class="fa-solid fa-fire"></i>
-        <span><strong id="streakCount">0</strong> day streak</span>
+
+      <div class="acc-sidebar-divider"></div>
+
+      <!-- Quick Stats -->
+      <div class="acc-sidebar-stats">
+        <div class="acc-stat-row">
+          <div class="acc-stat-row-left">
+            <div class="acc-stat-row-icon xp"><i class="fa-solid fa-bolt"></i></div>
+            Total XP
+          </div>
+          <div class="acc-stat-row-val" id="sbXP">0</div>
+        </div>
+        <div class="acc-stat-row">
+          <div class="acc-stat-row-left">
+            <div class="acc-stat-row-icon fire"><i class="fa-solid fa-fire"></i></div>
+            Day Streak
+          </div>
+          <div class="acc-stat-row-val" id="sbStreak">0</div>
+        </div>
+        <div class="acc-stat-row">
+          <div class="acc-stat-row-left">
+            <div class="acc-stat-row-icon done"><i class="fa-solid fa-graduation-cap"></i></div>
+            Lessons Done
+          </div>
+          <div class="acc-stat-row-val" id="sbDone">0</div>
+        </div>
+        <div class="acc-stat-row">
+          <div class="acc-stat-row-left">
+            <div class="acc-stat-row-icon bdg"><i class="fa-solid fa-medal"></i></div>
+            Badges
+          </div>
+          <div class="acc-stat-row-val" id="sbBadges">0</div>
+        </div>
       </div>
-      <nav class="sidebar-nav">
-        <!-- Rendered modules usually go here, but omitted for account focus, or you can invoke renderSidebar() -->
-        <div class="sidebar-section">HTML</div>
-        <div id="html-sidebar-lessons" class="sidebar-lessons"></div>
-        <div class="sidebar-section">CSS</div>
-        <div id="css-sidebar-lessons" class="sidebar-lessons"></div>
+
+      <div class="acc-sidebar-divider"></div>
+
+      <!-- Nav -->
+      <nav class="acc-sidebar-nav" aria-label="Account navigation">
+        <button class="acc-sidebar-nav-btn active" data-panel="overview" id="navOverview">
+          <i class="fa-solid fa-house-chimney"></i> Overview
+        </button>
+        <button class="acc-sidebar-nav-btn" data-panel="stats" id="navStats">
+          <i class="fa-solid fa-chart-bar"></i> Statistics
+        </button>
+        <button class="acc-sidebar-nav-btn" data-panel="badges" id="navBadges">
+          <i class="fa-solid fa-trophy"></i> Badges
+          <span class="nav-badge" id="navBadgeCount">0</span>
+        </button>
+        <button class="acc-sidebar-nav-btn" data-panel="settings" id="navSettings">
+          <i class="fa-solid fa-gear"></i> Settings
+        </button>
       </nav>
+
+      <!-- Logout at bottom -->
+      <div style="margin-top:auto; padding-top:16px;">
+        <button class="btn-ghost-logout" id="sidebarLogoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+
     </aside>
 
-    <!-- Overlay Backdrop -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- ── MAIN CONTENT ── -->
+    <main class="acc-main-content">
 
-    <!-- Main Content -->
-    <main class="dashboard-main">
-      <div class="dashboard-header" style="text-align: center;">
-        <h1>Your Account</h1>
-        <p>Manage your profile and track your ultimate learning progress.</p>
-      </div>
+      <!-- ════ OVERVIEW PANEL ════ -->
+      <div class="acc-panel active" id="panel-overview">
+        <h1 class="acc-panel-title">Overview</h1>
+        <p class="acc-panel-subtitle">Your learning snapshot at a glance.</p>
 
-      <section class="account-section animate-fadeInUp">
-        <h3 style="margin-bottom: var(--spacing-lg); text-align: center;"><i class="fa-solid fa-chart-line" style="color:var(--color-primary-light);"></i> Overall Progress</h3>
-        <div class="stats-card-group">
-          <div class="stat-card-box">
-            <i class="fa-solid fa-bolt"></i>
-            <div class="stat-val" id="accTotalXp">0</div>
-            <div class="stat-label">Total XP</div>
+        <!-- Stats tiles row -->
+        <div class="acc-stats-grid" style="margin-bottom:24px;">
+          <div class="acc-stats-tile">
+            <div class="acc-stats-tile-shine" style="background:radial-gradient(#fbbf24,transparent);top:-20px;right:-20px;"></div>
+            <div class="tile-icon" style="color:#fbbf24;">⚡</div>
+            <div class="tile-val" id="ovXP">0</div>
+            <div class="tile-label">Total XP</div>
           </div>
-          <div class="stat-card-box">
-            <i class="fa-solid fa-fire"></i>
-            <div class="stat-val" id="accStreak">0</div>
-            <div class="stat-label">Day Streak</div>
+          <div class="acc-stats-tile">
+            <div class="acc-stats-tile-shine" style="background:radial-gradient(#f97316,transparent);"></div>
+            <div class="tile-icon">🔥</div>
+            <div class="tile-val" id="ovStreak">0</div>
+            <div class="tile-label">Day Streak</div>
           </div>
-          <div class="stat-card-box">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <div class="stat-val" id="accCompleted">0</div>
-            <div class="stat-label">Lessons Done</div>
+          <div class="acc-stats-tile">
+            <div class="acc-stats-tile-shine" style="background:radial-gradient(#10b981,transparent);"></div>
+            <div class="tile-icon">🎓</div>
+            <div class="tile-val" id="ovDone">0</div>
+            <div class="tile-label">Lessons Done</div>
           </div>
         </div>
 
-        <h3 style="margin-bottom: var(--spacing-md); text-align: center; margin-top: var(--spacing-2xl);"><i class="fa-solid fa-user-pen" style="color:var(--color-secondary);"></i> Edit Profile</h3>
-        <form id="profileForm">
-          <div class="form-group">
-            <label for="displayName">Display Name</label>
-            <input type="text" id="displayName" class="form-control" placeholder="E.g. Web Ninja" required />
+        <!-- Module Progress Card -->
+        <div class="acc-card">
+          <div class="acc-card-title">
+            <i class="fa-solid fa-layer-group"></i> Module Progress
+            <span class="card-title-badge" id="overallPctBadge">0% overall</span>
           </div>
-          <div class="form-group">
-            <label for="emailAddress">Email Address (Optional)</label>
-            <input type="email" id="emailAddress" class="form-control" placeholder="your@email.com" />
+          <div class="mp-row">
+            <div class="mp-icon-box html"><i class="fa-brands fa-html5"></i></div>
+            <div class="mp-details">
+              <div class="mp-label-row">
+                <span>HTML Module</span>
+                <span id="htmlCountOv">0 / 10 lessons</span>
+              </div>
+              <div class="mp-track"><div class="mp-fill html" id="htmlBarOv" style="width:0%;"></div></div>
+            </div>
+            <div class="mp-pct" id="htmlPctOv">0%</div>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: var(--spacing-md);">
-            Save Changes
-          </button>
-          <div id="saveMsg" style="text-align:center; margin-top:var(--spacing-sm); color:var(--color-success); font-weight:600; opacity:0; transition:0.3s;">Profile Saved Successfully!</div>
-        </form>
-      </section>
+          <div class="mp-row">
+            <div class="mp-icon-box css"><i class="fa-brands fa-css3-alt"></i></div>
+            <div class="mp-details">
+              <div class="mp-label-row">
+                <span>CSS Module</span>
+                <span id="cssCountOv">0 / 12 lessons</span>
+              </div>
+              <div class="mp-track"><div class="mp-fill css" id="cssBarOv" style="width:0%;"></div></div>
+            </div>
+            <div class="mp-pct" id="cssPctOv">0%</div>
+          </div>
+        </div>
+
+        <!-- Recent Badges Preview -->
+        <div class="acc-card">
+          <div class="acc-card-title">
+            <i class="fa-solid fa-award"></i> Earned Badges
+            <button class="card-title-badge" id="viewAllBadgesBtn"
+              style="cursor:pointer;background:rgba(124,58,237,0.15);border:none;color:#a78bfa;font-family:var(--font-body);font-weight:700;font-size:0.75rem;padding:3px 10px;border-radius:20px;">
+              View All →
+            </button>
+          </div>
+          <div class="badges-masonry" id="recentBadgesGrid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));"></div>
+        </div>
+      </div>
+
+      <!-- ════ STATISTICS PANEL ════ -->
+      <div class="acc-panel" id="panel-stats">
+        <h1 class="acc-panel-title">Statistics</h1>
+        <p class="acc-panel-subtitle">Deep dive into your learning data.</p>
+
+        <!-- XP Breakdown -->
+        <div class="acc-card">
+          <div class="acc-card-title"><i class="fa-solid fa-bolt"></i> XP Breakdown</div>
+          <table class="xp-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Module</th>
+                <th class="td-right">Completed</th>
+                <th class="td-right">XP Earned</th>
+              </tr>
+            </thead>
+            <tbody id="xpTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Completion Detail -->
+        <div class="acc-card">
+          <div class="acc-card-title"><i class="fa-solid fa-chart-simple"></i> Completion Rate</div>
+          <div class="mp-row">
+            <div class="mp-icon-box html"><i class="fa-brands fa-html5"></i></div>
+            <div class="mp-details">
+              <div class="mp-label-row"><span>HTML</span><span id="htmlCountSt">0 / 10</span></div>
+              <div class="mp-track"><div class="mp-fill html" id="htmlBarSt" style="width:0%;"></div></div>
+            </div>
+            <div class="mp-pct" id="htmlPctSt">0%</div>
+          </div>
+          <div class="mp-row">
+            <div class="mp-icon-box css"><i class="fa-brands fa-css3-alt"></i></div>
+            <div class="mp-details">
+              <div class="mp-label-row"><span>CSS</span><span id="cssCountSt">0 / 12</span></div>
+              <div class="mp-track"><div class="mp-fill css" id="cssBarSt" style="width:0%;"></div></div>
+            </div>
+            <div class="mp-pct" id="cssPctSt">0%</div>
+          </div>
+        </div>
+
+        <!-- Activity Heatmap -->
+        <div class="acc-card">
+          <div class="acc-card-title"><i class="fa-solid fa-calendar-days"></i> Activity — Last 63 Days</div>
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+          <div class="hm-legend">
+            Less
+            <div class="hm-leg-cell"></div>
+            <div class="hm-leg-cell l1"></div>
+            <div class="hm-leg-cell l2"></div>
+            <div class="hm-leg-cell l3"></div>
+            <div class="hm-leg-cell l4"></div>
+            More
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ BADGES PANEL ════ -->
+      <div class="acc-panel" id="panel-badges">
+        <h1 class="acc-panel-title">Badges</h1>
+        <p class="acc-panel-subtitle" id="badgeSubtitle">Unlock achievements as you learn.</p>
+
+        <div class="acc-card" style="padding-bottom:8px;">
+          <div class="acc-card-title">
+            <i class="fa-solid fa-trophy"></i> All Badges
+            <span class="card-title-badge" id="allBadgeSummary">0 / 6 earned</span>
+          </div>
+          <div class="badges-masonry" id="allBadgesGrid"></div>
+        </div>
+      </div>
+
+      <!-- ════ SETTINGS PANEL ════ -->
+      <div class="acc-panel" id="panel-settings">
+        <h1 class="acc-panel-title">Settings</h1>
+        <p class="acc-panel-subtitle">Customize your profile and manage your account.</p>
+
+        <!-- Edit Profile -->
+        <div class="acc-card">
+          <div class="acc-card-title"><i class="fa-solid fa-user-pen"></i> Edit Profile</div>
+          <form id="settingsForm" autocomplete="off">
+            <div class="settings-grid">
+              <div class="settings-field">
+                <label class="settings-label">Display Name</label>
+                <div class="settings-input-wrap">
+                  <i class="fa-solid fa-user"></i>
+                  <input type="text" id="stName" class="settings-inp" placeholder="Your name" required />
+                </div>
+              </div>
+              <div class="settings-field">
+                <label class="settings-label">Email <span style="text-transform:none;font-weight:400;color:var(--text-muted);">(optional)</span></label>
+                <div class="settings-input-wrap">
+                  <i class="fa-solid fa-envelope"></i>
+                  <input type="email" id="stEmail" class="settings-inp" placeholder="your@email.com" />
+                </div>
+              </div>
+              <div class="settings-field full">
+                <label class="settings-label">Choose Avatar</label>
+                <div class="settings-avatar-grid" id="stAvatarGrid"></div>
+              </div>
+            </div>
+            <div class="acc-save-row" style="margin-top:24px;">
+              <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+              </button>
+              <span class="acc-saved-msg" id="savedMsg">✓ Changes saved!</span>
+            </div>
+          </form>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="acc-card" style="border-color:rgba(239,68,68,0.12);">
+          <div class="acc-card-title" style="color:#f87171;">
+            <i class="fa-solid fa-triangle-exclamation" style="color:#f87171;"></i> Danger Zone
+          </div>
+          <div class="danger-card">
+            <div class="danger-title">Reset All Progress</div>
+            <div class="danger-desc">Clears completed lessons, XP, badges, streaks. Your profile stays.</div>
+            <button class="btn-danger" id="resetProgressBtn">
+              <i class="fa-solid fa-rotate-left"></i> Reset Progress
+            </button>
+          </div>
+          <div class="danger-card" style="margin-bottom:0;">
+            <div class="danger-title">Delete Account</div>
+            <div class="danger-desc">Permanently removes your profile and all data from this device.</div>
+            <button class="btn-danger" id="deleteAccountBtn">
+              <i class="fa-solid fa-trash"></i> Delete Account
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <!-- end panels -->
 
     </main>
   </div>
 
+  <!-- XP Toast (reused by gamification.js) -->
+  <div id="xpToast"><span id="xpToastText">+20 XP!</span></div>
+
   <canvas id="bg-canvas"></canvas>
+
   <script src="data/curriculum.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cursor.js"></script>
   <script src="assets/js/progress.js"></script>
-  <script src="assets/js/lessons.js"></script>
+  <script src="assets/js/gamification.js"></script>
+  <script src="assets/js/auth.js"></script>
   <script src="assets/js/visuals.js"></script>
+
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Fetch progress and user data
-      const progress = loadProgress();
-      const profile = JSON.parse(localStorage.getItem('skill-orbit-profile') || '{"name":"Learner","email":""}');
-      
-      // Populate sidebar stats (if we want to load dash items)
-      if (typeof loadDashboard === 'function') loadDashboard();
+  (function AccountPage() {
 
-      // Populate account fields
-      document.getElementById('displayName').value = profile.name;
-      document.getElementById('emailAddress').value = profile.email || '';
-      
-      document.getElementById('accTotalXp').textContent = progress.xp;
-      document.getElementById('accStreak').textContent = progress.streak;
-      document.getElementById('accCompleted').textContent = progress.completedLessons.length;
+    const AVATAR_LIST = ['🧑‍💻','👩‍🎨','🦸‍♂️','🧙‍♀️','🦊','🐉','🌊','🔥','⚡','🌙','🎯','🚀'];
+    const CURR_TOTALS = { html: 10, css: 12 };
 
-      // Handle Form Submit
-      document.getElementById('profileForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const newName = document.getElementById('displayName').value.trim() || 'Learner';
-        const newEmail = document.getElementById('emailAddress').value.trim();
-        
-        localStorage.setItem('skill-orbit-profile', JSON.stringify({
-          name: newName,
-          email: newEmail
-        }));
-        
-        // Update sidebar locally
-        const sbName = document.querySelector('.sidebar-user .user-name');
-        if (sbName) sbName.textContent = newName;
-        
-        // Show saved message
-        const msg = document.getElementById('saveMsg');
-        msg.style.opacity = '1';
-        setTimeout(() => { msg.style.opacity = '0'; }, 3000);
+    // ── Nav panel switching ─────────────────────
+    document.querySelectorAll('.acc-sidebar-nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.acc-sidebar-nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.acc-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const panelId = 'panel-' + btn.dataset.panel;
+        document.getElementById(panelId).classList.add('active');
+        if (btn.dataset.panel === 'stats')   buildStats();
+        if (btn.dataset.panel === 'badges')  buildAllBadges();
       });
     });
+
+    document.getElementById('viewAllBadgesBtn').addEventListener('click', () => {
+      document.getElementById('navBadges').click();
+    });
+
+    // ── Main render ─────────────────────────────
+    function render() {
+      const profile  = getProfile();
+      const progress = loadProgress();
+
+      if (!profile) { showAuthModal('signup'); return; }
+
+      // Sidebar avatar & identity
+      const av = document.getElementById('sidebarAvatar');
+      av.textContent  = '';
+      av.innerHTML = profile.avatar || '🚀';
+      document.getElementById('sidebarName').textContent  = profile.name || 'Learner';
+      const emailEl  = document.getElementById('sidebarEmail');
+      if (profile.email) { emailEl.textContent = profile.email; emailEl.style.display = ''; }
+      const joinedEl = document.getElementById('joinedText');
+      if (profile.joinedAt) {
+        const d = new Date(profile.joinedAt);
+        joinedEl.textContent = 'Joined ' + d.toLocaleDateString('en-US',{year:'numeric',month:'short'});
+      }
+
+      // Level info
+      const lvl = getLevelInfo(progress.xp || 0);
+      document.getElementById('sidebarLevelPill').innerHTML =
+        `<i class="fa-solid fa-star"></i> Level ${lvl.current.level} — ${lvl.current.title}`;
+      document.getElementById('xpBarLeft').textContent  = (progress.xp || 0) + ' XP';
+      document.getElementById('xpBarRight').textContent = lvl.next ? '→ ' + lvl.next.minXP + ' XP' : 'Max Level!';
+      document.getElementById('xpBarFill').style.width  = lvl.percent + '%';
+
+      // Sidebar stats
+      document.getElementById('sbXP').textContent      = progress.xp || 0;
+      document.getElementById('sbStreak').textContent   = progress.streak || 0;
+      document.getElementById('sbDone').textContent     = progress.completedLessons.length;
+      const badgeCount = (typeof BADGES !== 'undefined')
+        ? BADGES.filter(b => {
+            const curr = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
+            return b.condition(progress, curr);
+          }).length
+        : progress.badges.length;
+      document.getElementById('sbBadges').textContent   = badgeCount;
+      document.getElementById('navBadgeCount').textContent = badgeCount;
+
+      // Overview stats tiles
+      document.getElementById('ovXP').textContent     = progress.xp || 0;
+      document.getElementById('ovStreak').textContent  = progress.streak || 0;
+      document.getElementById('ovDone').textContent    = progress.completedLessons.length;
+
+      // Module progress
+      const totals   = getCurriculumTotals();
+      const htmlDone = progress.completedLessons.filter(id => id.startsWith('html')).length;
+      const cssDone  = progress.completedLessons.filter(id => id.startsWith('css')).length;
+      const htmlPct  = totals.html ? Math.round((htmlDone / totals.html) * 100) : 0;
+      const cssPct   = totals.css  ? Math.round((cssDone  / totals.css)  * 100) : 0;
+      const overallPct = Math.round(((htmlDone + cssDone) / (totals.html + totals.css)) * 100);
+
+      document.getElementById('htmlCountOv').textContent = `${htmlDone} / ${totals.html} lessons`;
+      document.getElementById('cssCountOv').textContent  = `${cssDone} / ${totals.css} lessons`;
+      document.getElementById('htmlBarOv').style.width   = htmlPct + '%';
+      document.getElementById('cssBarOv').style.width    = cssPct  + '%';
+      document.getElementById('htmlPctOv').textContent   = htmlPct  + '%';
+      document.getElementById('cssPctOv').textContent    = cssPct   + '%';
+      document.getElementById('overallPctBadge').textContent = overallPct + '% overall';
+
+      // Recent badges (overview)
+      buildRecentBadges(progress);
+
+      // Settings prefill
+      document.getElementById('stName').value  = profile.name  || '';
+      document.getElementById('stEmail').value = profile.email || '';
+      buildSettingsAvatarGrid(profile.avatar || '🚀');
+    }
+
+    function getCurriculumTotals() {
+      if (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM) && CURRICULUM.length > 0) {
+        return {
+          html: CURRICULUM.filter(l => l.module === 'html').length || CURR_TOTALS.html,
+          css:  CURRICULUM.filter(l => l.module === 'css').length  || CURR_TOTALS.css,
+        };
+      }
+      return CURR_TOTALS;
+    }
+
+    // ── Recent badges ────────────────────────────
+    function buildRecentBadges(progress) {
+      const grid  = document.getElementById('recentBadgesGrid');
+      const defs  = (typeof BADGES !== 'undefined') ? BADGES : [];
+      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
+      const earned = defs.filter(b => b.condition(progress, curriculum));
+      grid.innerHTML = '';
+      if (earned.length === 0) {
+        grid.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;padding:8px 0;">Complete lessons to earn your first badge! 🚀</p>';
+        return;
+      }
+      earned.slice(-4).reverse().forEach(badge => buildBadgeTile(badge, true, grid));
+    }
+
+    // ── All badges ───────────────────────────────
+    function buildAllBadges() {
+      const progress   = loadProgress();
+      const defs       = (typeof BADGES !== 'undefined') ? BADGES : [];
+      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
+      const grid       = document.getElementById('allBadgesGrid');
+      grid.innerHTML   = '';
+      let earned       = 0;
+      defs.forEach(badge => {
+        const isEarned = badge.condition(progress, curriculum);
+        if (isEarned) earned++;
+        buildBadgeTile(badge, isEarned, grid);
+      });
+      document.getElementById('allBadgeSummary').textContent = `${earned} / ${defs.length} earned`;
+      document.getElementById('badgeSubtitle').textContent = earned > 0
+        ? `You've earned ${earned} of ${defs.length} badges. Keep going!`
+        : 'Unlock achievements as you learn.';
+    }
+
+    function buildBadgeTile(badge, earned, container) {
+      const tile = document.createElement('div');
+      tile.className = `badge-tile ${earned ? 'earned' : 'locked'}`;
+      tile.innerHTML = `
+        <div class="badge-tile-glow"></div>
+        ${earned ? '<div class="badge-check"><i class="fa-solid fa-check"></i></div>' : ''}
+        <span class="badge-icon-wrap">${badge.icon}</span>
+        <div class="badge-tile-name">${badge.name}</div>
+        <div class="badge-tile-desc">${badge.description}</div>
+        ${!earned ? '<div class="badge-lock-icon"><i class="fa-solid fa-lock"></i> Locked</div>' : ''}
+      `;
+      container.appendChild(tile);
+    }
+
+    // ── Statistics ───────────────────────────────
+    function buildStats() {
+      const progress = loadProgress();
+      const totals   = getCurriculumTotals();
+      const htmlDone = progress.completedLessons.filter(id => id.startsWith('html')).length;
+      const cssDone  = progress.completedLessons.filter(id => id.startsWith('css')).length;
+      const htmlPct  = totals.html ? Math.round((htmlDone / totals.html) * 100) : 0;
+      const cssPct   = totals.css  ? Math.round((cssDone  / totals.css)  * 100) : 0;
+
+      // Completion detail
+      document.getElementById('htmlCountSt').textContent = `${htmlDone} / ${totals.html}`;
+      document.getElementById('cssCountSt').textContent  = `${cssDone} / ${totals.css}`;
+      document.getElementById('htmlBarSt').style.width   = htmlPct + '%';
+      document.getElementById('cssBarSt').style.width    = cssPct  + '%';
+      document.getElementById('htmlPctSt').textContent   = htmlPct + '%';
+      document.getElementById('cssPctSt').textContent    = cssPct  + '%';
+
+      // XP Table
+      const tbody = document.getElementById('xpTableBody');
+      const htmlXP = htmlDone * 20;
+      const cssXP  = cssDone  * 20;
+      tbody.innerHTML = `
+        <tr>
+          <td style="padding:14px 0;font-weight:600;color:var(--text-primary);">
+            <i class="fa-brands fa-html5" style="color:#f97316;margin-right:8px;"></i>HTML
+          </td>
+          <td class="td-right" style="color:var(--text-secondary);padding:14px 0;">${htmlDone} / ${totals.html}</td>
+          <td class="td-xp" style="padding:14px 0;">${htmlXP} XP</td>
+        </tr>
+        <tr>
+          <td style="padding:14px 0;font-weight:600;color:var(--text-primary);">
+            <i class="fa-brands fa-css3-alt" style="color:#60a5fa;margin-right:8px;"></i>CSS
+          </td>
+          <td class="td-right" style="color:var(--text-secondary);padding:14px 0;">${cssDone} / ${totals.css}</td>
+          <td class="td-xp" style="padding:14px 0;">${cssXP} XP</td>
+        </tr>
+        <tr style="border-top:1px solid rgba(255,255,255,0.08);">
+          <td style="padding:14px 0;" class="td-total">Total</td>
+          <td class="td-right td-total" style="padding:14px 0;">${htmlDone+cssDone} / ${totals.html+totals.css}</td>
+          <td class="td-xp" style="padding:14px 0;font-size:1.05rem;">${progress.xp} XP</td>
+        </tr>`;
+
+      // Build heatmap
+      buildHeatmap();
+    }
+
+    function buildHeatmap() {
+      const data = (typeof getHeatmapData === 'function') ? getHeatmapData(63) : Array(63).fill({xp:0});
+      const grid = document.getElementById('heatmapGrid');
+      grid.innerHTML = '';
+      const maxXP = Math.max(...data.map(d => d.xp), 1);
+      // Build 9 weeks × 7 days
+      const weeks = [];
+      for (let w = 0; w < 9; w++) {
+        const week = document.createElement('div');
+        week.className = 'heatmap-week';
+        data.slice(w * 7, w * 7 + 7).forEach(({ date, xp }) => {
+          const cell = document.createElement('div');
+          cell.className = 'hm-cell';
+          cell.title = `${date}\n${xp > 0 ? xp + ' XP' : 'No activity'}`;
+          if (xp > 0) {
+            const r = xp / maxXP;
+            if      (r > 0.75) cell.classList.add('l4');
+            else if (r > 0.5)  cell.classList.add('l3');
+            else if (r > 0.25) cell.classList.add('l2');
+            else               cell.classList.add('l1');
+          }
+          week.appendChild(cell);
+        });
+        grid.appendChild(week);
+      }
+    }
+
+    // ── Settings avatar picker ───────────────────
+    function buildSettingsAvatarGrid(selected) {
+      const grid = document.getElementById('stAvatarGrid');
+      grid.innerHTML = '';
+      AVATAR_LIST.forEach(emoji => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `settings-avatar-opt${emoji === selected ? ' selected' : ''}`;
+        btn.textContent = emoji;
+        btn.dataset.emoji = emoji;
+        btn.addEventListener('click', () => {
+          grid.querySelectorAll('.settings-avatar-opt').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+        grid.appendChild(btn);
+      });
+    }
+
+    // ── Settings form ────────────────────────────
+    document.getElementById('settingsForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name   = document.getElementById('stName').value.trim() || 'Learner';
+      const email  = document.getElementById('stEmail').value.trim();
+      const picked = document.querySelector('#stAvatarGrid .settings-avatar-opt.selected');
+      const avatar = picked ? picked.dataset.emoji : '🚀';
+      saveProfile({ name, email, avatar });
+      updateNavAuth();
+      render();
+      const msg = document.getElementById('savedMsg');
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 2500);
+    });
+
+    // ── Danger zone ──────────────────────────────
+    document.getElementById('resetProgressBtn').addEventListener('click', () => {
+      if (confirm('Reset ALL progress? XP, streaks, and badges will be cleared.')) {
+        resetProgress();
+        render();
+        document.getElementById('navOverview').click();
+      }
+    });
+    document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+      if (confirm('Delete your account entirely? This cannot be undone.')) {
+        resetProgress();
+        logout();
+      }
+    });
+    document.getElementById('sidebarLogoutBtn').addEventListener('click', () => {
+      if (confirm('Log out?')) logout();
+    });
+
+    // ── Boot ─────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      initAuth({ requireLogin: true });
+      if (getProfile()) render();
+    });
+    window.addEventListener('authChanged', () => {
+      if (getProfile()) render();
+    });
+
+  })();
   </script>
 </body>
 </html>

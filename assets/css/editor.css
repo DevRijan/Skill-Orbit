@@ -12,6 +12,36 @@
 }
 
 /* ── Lesson Top Bar ── */
+/* Curriculum drawer overlay (≤1024px) */
+.lesson-sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .lesson-sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 998;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  body.lesson-curriculum-open .lesson-sidebar-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
 .lesson-topbar {
   height: 80px;
   background: var(--bg-glass);
@@ -397,32 +427,32 @@
 /* ── Floating Editor Button ── */
 .btn-floating-editor {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
-  width: 68px;
-  height: 68px;
+  top: calc(50% - 32px);
+  right: 30px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--color-primary), #6025c0);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   border: 3px solid rgba(255,255,255,0.2);
-  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.6);
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5);
   cursor: pointer;
   z-index: 900;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .btn-floating-editor:hover {
-  transform: translateY(-5px) scale(1.08);
-  box-shadow: 0 15px 40px rgba(124, 58, 237, 0.8);
+  transform: scale(1.08);
+  box-shadow: 0 15px 40px rgba(124, 58, 237, 0.7);
   border-color: rgba(255,255,255,0.4);
 }
 
 .btn-floating-editor:active {
-  transform: translateY(0) scale(0.95);
+  transform: scale(0.95);
 }
 
 .btn-floating-editor.pulse {
@@ -437,7 +467,7 @@
 
 .fab-tooltip {
   position: absolute;
-  right: 85px;
+  right: 80px;
   background: var(--text-primary);
   color: var(--bg-surface);
   padding: 8px 14px;

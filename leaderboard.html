@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Skill-Orbit Leaderboard — Compete with other learners, track your rank, and climb the XP rankings." />
+  <title>Leaderboard | Skill-Orbit</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/auth.css" />
+  <link rel="stylesheet" href="assets/css/leaderboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <div id="custom-cursor"></div>
+  <div id="custom-cursor-follower"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fa-solid fa-circle-nodes"></i> Skill<span>Orbit</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="leaderboard.html" class="active">Leaderboard</a>
+        <a href="account.html">Account</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="lb-root">
+
+    <!-- HERO -->
+    <section class="lb-hero">
+      <div class="lb-hero-inner">
+        <div>
+          <div class="lb-hero-label">
+            <i class="fa-solid fa-trophy"></i> Global Rankings
+          </div>
+          <h1 class="lb-hero-title">
+            <span>Leaderboard</span>
+          </h1>
+          <p class="lb-hero-sub">Compete, earn XP, and climb the rankings. Every correct answer counts.</p>
+        </div>
+        <div class="lb-my-rank-chip" id="myRankChip" style="display:none;">
+          <div class="lb-my-rank-num" id="myRankNum">—</div>
+          <div class="lb-my-rank-label">Your Rank</div>
+          <div style="margin-top:10px;font-size:0.82rem;font-weight:700;color:#fbbf24;" id="myXPDisplay">0 XP</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT -->
+    <div class="lb-content">
+
+      <!-- XP Breakdown Info -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;" id="xpBreakdownRow">
+        <div style="flex:1;min-width:180px;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:14px 18px;">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">📖 Lesson Theory</div>
+          <div style="font-size:1.3rem;font-weight:900;color:#10b981;">10 XP</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">earn once per lesson</div>
+        </div>
+        <div style="flex:1;min-width:180px;background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:14px;padding:14px 18px;">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">❓ Quiz Questions</div>
+          <div style="font-size:1.3rem;font-weight:900;color:#fbbf24;">1 XP each</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">wrong = lost forever · max 10/lesson</div>
+        </div>
+        <div style="flex:1;min-width:180px;background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.2);border-radius:14px;padding:14px 18px;">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">💻 Code Challenge</div>
+          <div style="font-size:1.3rem;font-weight:900;color:#a78bfa;">10 XP</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">correct code · once per lesson</div>
+        </div>
+        <div style="flex:1;min-width:180px;background:rgba(249,115,22,0.07);border:1px solid rgba(249,115,22,0.2);border-radius:14px;padding:14px 18px;">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">🏆 Max Per Lesson</div>
+          <div style="font-size:1.3rem;font-weight:900;color:#f97316;">30 XP</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">10 lesson + 10 quiz + 10 challenge</div>
+        </div>
+      </div>
+
+      <!-- TOP 3 PODIUM -->
+      <div class="lb-podium" id="lbPodium">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- FULL TABLE -->
+      <div class="lb-table-section">
+        <h2 class="lb-table-title">
+          <i class="fa-solid fa-list-ol"></i> All Rankings
+          <span style="margin-left:auto;font-size:0.75rem;font-weight:600;color:var(--text-muted);" id="totalUsersLabel"></span>
+        </h2>
+        <div id="lbTableWrap">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Note -->
+      <div class="lb-note">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>
+          <strong>Local Leaderboard:</strong> Rankings are shared between all profiles on this device.
+          Each profile's XP is updated automatically when they earn it. Create multiple profiles to compete!
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <script src="data/curriculum.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/cursor.js"></script>
+  <script src="assets/js/progress.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/gamification.js"></script>
+  <script src="assets/js/leaderboard.js"></script>
+  <script src="assets/js/visuals.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initAuth({ requireLogin: false });
+    // Sync current user to leaderboard before rendering
+    syncLeaderboard();
+    renderLeaderboardPage();
+  });
+
+  window.addEventListener('authChanged', () => {
+    syncLeaderboard();
+    renderLeaderboardPage();
+  });
+
+  const MEDAL = ['🥇','🥈','🥉'];
+  const RANK_CLASS = ['gold','silver','bronze'];
+
+  function getMyId() {
+    const p = typeof getProfile === 'function' ? getProfile() : null;
+    if (!p) return null;
+    return p.name + '_' + (p.joinedAt || '').slice(0, 10);
+  }
+
+  function renderLeaderboardPage() {
+    const board = typeof getLeaderboard === 'function' ? getLeaderboard() : [];
+    const myId  = getMyId();
+    const myRank = typeof getMyRank === 'function' ? getMyRank() : null;
+
+    // Hero rank chip
+    const myEntry = board.find(e => e.id === myId);
+    const rankChip = document.getElementById('myRankChip');
+    if (myEntry && rankChip) {
+      rankChip.style.display = 'block';
+      document.getElementById('myRankNum').textContent  = '#' + myRank;
+      document.getElementById('myXPDisplay').textContent = myEntry.xp + ' XP';
+    }
+
+    // Label
+    const totalLabel = document.getElementById('totalUsersLabel');
+    if (totalLabel) totalLabel.textContent = `${board.length} learner${board.length !== 1 ? 's' : ''}`;
+
+    // Podium (top 3)
+    renderPodium(board.slice(0, 3), myId);
+
+    // Full table
+    renderTable(board, myId);
+  }
+
+  function renderPodium(top3, myId) {
+    const el = document.getElementById('lbPodium');
+    if (!el) return;
+
+    if (top3.length === 0) {
+      el.innerHTML = `
+        <div class="lb-empty" style="width:100%;">
+          <i class="fa-solid fa-trophy"></i>
+          <h3>No Rankings Yet</h3>
+          <p>Complete lessons to earn XP and claim your spot!</p>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = '';
+    top3.forEach((user, i) => {
+      const rankNum = i + 1;
+      const isYou   = user.id === myId;
+      const card = document.createElement('div');
+      card.className = `podium-card rank-${rankNum}${isYou ? ' you' : ''}`;
+
+      card.innerHTML = `
+        <div class="podium-medal">${MEDAL[i] || rankNum}</div>
+        <div class="podium-avatar">${user.avatar}</div>
+        <div class="podium-name" title="${user.name}">${user.name}</div>
+        <div class="podium-xp">${user.xp.toLocaleString()} XP</div>
+        <div class="podium-level">Lv.${user.level} ${user.levelTitle}</div>
+        ${isYou ? '<div class="you-tag">You</div>' : ''}
+      `;
+      el.appendChild(card);
+    });
+  }
+
+  function renderTable(board, myId) {
+    const wrap = document.getElementById('lbTableWrap');
+    if (!wrap) return;
+
+    if (board.length === 0) {
+      wrap.innerHTML = `
+        <div class="lb-empty">
+          <i class="fa-solid fa-users"></i>
+          <h3>No Learners Yet</h3>
+          <p>Be the first to earn XP. Complete a lesson to appear here!</p>
+        </div>`;
+      return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'lb-table';
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th style="width:48px;">#</th>
+          <th>Learner</th>
+          <th class="hide-mobile">Streak</th>
+          <th class="hide-mobile">Lessons</th>
+          <th class="hide-mobile">Badges</th>
+          <th>XP</th>
+        </tr>
+      </thead>
+      <tbody id="lbTbody"></tbody>`;
+
+    wrap.innerHTML = '';
+    wrap.appendChild(table);
+
+    const tbody = document.getElementById('lbTbody');
+
+    board.forEach((user, i) => {
+      const rank  = i + 1;
+      const isYou = user.id === myId;
+      const tr    = document.createElement('tr');
+      tr.className = `lb-row${isYou ? ' lb-you' : ''}`;
+
+      let rankDisplay;
+      if (rank <= 3) {
+        rankDisplay = `<span class="lb-rank-num ${RANK_CLASS[rank-1]}">${MEDAL[rank-1]}</span>`;
+      } else {
+        rankDisplay = `<span class="lb-rank-num">${rank}</span>`;
+      }
+
+      tr.innerHTML = `
+        <td>${rankDisplay}</td>
+        <td>
+          <div class="lb-user-cell">
+            <div class="lb-avatar">${user.avatar}</div>
+            <div class="lb-user-info">
+              <div class="lb-user-name">
+                ${user.name}
+                ${isYou ? '<span class="you-pill">You</span>' : ''}
+              </div>
+              <div class="lb-user-level">Level ${user.level} · ${user.levelTitle}</div>
+            </div>
+          </div>
+        </td>
+        <td class="lb-stat-cell hide-mobile">🔥 ${user.streak}</td>
+        <td class="lb-stat-cell hide-mobile">📚 ${user.lessonsCount}</td>
+        <td class="lb-stat-cell hide-mobile">🏅 ${user.badgesCount}</td>
+        <td><span class="lb-xp-val">${user.xp.toLocaleString()}</span></td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+  </script>
+
+</body>
+</html>

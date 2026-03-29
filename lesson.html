@@ -26,6 +26,9 @@
       <a href="dashboard.html" class="btn btn-icon" title="Back to Dashboard">
         <i class="fa-solid fa-arrow-left"></i>
       </a>
+      <button type="button" class="btn btn-icon lesson-curriculum-toggle" id="lessonSidebarToggle" aria-label="Toggle curriculum sidebar" aria-expanded="true">
+        <i class="fa-solid fa-bars"></i>
+      </button>
       <div class="topbar-divider"></div>
       <div class="lesson-title-info">
         <span class="lesson-module-badge" id="lessonModuleBadge">HTML</span>
@@ -41,11 +44,16 @@
     </div>
   </header>
 
+  <div class="lesson-sidebar-overlay" id="lessonSidebarOverlay" aria-hidden="true"></div>
+
   <div class="lesson-wrapper">
     <!-- Lesson Sidebar (W3Schools Style) -->
-    <aside class="lesson-sidebar" id="lessonSidebar">
+    <aside class="lesson-sidebar" id="lessonSidebar" aria-label="Curriculum">
       <div class="sidebar-header-mini">
-        <i class="fa-solid fa-list-ul"></i> Curriculum
+        <button type="button" class="sidebar-header-toggle" id="lessonSidebarToggleHeader" aria-label="Toggle curriculum sidebar" aria-expanded="true">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <span>Curriculum</span>
       </div>
       <div id="lesson-sidebar-content" class="sidebar-lessons"></div>
     </aside>
@@ -71,6 +79,8 @@
         </div>
       </div>
     </main>
+
+    </div>
   </div>
 
   <!-- Floating Editor Button -->

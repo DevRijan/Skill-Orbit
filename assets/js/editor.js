@@ -74,8 +74,7 @@ function setupMonaco(lesson) {
   document.getElementById('runBtn')?.addEventListener('click', updatePreview);
   document.getElementById('refreshPreview')?.addEventListener('click', updatePreview);
 
-  // Navigation
-  setupLessonNavigation(lesson.id);
+  // Lesson prev/next is wired in lessons.js (initLessonNavigation)
 
   // Challenge check
   document.getElementById('checkBtn')?.addEventListener('click', checkChallenge);
@@ -301,7 +300,7 @@ function switchEditorTab(tab) {
 // ── Challenge Checker ─────────────────────────────
 function checkChallenge() {
   const checkBtn = document.getElementById('checkBtn');
-  
+
   // Handle Sandbox Reset
   if (checkBtn && checkBtn.dataset.mode === 'sandbox') {
     resetToChallenge();
@@ -315,7 +314,7 @@ function checkChallenge() {
   const result   = document.getElementById('challengeResult');
   if (!result) return;
 
-  // Simple check: see if key solution elements appear in user code
+  // Check: key solution tags/text must appear in user code
   const solutionTags = solution.match(/<[^/][^>]*>/g) || [];
   const userCode     = htmlVal.toLowerCase();
 
@@ -323,18 +322,52 @@ function checkChallenge() {
   if (solutionTags.length > 0) {
     correct = solutionTags.every(tag => userCode.includes(tag.toLowerCase()));
   } else {
-    // Fallback if no tags (e.g. just raw text matching)
-    correct = userCode.includes(solution.toLowerCase());
+    correct = userCode.includes(solution.toLowerCase().trim());
   }
 
   result.style.display = 'flex';
+
   if (correct) {
-    result.className = 'challenge-result-box success animate-fadeInUp';
-    result.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Correct! You have successfully completed the challenge.</span>';
-    
-    const progress = markLessonComplete(currentLesson.id, currentLesson.xp);
-    showXPToast(currentLesson.xp);
-    renderGamification(progress);
+    // 1. Award lesson completion XP (10 XP, one-time)
+    const { xpAwarded: lessonXP } = markLessonComplete(currentLesson.id);
+
+    // 2. Award challenge XP (10 XP, one-time)
+    const { xpAwarded: challengeXP, alreadyEarned } =
+      typeof awardChallengeXP === 'function'
+        ? awardChallengeXP(currentLesson.id)
+        : { xpAwarded: 0, alreadyEarned: false };
+
+    const totalNew = (lessonXP || 0) + (challengeXP || 0);
+
+    if (alreadyEarned) {
+      result.className = 'challenge-result-box success animate-fadeInUp';
+      result.innerHTML = `
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Correct! <small style="color:var(--text-muted);margin-left:8px;">
+          Challenge XP already earned for this lesson.
+        </small></span>`;
+    } else {
+      result.className = 'challenge-result-box success animate-fadeInUp';
+      result.innerHTML = `
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Correct! Challenge completed.
+          <strong style="color:#fbbf24;margin-left:8px;">+${challengeXP} XP</strong>
+          ${lessonXP > 0 ? `<strong style="color:#fbbf24;margin-left:4px;">+${lessonXP} XP (lesson)</strong>` : ''}
+        </span>`;
+    }
+
+    if (totalNew > 0) showXPToast(totalNew);
+
+    // Refresh gamification
+    const progress = loadProgress();
+    if (typeof renderGamification === 'function') {
+      const curriculum = (typeof CURRICULUM !== 'undefined') ? CURRICULUM : [];
+      renderGamification(progress, curriculum);
+    }
+    if (typeof checkBadges === 'function') {
+      const curriculum = (typeof CURRICULUM !== 'undefined') ? CURRICULUM : [];
+      checkBadges(progress, curriculum);
+    }
   } else {
     result.className = 'challenge-result-box error animate-fadeInUp';
     result.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> <span>Not quite. Check the hint or review the theory.</span>';
@@ -349,36 +382,6 @@ function toggleHint() {
   }
 }
 
-// ── Lesson Navigation ─────────────────────────────
-function setupLessonNavigation(currentId) {
-  const moduleId = currentId.split('-')[0];
-  const moduleLessons = CURRICULUM.filter(l => l.module === moduleId);
-  const currentIndex = moduleLessons.findIndex(l => l.id === currentId);
-
-  document.getElementById('prevLessonBtn')?.addEventListener('click', () => {
-    if (currentIndex > 0) {
-      const prev = moduleLessons[currentIndex - 1].id;
-      window.location.href = `lesson.html?lesson=${prev}`;
-    } else {
-      window.location.href = 'dashboard.html';
-    }
-  });
-
-  const nextBtn = document.getElementById('nextLessonBtn');
-  if (nextBtn) {
-    if (currentIndex < moduleLessons.length - 1) {
-      nextBtn.addEventListener('click', () => {
-        const next = moduleLessons[currentIndex + 1].id;
-        window.location.href = `lesson.html?lesson=${next}`;
-      });
-    } else {
-      nextBtn.innerHTML = 'Finish Module <i class="fa-solid fa-flag-checkered"></i>';
-      nextBtn.addEventListener('click', () => {
-        window.location.href = 'dashboard.html';
-      });
-    }
-  }
-}
 function resetToChallenge() {
   if (!currentLesson) return;
   

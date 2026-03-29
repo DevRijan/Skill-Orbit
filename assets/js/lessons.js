@@ -19,6 +19,61 @@ async function loadDashboard() {
   }
 }
 
+// ── Section order (curriculum order) ──────────────
+function orderedSectionTitles(lessons) {
+  const titles = [];
+  lessons.forEach((l) => {
+    const t = l.section || 'General';
+    if (!titles.includes(t)) titles.push(t);
+  });
+  return titles;
+}
+
+function createLessonTopicGroup(sectionTitle, sectionLessons, track, startIndex) {
+  const wrap = document.createElement('article');
+  wrap.className = `lesson-topic-group lesson-topic-group--${track}`;
+  wrap.setAttribute('aria-labelledby', `topic-${track}-${sectionTitle.replace(/\s+/g, '-')}`);
+
+  const head = document.createElement('header');
+  head.className = 'lesson-topic-head';
+  const count = sectionLessons.length;
+  head.innerHTML = `
+    <div class="lesson-topic-head-main">
+      <span class="lesson-topic-glyph" aria-hidden="true"><i class="fa-solid fa-bookmark"></i></span>
+      <div class="lesson-topic-head-copy">
+        <h3 class="lesson-topic-title" id="topic-${track}-${sectionTitle.replace(/\s+/g, '-')}">${sectionTitle}</h3>
+        <p class="lesson-topic-meta">${count} lesson${count === 1 ? '' : 's'}</p>
+      </div>
+    </div>
+    <div class="lesson-topic-rail" aria-hidden="true"></div>
+  `;
+
+  const grid = document.createElement('div');
+  grid.className = 'lesson-cards-grid';
+  sectionLessons.forEach((lesson, i) => {
+    grid.appendChild(createLessonCard(lesson, startIndex + i));
+  });
+
+  wrap.appendChild(head);
+  wrap.appendChild(grid);
+  return wrap;
+}
+
+function renderModuleLessonGroups(container, moduleLessons, track) {
+  container.innerHTML = '';
+  container.classList.add('module-lesson-groups', 'stagger-children');
+
+  const titles = orderedSectionTitles(moduleLessons);
+  if (titles.length === 0) return;
+
+  let offset = 0;
+  titles.forEach((sectionTitle) => {
+    const sectionLessons = moduleLessons.filter((l) => (l.section || 'General') === sectionTitle);
+    container.appendChild(createLessonTopicGroup(sectionTitle, sectionLessons, track, offset));
+    offset += sectionLessons.length;
+  });
+}
+
 // ── Dashboard Lesson Grid ─────────────────────────
 function renderDashboard() {
   const htmlGrid = document.getElementById('html-lessons-grid');
@@ -28,13 +83,8 @@ function renderDashboard() {
   const htmlLessons = CURRICULUM.filter(l => l.module === 'html');
   const cssLessons  = CURRICULUM.filter(l => l.module === 'css');
 
-  htmlGrid.innerHTML = '';
-  cssGrid.innerHTML  = '';
-  htmlGrid.classList.add('stagger-children');
-  cssGrid.classList.add('stagger-children');
-
-  htmlLessons.forEach((lesson, i) => htmlGrid.appendChild(createLessonCard(lesson, i)));
-  cssLessons.forEach((lesson, i) => cssGrid.appendChild(createLessonCard(lesson, i)));
+  renderModuleLessonGroups(htmlGrid, htmlLessons, 'html');
+  renderModuleLessonGroups(cssGrid, cssLessons, 'css');
 }
 
 function createLessonCard(lesson, index) {
@@ -76,36 +126,69 @@ function renderSidebar() {
   if (xpEl) xpEl.textContent = progress.xp;
   if (streakEl) streakEl.textContent = progress.streak || 0;
 
-  // Update User Profile Name
-  const profile = JSON.parse(localStorage.getItem('skill-orbit-profile') || '{"name":"Learner"}');
+  // Update User Profile Name from auth module
+  const profile = (typeof getProfile === 'function') ? getProfile() : null;
   const nameEls = document.querySelectorAll('.user-name');
-  nameEls.forEach(el => el.textContent = profile.name);
+  nameEls.forEach(el => el.textContent = profile ? profile.name : 'Learner');
+  // Update sidebar avatar emoji
+  const avatarEl = document.querySelector('.sidebar-user .user-avatar');
+  if (avatarEl && profile) {
+    avatarEl.innerHTML = profile.avatar || '🚀';
+    avatarEl.style.fontSize = '1.4rem';
+  }
 }
 
-function renderSidebarModule(container, lessons) {
-  // Get unique sections
-  const sections = [];
-  lessons.forEach(l => {
-    if (l.section && !sections.includes(l.section)) {
-      sections.push(l.section);
-    }
+function renderSidebarModule(container, lessons, options = {}) {
+  const { focusLessonId = null } = options;
+  const titles = orderedSectionTitles(lessons);
+
+  if (titles.length === 0) {
+    lessons.forEach((l) => container.appendChild(createSidebarItem(l)));
+    return;
+  }
+
+  titles.forEach((sectionTitle) => {
+    const sectionLessons = lessons.filter((l) => (l.section || 'General') === sectionTitle);
+    const group = document.createElement('div');
+    group.className = 'sidebar-topic-group';
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sidebar-topic-toggle';
+    btn.setAttribute('aria-expanded', 'true');
+    btn.setAttribute('aria-controls', `sidebar-panel-${sectionTitle.replace(/\s+/g, '-')}`);
+    btn.innerHTML = `
+      <span class="sidebar-topic-title">${sectionTitle}</span>
+      <i class="fa-solid fa-chevron-down sidebar-topic-caret" aria-hidden="true"></i>
+    `;
+
+    const panel = document.createElement('div');
+    panel.className = 'sidebar-topic-lessons';
+    panel.id = `sidebar-panel-${sectionTitle.replace(/\s+/g, '-')}`;
+    sectionLessons.forEach((l) => panel.appendChild(createSidebarItem(l)));
+
+    btn.addEventListener('click', () => {
+      const collapsed = group.classList.toggle('collapsed');
+      btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    });
+
+    group.appendChild(btn);
+    group.appendChild(panel);
+    container.appendChild(group);
   });
 
-  if (sections.length > 0) {
-    sections.forEach(sectionTitle => {
-      const sectionHeader = document.createElement('div');
-      sectionHeader.className = 'sidebar-section-header';
-      sectionHeader.innerHTML = `<i class="fa-solid fa-layer-group"></i> ${sectionTitle}`;
-      container.appendChild(sectionHeader);
-
-      const sectionLessons = lessons.filter(l => l.section === sectionTitle);
-      sectionLessons.forEach(l => {
-        container.appendChild(createSidebarItem(l));
-      });
+  if (focusLessonId) {
+    container.querySelectorAll('.sidebar-topic-group').forEach((g) => {
+      const active = g.querySelector(`.sidebar-lesson-item[data-id="${focusLessonId}"]`);
+      const toggle = g.querySelector('.sidebar-topic-toggle');
+      if (active) {
+        g.classList.remove('collapsed');
+        if (toggle) toggle.setAttribute('aria-expanded', 'true');
+      } else {
+        g.classList.add('collapsed');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      }
     });
-  } else {
-    // Fallback for backwards compatibility
-    lessons.forEach(l => container.appendChild(createSidebarItem(l)));
   }
 }
 
@@ -142,8 +225,145 @@ function updateProgressBars() {
   if (cssText)  cssText.textContent  = `${cssProg.completed}  / ${cssProg.total} lessons`;
 }
 
+const LESSON_SIDEBAR_COLLAPSED_KEY = 'skill-orbit-lesson-sidebar-collapsed';
+
+let lessonSidebarToggleInitialized = false;
+
+/**
+ * Desktop: collapses the curriculum column; mobile: slides the curriculum drawer.
+ * Top bar and sidebar header both toggle the same state.
+ */
+function initLessonSidebarToggle() {
+  if (lessonSidebarToggleInitialized) return;
+  const wrapper = document.querySelector('.lesson-wrapper');
+  const overlay = document.getElementById('lessonSidebarOverlay');
+  const toggles = [
+    document.getElementById('lessonSidebarToggle'),
+    document.getElementById('lessonSidebarToggleHeader')
+  ].filter(Boolean);
+
+  if (!wrapper || toggles.length === 0) return;
+  lessonSidebarToggleInitialized = true;
+
+  const mq = window.matchMedia('(max-width: 1024px)');
+
+  const isMobile = () => mq.matches;
+
+  function syncOverlayA11y() {
+    if (!overlay) return;
+    const open = document.body.classList.contains('lesson-curriculum-open');
+    overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+
+  function updateAria() {
+    let expanded;
+    if (isMobile()) {
+      expanded = document.body.classList.contains('lesson-curriculum-open');
+    } else {
+      expanded = !wrapper.classList.contains('sidebar-collapsed');
+    }
+    toggles.forEach((btn) => btn.setAttribute('aria-expanded', expanded ? 'true' : 'false'));
+    const sidebar = document.getElementById('lessonSidebar');
+    if (sidebar) {
+      sidebar.setAttribute('aria-hidden', expanded ? 'false' : 'true');
+    }
+    syncOverlayA11y();
+  }
+
+  function toggle() {
+    if (isMobile()) {
+      document.body.classList.toggle('lesson-curriculum-open');
+    } else {
+      wrapper.classList.toggle('sidebar-collapsed');
+      const collapsed = wrapper.classList.contains('sidebar-collapsed');
+      localStorage.setItem(LESSON_SIDEBAR_COLLAPSED_KEY, collapsed ? 'true' : 'false');
+    }
+    updateAria();
+  }
+
+  if (!isMobile()) {
+    const saved = localStorage.getItem(LESSON_SIDEBAR_COLLAPSED_KEY);
+    if (saved === 'true') {
+      wrapper.classList.add('sidebar-collapsed');
+    }
+  }
+
+  toggles.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggle();
+    });
+  });
+
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      document.body.classList.remove('lesson-curriculum-open');
+      updateAria();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!document.body.classList.contains('lesson-curriculum-open')) return;
+    document.body.classList.remove('lesson-curriculum-open');
+    updateAria();
+  });
+
+  mq.addEventListener('change', () => {
+    if (isMobile()) {
+      document.body.classList.remove('lesson-curriculum-open');
+    }
+    updateAria();
+  });
+
+  updateAria();
+}
+
+// ── Lesson navigation (footer + side buttons at end of scroll) ──
+let lessonNavigationInitialized = false;
+
+
+function initLessonNavigation(currentId) {
+  if (lessonNavigationInitialized) return;
+  lessonNavigationInitialized = true;
+
+  const moduleId = currentId.split('-')[0];
+  const moduleLessons = CURRICULUM.filter((l) => l.module === moduleId);
+  const currentIndex = moduleLessons.findIndex((l) => l.id === currentId);
+  if (currentIndex < 0 || moduleLessons.length === 0) return;
+
+  const goPrev = () => {
+    if (currentIndex > 0) {
+      window.location.href = `lesson.html?lesson=${moduleLessons[currentIndex - 1].id}`;
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  };
+
+  const goNext = () => {
+    if (currentIndex < moduleLessons.length - 1) {
+      window.location.href = `lesson.html?lesson=${moduleLessons[currentIndex + 1].id}`;
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  };
+
+  document.getElementById('prevLessonBtn')?.addEventListener('click', goPrev);
+  document.getElementById('nextLessonBtn')?.addEventListener('click', goNext);
+
+  const nextBtn = document.getElementById('nextLessonBtn');
+
+  if (currentIndex >= moduleLessons.length - 1) {
+    if (nextBtn) {
+      nextBtn.innerHTML = 'Finish Module <i class="fa-solid fa-flag-checkered"></i>';
+    }
+  }
+}
+
 // ── Lesson Page Initialization ────────────────────
 async function initLessonPage() {
+  initLessonSidebarToggle();
+
   const params   = new URLSearchParams(window.location.search);
   const lessonId = params.get('lesson') || 'html-01';
 
@@ -164,9 +384,10 @@ async function initLessonPage() {
     if (lessonData.theory) {
       renderLesson(lessonData);
       initEditorWithLesson(lessonData);
-      initQuiz(lessonData.quiz || []);
+      initQuiz(lessonData.quiz || [], lessonId);
       renderLessonNav(lessonId);
       renderLessonSidebar(lessonData.module);
+      initLessonNavigation(lessonId);
     } else {
       // Fallback: If theory is missing, try loading from the external file (legacy support)
       const data = await new Promise((resolve, reject) => {
@@ -188,9 +409,10 @@ async function initLessonPage() {
 
       renderLesson(data);
       initEditorWithLesson(data);
-      initQuiz(data.quiz || []);
+      initQuiz(data.quiz || [], lessonId);
       renderLessonNav(lessonId);
       renderLessonSidebar(data.module);
+      initLessonNavigation(lessonId);
     }
   } catch (err) {
     console.error('Failed to load lesson:', err);
@@ -209,16 +431,14 @@ function renderLessonSidebar(module) {
 
   const moduleLessons = CURRICULUM.filter(l => l.module === module);
   sidebarContainer.innerHTML = '';
-  renderSidebarModule(sidebarContainer, moduleLessons);
-
-  // Mark current lesson as active
   const params = new URLSearchParams(window.location.search);
   const currentId = params.get('lesson') || 'html-01';
-  
-  // Give it a tiny delay to ensure items are rendered
+
+  renderSidebarModule(sidebarContainer, moduleLessons, { focusLessonId: currentId });
+
   setTimeout(() => {
     const items = sidebarContainer.querySelectorAll('.sidebar-lesson-item');
-    items.forEach(item => {
+    items.forEach((item) => {
       if (item.dataset.id === currentId) {
         item.classList.add('active');
         item.scrollIntoView({ behavior: 'smooth', block: 'center' });

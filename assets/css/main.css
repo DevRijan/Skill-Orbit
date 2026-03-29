@@ -666,26 +666,83 @@ body.sidebar-open .sidebar-overlay {
   gap: 10px;
 }
 
-.sidebar-section-header {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
+/* Collapsible topic groups (dashboard drawer + lesson curriculum) */
+.sidebar-topic-group {
+  border-radius: 10px;
+  margin-bottom: 6px;
+  background: rgba(124, 58, 237, 0.04);
+  border: 1px solid var(--border-color);
+}
+
+.sidebar-topic-toggle {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  opacity: 0.9;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: var(--spacing-xs);
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: 10px 12px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.sidebar-section-header i {
-  color: var(--color-primary-light);
-  font-size: 0.9rem;
-  opacity: 0.7;
+.sidebar-topic-toggle:hover {
+  background: rgba(124, 58, 237, 0.1);
 }
 
-.sidebar-lessons { display: flex; flex-direction: column; gap: 4px; margin-bottom: var(--spacing-md); }
+.sidebar-topic-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sidebar-topic-title {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.sidebar-topic-caret {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  opacity: 0.65;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-topic-group.collapsed .sidebar-topic-caret {
+  transform: rotate(-90deg);
+}
+
+.sidebar-topic-lessons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 6px 8px 8px;
+  max-height: 2800px;
+  overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.25s ease;
+}
+
+.sidebar-topic-group.collapsed .sidebar-topic-lessons {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+}
+
+.sidebar-lessons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--spacing-md);
+}
 
 .sidebar-lesson-item {
   display: flex;
@@ -704,23 +761,51 @@ body.sidebar-open .sidebar-overlay {
 .sidebar-lesson-item.completed { color: var(--color-success); }
 
 /* ── Lesson Layout (W3Schools Style) ── */
+/* lesson-page already has .lesson-topbar; do not add extra top margin here (was mistaken for a global navbar and left a blank band). */
 .lesson-wrapper {
   display: flex;
-  margin-top: calc(var(--navbar-height) - 1px);
-  min-height: calc(100vh - var(--navbar-height));
+  flex: 1;
+  min-height: 0;
+  margin-top: 0;
 }
 
 .lesson-sidebar {
   width: 280px;
+  min-width: 280px;
   background: var(--bg-surface);
   border-right: 1px solid var(--border-color);
   padding: var(--spacing-md);
-  height: calc(100vh - var(--navbar-height));
+  align-self: stretch;
+  min-height: 0;
   position: sticky;
-  top: var(--navbar-height);
+  top: 0;
   overflow-y: auto;
   flex-shrink: 0;
   z-index: 10;
+  transition: min-width 0.3s ease, width 0.3s ease, opacity 0.25s ease, padding 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.lesson-sidebar .sidebar-topic-group {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+.lesson-sidebar .sidebar-topic-toggle:hover {
+  background: rgba(124, 58, 237, 0.12);
+}
+
+@media (min-width: 1025px) {
+  .lesson-wrapper.sidebar-collapsed .lesson-sidebar {
+    width: 0;
+    min-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-right-color: transparent;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .sidebar-header-mini {
@@ -736,6 +821,30 @@ body.sidebar-open .sidebar-overlay {
   letter-spacing: 0.5px;
 }
 
+.sidebar-header-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition);
+}
+
+.sidebar-header-toggle:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.sidebar-header-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 .lesson-theory-container {
   flex: 1;
   padding: var(--spacing-xl);
@@ -745,8 +854,27 @@ body.sidebar-open .sidebar-overlay {
 
 @media (max-width: 1024px) {
   .lesson-sidebar {
-    display: none; /* Hide sidebar on mobile/tablet to keep it clean */
+    position: fixed;
+    top: 80px;
+    left: 0;
+    bottom: 0;
+    width: min(280px, 88vw);
+    min-width: 0;
+    height: auto;
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease,
+      box-shadow 0.3s ease;
+    box-shadow: none;
+    opacity: 1;
+    pointer-events: auto;
   }
+
+  body.lesson-curriculum-open .lesson-sidebar {
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg);
+  }
+
   .lesson-theory-container {
     padding: var(--spacing-lg);
   }
@@ -824,16 +952,145 @@ body.sidebar-open .sidebar-overlay {
 /* ── Module Sections ── */
 .module-section {
   margin-bottom: var(--spacing-2xl);
+  padding: var(--spacing-xl);
+  border-radius: 24px;
+  border: 1px solid var(--border-color);
+  background: linear-gradient(
+    165deg,
+    rgba(124, 58, 237, 0.04) 0%,
+    transparent 45%,
+    rgba(59, 130, 246, 0.03) 100%
+  );
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
-.module-section h2 {
+.module-section--html {
+  border-color: rgba(227, 76, 38, 0.25);
+  background: linear-gradient(
+    165deg,
+    rgba(227, 76, 38, 0.08) 0%,
+    transparent 50%,
+    rgba(124, 58, 237, 0.04) 100%
+  );
+}
+
+.module-section--css {
+  border-color: rgba(38, 77, 228, 0.28);
+  background: linear-gradient(
+    165deg,
+    rgba(38, 77, 228, 0.08) 0%,
+    transparent 50%,
+    rgba(124, 58, 237, 0.05) 100%
+  );
+}
+
+.module-section-intro {
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.module-section-intro h2 {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  font-size: 1.4rem;
+  font-size: 1.45rem;
+  margin: 0 0 var(--spacing-xs);
+  letter-spacing: -0.02em;
+}
+
+.module-section-tagline {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  max-width: 52ch;
+  line-height: 1.5;
+}
+
+.module-lesson-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* Topic bands (W3Schools-style hierarchy, Skill-Orbit visual) */
+.lesson-topic-group {
+  position: relative;
+  padding-left: var(--spacing-md);
+}
+
+.lesson-topic-group--html .lesson-topic-rail {
+  background: linear-gradient(180deg, var(--color-html), rgba(227, 76, 38, 0.35));
+}
+
+.lesson-topic-group--css .lesson-topic-rail {
+  background: linear-gradient(180deg, var(--color-css), rgba(38, 77, 228, 0.4));
+}
+
+.lesson-topic-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 4px;
+  opacity: 0.85;
+}
+
+.lesson-topic-head {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--border-color);
+}
+
+.lesson-topic-head-main {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+.lesson-topic-glyph {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  background: rgba(124, 58, 237, 0.12);
+  color: var(--color-primary-light);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+}
+
+.lesson-topic-group--html .lesson-topic-glyph {
+  background: rgba(227, 76, 38, 0.12);
+  color: var(--color-html);
+  border-color: rgba(227, 76, 38, 0.25);
+}
+
+.lesson-topic-group--css .lesson-topic-glyph {
+  background: rgba(38, 77, 228, 0.12);
+  color: var(--color-css);
+  border-color: rgba(38, 77, 228, 0.28);
+}
+
+.lesson-topic-title {
+  margin: 0 0 4px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.lesson-topic-meta {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .lesson-cards-grid {
@@ -859,9 +1116,9 @@ body.sidebar-open .sidebar-overlay {
 }
 
 .lesson-card-item:hover {
-  border-color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+  border-color: rgba(124, 58, 237, 0.55);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-glow), 0 0 0 1px rgba(124, 58, 237, 0.2);
 }
 
 .lesson-card-item.locked {
@@ -929,4 +1186,14 @@ body.sidebar-open .sidebar-overlay {
   .hero-stats { justify-content: center; }
   .hero-visual { display: none; }
   .nav-links { display: none; }
+
+  .module-section {
+    padding: var(--spacing-lg);
+    border-radius: 18px;
+  }
+
+  .lesson-topic-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
