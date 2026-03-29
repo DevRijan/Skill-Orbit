@@ -43,7 +43,7 @@
     <!-- HERO -->
     <section class="lb-hero">
       <div class="lb-hero-inner">
-        <div>
+        <div style="flex: 1;">
           <div class="lb-hero-label">
             <i class="fa-solid fa-trophy"></i> Global Rankings
           </div>
@@ -51,12 +51,21 @@
             <span>Leaderboard</span>
           </h1>
           <p class="lb-hero-sub">Compete, earn XP, and climb the rankings. Every correct answer counts.</p>
+          
+          <div class="lb-controls">
+            <div class="lb-toggle-wrap">
+              <button class="lb-toggle-btn active" id="btnWeekly">This Week</button>
+              <button class="lb-toggle-btn" id="btnAllTime">All Time</button>
+            </div>
+            <div class="lb-reset-info" id="lbResetInfo">
+              <i class="fa-solid fa-clock"></i> <span id="resetText">Resets Monday</span>
+            </div>
+          </div>
         </div>
         <div class="lb-my-rank-chip" id="myRankChip" style="display:none;">
           <div class="lb-my-rank-num" id="myRankNum">—</div>
           <div class="lb-my-rank-label">Your Rank</div>
           <div style="margin-top:10px;font-size:0.82rem;font-weight:700;color:#fbbf24;" id="myXPDisplay">0 XP</div>
-          <div style="margin-top:5px;font-size:0.75rem;font-weight:600;color:#10b981;" id="myLeagueDisplay">Bronze</div>
         </div>
       </div>
     </section>
@@ -88,28 +97,6 @@
         </div>
       </div>
 
-      <!-- Filters -->
-      <div class="lb-filters">
-        <div class="lb-filter-group">
-          <label for="leagueSelect">League:</label>
-          <select id="leagueSelect">
-            <option value="">All Leagues</option>
-            <option value="Bronze">Bronze</option>
-            <option value="Silver">Silver</option>
-            <option value="Gold">Gold</option>
-            <option value="Platinum">Platinum</option>
-            <option value="Diamond">Diamond</option>
-          </select>
-        </div>
-        <div class="lb-filter-group">
-          <label>Period:</label>
-          <div class="period-toggle">
-            <button id="alltimeBtn" class="active">All Time</button>
-            <button id="weeklyBtn">This Week</button>
-          </div>
-        </div>
-      </div>
-
       <!-- TOP 3 PODIUM -->
       <div class="lb-podium" id="lbPodium">
         <!-- Filled by JS -->
@@ -137,6 +124,58 @@
     </div>
   </div>
 
+  <!-- USER PROFILE MODAL -->
+  <div class="modal-overlay" id="userProfileModal">
+    <div class="modal-content profile-modal">
+      <button class="modal-close" id="closeProfileBtn"><i class="fa-solid fa-xmark"></i></button>
+      <div id="profileModalLoader" class="modal-loader"><i class="fa-solid fa-spinner fa-spin"></i></div>
+      <div id="profileModalBody" style="display:none;">
+        <div class="profile-header">
+          <div class="profile-avatar" id="pmAvatar">🚀</div>
+          <div class="profile-title">
+            <h2 id="pmName">User Name</h2>
+            <div id="pmJoined">Joined ...</div>
+          </div>
+        </div>
+        
+        <div class="profile-level-card">
+          <div class="pm-level-header">
+            <span class="pm-lvl-title" id="pmLevelTitle">Level 1 - Beginner</span>
+            <span class="pm-xp-text" id="pmXpText">0 / 100 XP</span>
+          </div>
+          <div class="pm-progress-bg">
+            <div class="pm-progress-fill" id="pmProgressFill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="profile-stats-grid">
+          <div class="pm-stat">
+            <i class="fa-solid fa-fire" style="color:#f97316;"></i>
+            <div class="pm-stat-val" id="pmStreak">0</div>
+            <div class="pm-stat-label">Day Streak</div>
+          </div>
+          <div class="pm-stat">
+            <i class="fa-solid fa-book-open" style="color:#10b981;"></i>
+            <div class="pm-stat-val" id="pmLessons">0</div>
+            <div class="pm-stat-label">Lessons</div>
+          </div>
+          <div class="pm-stat">
+            <i class="fa-solid fa-star" style="color:#fbbf24;"></i>
+            <div class="pm-stat-val" id="pmTotalXp">0</div>
+            <div class="pm-stat-label">Total XP</div>
+          </div>
+        </div>
+
+        <div class="profile-section">
+          <h3><i class="fa-solid fa-medal"></i> Badges</h3>
+          <div class="pm-badges-grid" id="pmBadgesGrid">
+            <!-- Badges will populate here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <canvas id="bg-canvas"></canvas>
 
   <script src="assets/js/api.js"></script>
@@ -150,9 +189,13 @@
   <script src="assets/js/visuals.js"></script>
 
   <script>
+  let currentMode = 'weekly';
+  let isFetching = false;
+
   document.addEventListener('DOMContentLoaded', async () => {
     initAuth({ requireLogin: false });
     syncLeaderboard();
+    setupEventListeners();
     await renderLeaderboardPage();
   });
 
@@ -164,30 +207,72 @@
   const MEDAL = ['🥇','🥈','🥉'];
   const RANK_CLASS = ['gold','silver','bronze'];
 
+  function setupEventListeners() {
+    document.getElementById('btnWeekly').addEventListener('click', () => setMode('weekly'));
+    document.getElementById('btnAllTime').addEventListener('click', () => setMode('alltime'));
+    
+    document.getElementById('closeProfileBtn').addEventListener('click', closeProfileModal);
+    document.getElementById('userProfileModal').addEventListener('click', (e) => {
+      if(e.target === e.currentTarget) closeProfileModal();
+    });
+  }
+
+  async function setMode(mode) {
+    if (currentMode === mode || isFetching) return;
+    currentMode = mode;
+    
+    document.getElementById('btnWeekly').classList.toggle('active', mode === 'weekly');
+    document.getElementById('btnAllTime').classList.toggle('active', mode === 'alltime');
+    
+    const wrapper = document.getElementById('lbTableWrap');
+    const podium = document.getElementById('lbPodium');
+    if(wrapper) wrapper.style.opacity = '0.5';
+    if(podium) podium.style.opacity = '0.5';
+    
+    await renderLeaderboardPage();
+    
+    if(wrapper) wrapper.style.opacity = '1';
+    if(podium) podium.style.opacity = '1';
+  }
+
   function getMyId() {
     const p = typeof getProfile === 'function' ? getProfile() : null;
     if (!p) return p ? (p.id || null) : null;
     return p.id || (p.name + '_' + (p.joinedAt || '').slice(0, 10));
   }
 
-  let currentLeague = '';
-  let currentPeriod = 'alltime';
-
   async function renderLeaderboardPage() {
-    const board  = typeof getLeaderboard === 'function' ? await getLeaderboard({ league: currentLeague, period: currentPeriod }) : [];
+    isFetching = true;
+    const lbData = typeof getLeaderboard === 'function' ? await getLeaderboard(currentMode) : { board: [] };
+    const board = lbData.board || [];
     const myProfile = typeof getProfile === 'function' ? getProfile() : null;
     const myId   = myProfile ? (myProfile.id || (myProfile.name + '_' + (myProfile.joinedAt || '').slice(0, 10))) : null;
-    const myRank = typeof getMyRank === 'function' ? await getMyRank() : null;
+    isFetching = false;
+
+    // Reset Label & Toggle Text logic
+    const resetInfo = document.getElementById('lbResetInfo');
+    const resetText = document.getElementById('resetText');
+    if (currentMode === 'weekly') {
+      resetInfo.style.display = 'inline-flex';
+      if (lbData.resetAt) {
+        const d = new Date(lbData.resetAt);
+        const days = Math.floor((d - new Date()) / (1000 * 60 * 60 * 24));
+        resetText.textContent = days > 0 ? `Resets in ${days} day${days>1?'s':''}` : 'Resets tonight';
+      } else {
+        resetText.textContent = 'Weekly rankings';
+      }
+    } else {
+      resetInfo.style.display = 'none';
+    }
 
     // Hero rank chip
     const myEntry = board.find(e => e.id === myId);
     const rankChip = document.getElementById('myRankChip');
     if (myEntry && rankChip) {
       rankChip.style.display = 'block';
-      document.getElementById('myRankNum').textContent  = '#' + (myRank || '?');
-      const myXP = currentPeriod === 'weekly' ? (myEntry.weeklyXP || 0) : myEntry.xp;
-      document.getElementById('myXPDisplay').textContent = myXP + (currentPeriod === 'weekly' ? ' Weekly XP' : ' XP');
-      document.getElementById('myLeagueDisplay').textContent = myEntry.league;
+      const myRank = board.findIndex(e => e.id === myId) + 1;
+      document.getElementById('myRankNum').textContent  = '#' + myRank;
+      document.getElementById('myXPDisplay').textContent = myEntry.xp + ' XP';
     }
 
     // Label
@@ -221,13 +306,14 @@
       const isYou   = user.id === myId;
       const card = document.createElement('div');
       card.className = `podium-card rank-${rankNum}${isYou ? ' you' : ''}`;
+      card.style.cursor = 'pointer';
+      card.onclick = () => openProfileModal(user.id);
 
       card.innerHTML = `
         <div class="podium-medal">${MEDAL[i] || rankNum}</div>
         <div class="podium-avatar">${user.avatar}</div>
         <div class="podium-name" title="${user.name}">${user.name}</div>
-        <div class="podium-league">${user.league}</div>
-        <div class="podium-xp">${(currentPeriod === 'weekly' ? (user.weeklyXP || 0) : user.xp).toLocaleString()} ${currentPeriod === 'weekly' ? 'Weekly XP' : 'XP'}</div>
+        <div class="podium-xp">${user.xp.toLocaleString()} XP</div>
         <div class="podium-level">Lv.${user.level} ${user.levelTitle}</div>
         ${isYou ? '<div class="you-tag">You</div>' : ''}
       `;
@@ -259,8 +345,7 @@
           <th class="hide-mobile">Streak</th>
           <th class="hide-mobile">Lessons</th>
           <th class="hide-mobile">Badges</th>
-          <th>League</th>
-          <th>${currentPeriod === 'weekly' ? 'Weekly XP' : 'XP'}</th>
+          <th>XP</th>
         </tr>
       </thead>
       <tbody id="lbTbody"></tbody>`;
@@ -275,6 +360,8 @@
       const isYou = user.id === myId;
       const tr    = document.createElement('tr');
       tr.className = `lb-row${isYou ? ' lb-you' : ''}`;
+      tr.style.cursor = 'pointer';
+      tr.onclick = () => openProfileModal(user.id);
 
       let rankDisplay;
       if (rank <= 3) {
@@ -300,32 +387,80 @@
         <td class="lb-stat-cell hide-mobile">🔥 ${user.streak}</td>
         <td class="lb-stat-cell hide-mobile">📚 ${user.lessonsCount}</td>
         <td class="lb-stat-cell hide-mobile">🏅 ${user.badgesCount}</td>
-        <td class="lb-stat-cell">${user.league}</td>
-        <td><span class="lb-xp-val">${(currentPeriod === 'weekly' ? (user.weeklyXP || 0) : user.xp).toLocaleString()}</span></td>
+        <td><span class="lb-xp-val">${user.xp.toLocaleString()}</span></td>
       `;
 
       tbody.appendChild(tr);
     });
   }
 
-  // Event listeners for filters
-  document.getElementById('leagueSelect').addEventListener('change', async () => {
-    currentLeague = document.getElementById('leagueSelect').value;
-    await renderLeaderboardPage();
-  });
+  // ── USER PROFILE MODAL ──────────────────────────────────────────────────────
 
-  document.getElementById('alltimeBtn').addEventListener('click', async () => {
-    currentPeriod = 'alltime';
-    document.getElementById('alltimeBtn').classList.add('active');
-    document.getElementById('weeklyBtn').classList.remove('active');
-    await renderLeaderboardPage();
-  });
+  async function openProfileModal(userId) {
+    const modal = document.getElementById('userProfileModal');
+    const bdy = document.getElementById('profileModalBody');
+    const ldr = document.getElementById('profileModalLoader');
+    
+    modal.classList.add('visible');
+    bdy.style.display = 'none';
+    ldr.style.display = 'flex';
 
-  document.getElementById('weeklyBtn').addEventListener('click', async () => {
-    currentPeriod = 'weekly';
-    document.getElementById('weeklyBtn').classList.add('active');
-    document.getElementById('alltimeBtn').classList.remove('active');
-    await renderLeaderboardPage();
-  });
+    try {
+      if(!window.SkillOrbitAPI || !window.SkillOrbitAPI.isOnline()) {
+        throw new Error('Offline check not fully supported for detailed profiles.');
+      }
+      
+      const res = await window.SkillOrbitAPI.leaderboard.getUserProfile(userId);
+      const p = res.profile;
 
+      document.getElementById('pmAvatar').textContent = p.avatar;
+      document.getElementById('pmName').textContent = p.name;
+      const joinedDate = new Date(p.joinedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('pmJoined').textContent = `Joined ${joinedDate}`;
+
+      document.getElementById('pmLevelTitle').textContent = `Level ${p.level} — ${p.levelTitle}`;
+      const nextXpText = p.nextLevelXP ? ` / ${p.nextLevelXP}` : '';
+      document.getElementById('pmXpText').textContent = `${p.xp}${nextXpText} XP`;
+      document.getElementById('pmProgressFill').style.width = `${p.xpPercent || 100}%`;
+
+      document.getElementById('pmStreak').textContent = p.streak;
+      document.getElementById('pmLessons').textContent = p.lessonsCount;
+      document.getElementById('pmTotalXp').textContent = p.xp.toLocaleString();
+
+      const badgesGrid = document.getElementById('pmBadgesGrid');
+      badgesGrid.innerHTML = '';
+      if(p.badges && p.badges.length) {
+        p.badges.forEach(b => {
+          const bdg = document.createElement('div');
+          bdg.className = `pm-badge-item ${b.earned ? 'earned' : 'locked'}`;
+          bdg.title = b.description;
+          bdg.innerHTML = `
+            <div class="pm-bdg-icon">${b.icon}</div>
+            <div class="pm-bdg-name">${b.name}</div>
+          `;
+          badgesGrid.appendChild(bdg);
+        });
+      } else {
+        badgesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.8rem;">No badges available.</div>';
+      }
+
+      ldr.style.display = 'none';
+      bdy.style.display = 'block';
+
+    } catch(err) {
+      ldr.innerHTML = `
+        <div style="color:#ef4444;text-align:center;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;margin-bottom:10px;"></i>
+          <div>Could not load profile.</div>
+        </div>`;
+      console.error(err);
+    }
+  }
+
+  function closeProfileModal() {
+    document.getElementById('userProfileModal').classList.remove('visible');
+  }
+  </script>
+
+</body>
 </html>

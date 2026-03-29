@@ -9,7 +9,6 @@
 // =============================================
 
 const express = require('express');
-const { getLeague } = require('../utils/levelCalc');
 const router  = express.Router();
 
 const { queries }        = require('../db/database');
@@ -32,7 +31,6 @@ function parseProgress(row) {
 }
 
 function stringifyAndSave(userId, p) {
-  const league = getLeague(p.xp_total);
   queries.updateProgress.run(
     p.xp_total,
     p.streak,
@@ -42,7 +40,6 @@ function stringifyAndSave(userId, p) {
     JSON.stringify(p.quiz_xp),
     JSON.stringify(p.challenge_xp),
     JSON.stringify(p.activity_log),
-    league,
     userId
   );
 }

@@ -6,36 +6,20 @@
 
 const LEADERBOARD_KEY = 'skill-orbit-leaderboard';
 
-const LEAGUE_THRESHOLDS = [
-  { league: 'Bronze',   minXP: 0    },
-  { league: 'Silver',   minXP: 100  },
-  { league: 'Gold',     minXP: 250  },
-  { league: 'Platinum', minXP: 500  },
-  { league: 'Diamond',  minXP: 1000 },
-];
-
-function getLeague(xp) {
-  for (let i = LEAGUE_THRESHOLDS.length - 1; i >= 0; i--) {
-    if (xp >= LEAGUE_THRESHOLDS[i].minXP) {
-      return LEAGUE_THRESHOLDS[i].league;
-    }
-  }
-  return 'Bronze';
-}
-
-let currentLeague = '';
-let currentPeriod = 'alltime';
-
 // ── Get Leaderboard ───────────────────────────────────────────────────────────
 // Returns sorted leaderboard: online = real API, offline = localStorage fallback.
 
-async function getLeaderboard(options = {}) {
-  const opts = { limit: 50, ...options };
-
+async function getLeaderboard(mode = 'weekly') {
   if (window.SkillOrbitAPI && window.SkillOrbitAPI.isOnline()) {
     try {
-      const res = await window.SkillOrbitAPI.leaderboard.getAll(opts);
-      return res.leaderboard || [];
+      const res = mode === 'weekly'
+        ? await window.SkillOrbitAPI.leaderboard.getWeekly(50)
+        : await window.SkillOrbitAPI.leaderboard.getAll(50);
+      return {
+        board:   res.leaderboard || [],
+        type:    res.type || mode,
+        resetAt: res.weekResetAt || null
+      };
     } catch (err) {
       console.warn('[leaderboard] API fetch failed, using cache:', err.message);
     }
@@ -43,19 +27,15 @@ async function getLeaderboard(options = {}) {
 
   // Offline fallback — localStorage
   const raw = localStorage.getItem(LEADERBOARD_KEY);
-  if (!raw) return [];
+  if (!raw) return { board: [], type: 'offline' };
   try {
     const entries = JSON.parse(raw);
-    // Filter by league if provided
-    let filtered = entries;
-    if (opts.league) {
-      filtered = entries.filter(e => e.league === opts.league);
-    }
-    // Sort by XP (offline doesn't have weekly)
-    filtered.sort((a, b) => (b.xp || 0) - (a.xp || 0));
-    return filtered.slice(0, opts.limit);
+    return {
+      board: entries.sort((a, b) => (b.xp || 0) - (a.xp || 0)),
+      type: 'offline'
+    };
   } catch {
-    return [];
+    return { board: [], type: 'offline' };
   }
 }
 
@@ -74,9 +54,10 @@ async function getMyRank() {
   // Offline fallback
   const profile = typeof getProfile === 'function' ? getProfile() : null;
   if (!profile) return null;
-  const board = (await getLeaderboard());
-  const id    = profile.name + '_' + (profile.joinedAt || '').slice(0, 10);
-  const idx   = board.findIndex(e => e.id === id);
+  const lbData = await getLeaderboard();
+  const board  = Array.isArray(lbData) ? lbData : (lbData.board || []);
+  const id     = profile.name + '_' + (profile.joinedAt || '').slice(0, 10);
+  const idx    = board.findIndex(e => e.id === id);
   return idx >= 0 ? idx + 1 : null;
 }
 
@@ -95,8 +76,9 @@ async function getMyEntry() {
   // Offline fallback
   const profile = typeof getProfile === 'function' ? getProfile() : null;
   if (!profile) return null;
-  const board = await getLeaderboard();
-  const id    = profile.name + '_' + (profile.joinedAt || '').slice(0, 10);
+  const lbData = await getLeaderboard();
+  const board  = Array.isArray(lbData) ? lbData : (lbData.board || []);
+  const id     = profile.name + '_' + (profile.joinedAt || '').slice(0, 10);
   return board.find(e => e.id === id) || null;
 }
 
@@ -126,7 +108,6 @@ function syncLeaderboard() {
     badgesCount:  earnedBadges,
     level:        typeof getLevelInfo === 'function' ? getLevelInfo(progress.xp || 0).current.level : 1,
     levelTitle:   typeof getLevelInfo === 'function' ? getLevelInfo(progress.xp || 0).current.title : 'Beginner',
-    league:       getLeague(progress.xp || 0),
     joinedAt:     profile.joinedAt || new Date().toISOString(),
     lastSeen:     new Date().toISOString(),
   };

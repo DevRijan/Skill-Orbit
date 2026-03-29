@@ -6,7 +6,6 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
-const { getLevelInfo, getLeague } = require('../utils/levelCalc');
 
 const DB_DIR = path.join(__dirname);
 const DB_PATH = path.join(DB_DIR, 'skill-orbit.db');
@@ -69,8 +68,6 @@ const MIGRATIONS = [
   CREATE INDEX IF NOT EXISTS idx_progress_xp ON progress(xp_total DESC);
   CREATE INDEX IF NOT EXISTS idx_badges_user_id ON badges(user_id);
   `,
-  // v2 — Add league to progress
-  `ALTER TABLE progress ADD COLUMN league TEXT DEFAULT 'Bronze';`,
 ];
 
 // Run migrations
@@ -97,67 +94,78 @@ function runMigrations() {
 
 runMigrations();
 
-// ── Helper functions ──────────────────────────────────────────────────────────
-
-function calculateWeeklyXP(activityLogStr) {
-  const activityLog = JSON.parse(activityLogStr || '{}');
-  const dates = Object.keys(activityLog).sort();
-  if (dates.length === 0) return 0;
-
-  const now = new Date();
-  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const recentDates = dates.filter(d => new Date(d) >= sevenDaysAgo);
-  if (recentDates.length === 0) return 0;
-
-  const latestXP = activityLog[recentDates[recentDates.length - 1]];
-  const oldestXP = activityLog[recentDates[0]];
-  return latestXP - oldestXP;
-}
-
 // ── Leaderboard View (computed) ───────────────────────────────────────────────
 
-// Returns top N users joined with their progress stats
-function getLeaderboard(options = {}) {
-  const { limit = 50, league, period = 'alltime' } = options;
+// Returns top N users joined with their progress stats (+ badge count)
+function getLeaderboard(limit = 50) {
+  return db
+    .prepare(
+      `SELECT
+        u.id, u.name, u.avatar, u.joined_at,
+        COALESCE(p.xp_total, 0)                   AS xp,
+        COALESCE(p.streak, 0)                     AS streak,
+        COALESCE(p.last_visit, u.last_seen)       AS last_seen,
+        COALESCE(json_array_length(p.completed_lessons), 0) AS lessons_count,
+        COALESCE(p.updated_at, u.joined_at)       AS updated_at,
+        COALESCE(bc.badge_count, 0)               AS badge_count
+       FROM users u
+       LEFT JOIN progress p ON p.user_id = u.id
+       LEFT JOIN (
+         SELECT user_id, COUNT(*) AS badge_count FROM badges GROUP BY user_id
+       ) bc ON bc.user_id = u.id
+       WHERE u.is_active = 1
+       ORDER BY xp DESC, u.joined_at ASC
+       LIMIT ?`
+    )
+    .all(limit);
+}
 
-  let whereClause = 'WHERE u.is_active = 1';
-  const params = [];
+// Returns top N users ranked by XP earned in the current ISO week (Mon–Sun)
+function getWeeklyLeaderboard(limit = 50) {
+  // Compute Mon 00:00 of this week
+  const now = new Date();
+  const day = now.getUTCDay(); // 0=Sun,1=Mon,...
+  const diffToMon = day === 0 ? 6 : day - 1;
+  const monday = new Date(now);
+  monday.setUTCDate(now.getUTCDate() - diffToMon);
+  monday.setUTCHours(0, 0, 0, 0);
+  const mondayStr = monday.toISOString().slice(0, 10); // "YYYY-MM-DD"
 
-  if (league) {
-    whereClause += ' AND p.league = ?';
-    params.push(league);
-  }
+  // Pull all users' activity_log JSON and sum keys >= mondayStr
+  const rows = db
+    .prepare(
+      `SELECT
+        u.id, u.name, u.avatar, u.joined_at,
+        COALESCE(p.xp_total, 0)                   AS xp_total,
+        COALESCE(p.streak, 0)                     AS streak,
+        COALESCE(p.last_visit, u.last_seen)       AS last_seen,
+        COALESCE(json_array_length(p.completed_lessons), 0) AS lessons_count,
+        COALESCE(p.activity_log, '{}')            AS activity_log,
+        COALESCE(bc.badge_count, 0)               AS badge_count
+       FROM users u
+       LEFT JOIN progress p ON p.user_id = u.id
+       LEFT JOIN (
+         SELECT user_id, COUNT(*) AS badge_count FROM badges GROUP BY user_id
+       ) bc ON bc.user_id = u.id
+       WHERE u.is_active = 1`
+    )
+    .all();
 
-  const query = `SELECT
-    u.id, u.name, u.avatar, u.joined_at,
-    COALESCE(p.xp_total, 0)          AS xp,
-    COALESCE(p.league, 'Bronze')     AS league,
-    COALESCE(p.streak, 0)            AS streak,
-    COALESCE(p.last_visit, u.last_seen) AS last_seen,
-    COALESCE(
-      json_array_length(p.completed_lessons), 0
-    )                                AS lessons_count,
-    COALESCE(p.updated_at, u.joined_at) AS updated_at,
-    p.activity_log
-   FROM users u
-   LEFT JOIN progress p ON p.user_id = u.id
-   ${whereClause}
-   ORDER BY xp DESC, u.joined_at ASC
-   LIMIT ?`;
+  // Compute weekly XP in JS
+  const enriched = rows.map((row) => {
+    let weeklyXP = 0;
+    try {
+      const log = JSON.parse(row.activity_log);
+      for (const [date, xpAmt] of Object.entries(log)) {
+        if (date >= mondayStr) weeklyXP += (xpAmt || 0);
+      }
+    } catch (_) {}
+    return { ...row, xp: weeklyXP };
+  });
 
-  params.push(limit);
-  let rows = db.prepare(query).all(...params);
-
-  // If weekly, calculate weekly_xp and re-sort
-  if (period === 'weekly') {
-    rows = rows.map(row => {
-      const weeklyXP = calculateWeeklyXP(row.activity_log);
-      return { ...row, weeklyXP };
-    });
-    rows.sort((a, b) => b.weeklyXP - a.weeklyXP || a.joined_at.localeCompare(b.joined_at));
-  }
-
-  return rows;
+  // Sort by weekly XP desc, then join date asc
+  enriched.sort((a, b) => b.xp - a.xp || a.joined_at.localeCompare(b.joined_at));
+  return enriched.slice(0, limit);
 }
 
 function getUserRank(userId) {
@@ -173,6 +181,27 @@ function getUserRank(userId) {
     )
     .get(userId);
   return row ? row.rank : null;
+}
+
+// Public profile for any user (for the leaderboard profile modal)
+function getUserPublicProfile(userId) {
+  return db
+    .prepare(
+      `SELECT
+        u.id, u.name, u.avatar, u.joined_at,
+        COALESCE(p.xp_total, 0)                   AS xp,
+        COALESCE(p.streak, 0)                     AS streak,
+        COALESCE(p.last_visit, u.last_seen)       AS last_seen,
+        COALESCE(json_array_length(p.completed_lessons), 0) AS lessons_count,
+        COALESCE(bc.badge_count, 0)               AS badge_count
+       FROM users u
+       LEFT JOIN progress p ON p.user_id = u.id
+       LEFT JOIN (
+         SELECT user_id, COUNT(*) AS badge_count FROM badges GROUP BY user_id
+       ) bc ON bc.user_id = u.id
+       WHERE u.id = ? AND u.is_active = 1`
+    )
+    .get(userId);
 }
 
 // ── Named query helpers ───────────────────────────────────────────────────────
@@ -194,16 +223,15 @@ const queries = {
     `UPDATE progress SET
        xp_total = ?, streak = ?, last_visit = ?,
        completed_lessons = ?, lesson_xp = ?, quiz_xp = ?,
-       challenge_xp = ?, activity_log = ?, league = ?,
+       challenge_xp = ?, activity_log = ?,
        updated_at = datetime('now')
      WHERE user_id = ?`
   ),
 
   // Badges
   getUserBadges:   db.prepare('SELECT badge_id, earned_at FROM badges WHERE user_id = ?'),
-  getBadgeCount:   db.prepare('SELECT COUNT(*) as count FROM badges WHERE user_id = ?'),
   awardBadge:      db.prepare('INSERT OR IGNORE INTO badges (user_id, badge_id) VALUES (?, ?)'),
   hasBadge:        db.prepare('SELECT 1 FROM badges WHERE user_id = ? AND badge_id = ?'),
 };
 
-module.exports = { db, queries, getLeaderboard, getUserRank };
+module.exports = { db, queries, getLeaderboard, getWeeklyLeaderboard, getUserRank, getUserPublicProfile };

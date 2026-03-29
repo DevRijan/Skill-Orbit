@@ -13,23 +13,6 @@ const LEVEL_THRESHOLDS = [
   { level: 7,  title: 'Grandmaster', minXP: 5000 },
 ];
 
-const LEAGUE_THRESHOLDS = [
-  { league: 'Bronze',   minXP: 0    },
-  { league: 'Silver',   minXP: 100  },
-  { league: 'Gold',     minXP: 250  },
-  { league: 'Platinum', minXP: 500  },
-  { league: 'Diamond',  minXP: 1000 },
-];
-
-function getLeague(xp) {
-  for (let i = LEAGUE_THRESHOLDS.length - 1; i >= 0; i--) {
-    if (xp >= LEAGUE_THRESHOLDS[i].minXP) {
-      return LEAGUE_THRESHOLDS[i].league;
-    }
-  }
-  return 'Bronze';
-}
-
 function getLevelInfo(xp) {
   let current = LEVEL_THRESHOLDS[0];
   let next = LEVEL_THRESHOLDS[1];
@@ -56,4 +39,4 @@ const XP_REWARDS = {
   QUIZ_Q:    1,
 };
 
-module.exports = { getLevelInfo, LEVEL_THRESHOLDS, XP_REWARDS, getLeague, LEAGUE_THRESHOLDS };
+module.exports = { getLevelInfo, LEVEL_THRESHOLDS, XP_REWARDS };

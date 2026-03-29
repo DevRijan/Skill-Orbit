@@ -116,16 +116,20 @@ const SkillOrbitAPI = (() => {
 
   // ── Leaderboard API ─────────────────────────
 
-  async function getLeaderboard(options = {}) {
-    const { limit = 50, league, period = 'alltime' } = options;
-    const params = new URLSearchParams({ limit });
-    if (league) params.set('league', league);
-    if (period) params.set('period', period);
-    return apiFetch('GET', `/leaderboard?${params.toString()}`);
+  async function getLeaderboard(limit = 50) {
+    return apiFetch('GET', `/leaderboard?limit=${limit}`);
+  }
+
+  async function getWeeklyLeaderboard(limit = 50) {
+    return apiFetch('GET', `/leaderboard/weekly?limit=${limit}`);
   }
 
   async function getMyRank() {
     return apiFetch('GET', '/leaderboard/me');
+  }
+
+  async function getUserProfile(userId) {
+    return apiFetch('GET', `/leaderboard/user/${userId}`);
   }
 
   // ── Badges API ──────────────────────────────
@@ -188,8 +192,10 @@ const SkillOrbitAPI = (() => {
     },
 
     leaderboard: {
-      getAll:  getLeaderboard,
+      getAll:         getLeaderboard,
+      getWeekly:      getWeeklyLeaderboard,
       getMyRank,
+      getUserProfile,
     },
 
     badges: {
