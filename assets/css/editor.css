@@ -769,3 +769,22 @@
   .lesson-editor-panel { height: 55%; }
   .preview-panel { height: 40%; }
 }
+
+@media (max-width: 480px) {
+  .lesson-topbar { padding: 0 var(--spacing-md); height: 60px; gap: var(--spacing-sm); }
+  .lesson-title-info h1 { font-size: 0.95rem; }
+  .lesson-module-badge { font-size: 0.6rem; }
+  
+  .theory-content-wrapper { padding: var(--spacing-xl) var(--spacing-md) 100px; }
+  .theory-body h1 { font-size: 2rem; margin-bottom: var(--spacing-md); }
+  .theory-body h2 { font-size: 1.5rem; margin: var(--spacing-xl) 0 var(--spacing-md); }
+  
+  .btn-floating-editor { width: 48px; height: 48px; right: 16px; top: calc(50% - 24px); font-size: 1.2rem; }
+  .fab-tooltip { display: none; }
+  
+  .lesson-footer { padding: var(--spacing-md); flex-direction: column; gap: var(--spacing-md); }
+  .footer-center { order: -1; margin-bottom: var(--spacing-sm); }
+  .footer-left, .footer-right { width: 100%; justify-content: space-between; flex: none; }
+  
+  .lesson-theory-panel, .lesson-editor-panel, .lesson-editor-panel-full { min-height: 250px; }
+}

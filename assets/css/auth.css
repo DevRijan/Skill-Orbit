@@ -1056,3 +1056,17 @@ body.modal-open { overflow: hidden; }
   .acc-stats-grid { grid-template-columns: 1fr 1fr; }
   .settings-avatar-grid { grid-template-columns: repeat(6,1fr); }
 }
+
+@media (max-width: 480px) {
+  .auth-inner { padding: 32px 24px; }
+  .auth-header h2 { font-size: 1.6rem; }
+  .avatar-grid { grid-template-columns: repeat(3, 1fr); padding: 12px; }
+  
+  .acc-stats-grid { grid-template-columns: 1fr; }
+  .badges-masonry { grid-template-columns: 1fr; }
+  .settings-avatar-grid { grid-template-columns: repeat(4, 1fr); }
+  
+  .acc-main-content { padding: 16px; }
+  .acc-profile-sidebar { padding: 24px 16px; flex-direction: column; align-items: center; }
+  .acc-sidebar-nav { width: 100%; }
+}
