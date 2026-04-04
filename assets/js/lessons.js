@@ -11,7 +11,7 @@ let CURRICULUM = [];
 async function loadDashboard() {
   try {
     CURRICULUM = window.SKILL_ORBIT_CURRICULUM || [];
-    renderDashboard();
+    // renderDashboard(); // Obsolete, replaced by switchCourse
     renderSidebar();
     updateProgressBars();
   } catch (err) {
@@ -29,80 +29,211 @@ function orderedSectionTitles(lessons) {
   return titles;
 }
 
-function createLessonTopicGroup(sectionTitle, sectionLessons, track, startIndex) {
-  const wrap = document.createElement('article');
-  wrap.className = `lesson-topic-group lesson-topic-group--${track}`;
-  wrap.setAttribute('aria-labelledby', `topic-${track}-${sectionTitle.replace(/\s+/g, '-')}`);
-
-  const head = document.createElement('header');
-  head.className = 'lesson-topic-head';
-  const count = sectionLessons.length;
-  head.innerHTML = `
-    <div class="lesson-topic-head-main">
-      <span class="lesson-topic-glyph" aria-hidden="true"><i class="fa-solid fa-bookmark"></i></span>
-      <div class="lesson-topic-head-copy">
-        <h3 class="lesson-topic-title" id="topic-${track}-${sectionTitle.replace(/\s+/g, '-')}">${sectionTitle}</h3>
-        <p class="lesson-topic-meta">${count} lesson${count === 1 ? '' : 's'}</p>
-      </div>
-    </div>
-    <div class="lesson-topic-rail" aria-hidden="true"></div>
-  `;
-
-  const grid = document.createElement('div');
-  grid.className = 'lesson-cards-grid';
-  sectionLessons.forEach((lesson, i) => {
-    grid.appendChild(createLessonCard(lesson, startIndex + i));
-  });
-
-  wrap.appendChild(head);
-  wrap.appendChild(grid);
-  return wrap;
-}
-
 function renderModuleLessonGroups(container, moduleLessons, track) {
   container.innerHTML = '';
-  container.classList.add('module-lesson-groups', 'stagger-children');
+  container.className = 'progression-map animate-fadeInUp';
 
+  // Create SVG layer for connectors
+  const svgLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgLayer.setAttribute('class', 'map-svg-layer');
+  svgLayer.style.width = '100%';
+  svgLayer.style.height = '100%';
+  container.appendChild(svgLayer);
+
+  const progress = typeof loadProgress === 'function' ? loadProgress() : { completedLessons: [] };
+  
+  // Find the first uncompleted lesson to mark as "current"
+  let currentLessonId = null;
+  for (const l of moduleLessons) {
+    if (!progress.completedLessons.includes(l.id)) {
+      currentLessonId = l.id;
+      break;
+    }
+  }
+
+  // Ensure tooltips stay active on hover
+  const tooltip = document.getElementById('mapNodeTooltip');
+  if (tooltip) {
+    tooltip.addEventListener('mouseenter', () => clearTimeout(tooltipHideTimeout));
+    tooltip.addEventListener('mouseleave', hideMapTooltip);
+  }
+
+  // Draw nodes
+  let globalIndex = 0;
   const titles = orderedSectionTitles(moduleLessons);
-  if (titles.length === 0) return;
-
-  let offset = 0;
+  
   titles.forEach((sectionTitle) => {
-    const sectionLessons = moduleLessons.filter((l) => (l.section || 'General') === sectionTitle);
-    container.appendChild(createLessonTopicGroup(sectionTitle, sectionLessons, track, offset));
-    offset += sectionLessons.length;
+    const sectionLessons = moduleLessons.filter(l => (l.section || 'General') === sectionTitle);
+    
+    const marker = document.createElement('div');
+    marker.className = 'map-section-marker';
+    marker.textContent = sectionTitle;
+    container.appendChild(marker);
+    
+    sectionLessons.forEach((lesson, i) => {
+      globalIndex++;
+      const isCompleted = progress.completedLessons.includes(lesson.id);
+      const isCurrent = lesson.id === currentLessonId;
+      const isLocked = !isCompleted && !isCurrent;
+      
+      const wrap = document.createElement('div');
+      wrap.className = 'map-node-wrapper';
+      
+      const node = document.createElement('button');
+      node.className = `map-node ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`;
+      // Add milestone crown to the last lesson of a section
+      if (i === sectionLessons.length - 1 && sectionLessons.length > 1) {
+         node.classList.add('milestone');
+      }
+      
+      node.setAttribute('aria-label', `${lesson.title} - ${isCompleted ? 'Completed' : (isCurrent ? 'Current' : 'Locked')}`);
+      node.innerHTML = isCompleted ? '<i class="fa-solid fa-check"></i>' 
+                     : (isLocked ? '<i class="fa-solid fa-lock"></i>' : '<i class="fa-solid fa-star"></i>');
+                     
+      node.addEventListener('mouseenter', () => showMapTooltip(node, lesson, globalIndex, isCompleted, isCurrent, isLocked, track));
+      node.addEventListener('mouseleave', hideMapTooltip);
+      node.addEventListener('focus', () => showMapTooltip(node, lesson, globalIndex, isCompleted, isCurrent, isLocked, track));
+      node.addEventListener('blur', hideMapTooltip);
+      
+      node.addEventListener('click', () => {
+         if (!isLocked || isCurrent) window.location.href = `lesson.html?lesson=${lesson.id}`;
+      });
+      
+      wrap.appendChild(node);
+      container.appendChild(wrap);
+    });
   });
+  
+  // Draw SVG conectors
+  setTimeout(() => drawMapConnectors(container, svgLayer, track), 100);
 }
 
-// ── Dashboard Lesson Grid ─────────────────────────
-function renderDashboard() {
-  const htmlGrid = document.getElementById('html-lessons-grid');
-  const cssGrid  = document.getElementById('css-lessons-grid');
-  if (!htmlGrid || !cssGrid) return;
-
-  const htmlLessons = CURRICULUM.filter(l => l.module === 'html');
-  const cssLessons  = CURRICULUM.filter(l => l.module === 'css');
-
-  renderModuleLessonGroups(htmlGrid, htmlLessons, 'html');
-  renderModuleLessonGroups(cssGrid, cssLessons, 'css');
+function drawMapConnectors(container, svgLayer, track) {
+  svgLayer.innerHTML = '';
+  const nodes = container.querySelectorAll('.map-node');
+  if (nodes.length < 2) return;
+  
+  const containerRect = container.getBoundingClientRect();
+  let pathD = '';
+  
+  for(let i=0; i<nodes.length-1; i++) {
+    const n1 = nodes[i];
+    const n2 = nodes[i+1];
+    const rect1 = n1.getBoundingClientRect();
+    const rect2 = n2.getBoundingClientRect();
+    
+    // Centers relative to SVG area
+    const x1 = rect1.left + rect1.width/2 - containerRect.left;
+    const y1 = rect1.top + rect1.height/2 - containerRect.top;
+    const x2 = rect2.left + rect2.width/2 - containerRect.left;
+    const y2 = rect2.top + rect2.height/2 - containerRect.top;
+    
+    if (i === 0) pathD += `M ${x1} ${y1} `;
+    
+    const ctrlY = y1 + (y2 - y1) / 2;
+    pathD += `C ${x1} ${ctrlY}, ${x2} ${ctrlY}, ${x2} ${y2} `;
+  }
+  
+  const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  bgPath.setAttribute('d', pathD);
+  bgPath.setAttribute('fill', 'none');
+  bgPath.setAttribute('stroke', 'rgba(255,255,255,0.06)');
+  bgPath.setAttribute('stroke-width', '16');
+  bgPath.setAttribute('stroke-linecap', 'round');
+  svgLayer.appendChild(bgPath);
+  
+  // Progress path
+  const activeNodes = container.querySelectorAll('.map-node.completed, .map-node.current');
+  if (activeNodes.length > 1) {
+     let activePathD = '';
+     for(let i=0; i<activeNodes.length-1; i++) {
+        const n1 = activeNodes[i];
+        const n2 = activeNodes[i+1];
+        const rect1 = n1.getBoundingClientRect();
+        const rect2 = n2.getBoundingClientRect();
+        
+        const x1 = rect1.left + rect1.width/2 - containerRect.left;
+        const y1 = rect1.top + rect1.height/2 - containerRect.top;
+        const x2 = rect2.left + rect2.width/2 - containerRect.left;
+        const y2 = rect2.top + rect2.height/2 - containerRect.top;
+        
+        if (i === 0) activePathD += `M ${x1} ${y1} `;
+        
+        const ctrlY = y1 + (y2 - y1) / 2;
+        activePathD += `C ${x1} ${ctrlY}, ${x2} ${ctrlY}, ${x2} ${y2} `;
+     }
+     if (activePathD) {
+        const strokeColor = track === 'html' ? '#f97316' : (track === 'css' ? '#3b82f6' : '#7c3aed');
+        const activePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        activePath.setAttribute('d', activePathD);
+        activePath.setAttribute('fill', 'none');
+        activePath.setAttribute('stroke', strokeColor);
+        activePath.setAttribute('stroke-width', '8');
+        activePath.setAttribute('stroke-linecap', 'round');
+        svgLayer.appendChild(activePath);
+     }
+  }
 }
 
-function createLessonCard(lesson, index) {
-  const progress  = loadProgress();
-  const completed = progress.completedLessons.includes(lesson.id);
+let tooltipHideTimeout;
 
-  const card = document.createElement('div');
-  card.className = `lesson-card-item ${completed ? 'completed' : ''}`;
-  card.innerHTML = `
-    <span class="lesson-num">Lesson ${index + 1}</span>
-    <span class="lesson-card-title">${lesson.title}</span>
-    <span class="lesson-xp-badge"><i class="fa-solid fa-bolt"></i> ${lesson.xp} XP</span>
-  `;
-  card.addEventListener('click', () => {
-    window.location.href = `lesson.html?lesson=${lesson.id}`;
-  });
-  return card;
+function showMapTooltip(nodeEl, lessonData, index, isCompleted, isCurrent, isLocked) {
+  clearTimeout(tooltipHideTimeout);
+  const tooltip = document.getElementById('mapNodeTooltip');
+  if (!tooltip) return;
+  
+  document.getElementById('ttipLessonNum').textContent = `Lesson ${index}`;
+  document.getElementById('ttipLessonXp').innerHTML = `<i class="fa-solid fa-bolt"></i> ${lessonData.xp || 50} XP`;
+  document.getElementById('ttipLessonTitle').textContent = lessonData.title;
+  
+  const desc = isCompleted ? 'You mastered this topic. Revisit anytime.' : (lessonData.subtitle || 'Learn the core concepts to unlock the next challenge.');
+  document.getElementById('ttipLessonDesc').textContent = desc;
+  
+  const btn = document.getElementById('ttipActionBtn');
+  if (isCompleted) {
+    btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Review';
+    btn.className = 'btn-tooltip-action';
+  } else if (isCurrent) {
+    btn.innerHTML = 'Start <i class="fa-solid fa-arrow-right"></i>';
+    btn.className = 'btn-tooltip-action';
+  } else {
+    btn.innerHTML = '<i class="fa-solid fa-lock"></i> Locked';
+    btn.className = 'btn-tooltip-action locked';
+  }
+  
+  btn.onclick = () => {
+    if (!isLocked || isCurrent) window.location.href = `lesson.html?lesson=${lessonData.id}`;
+  };
+  
+  const rect = nodeEl.getBoundingClientRect();
+  const containerRect = document.getElementById('active-lessons-grid').getBoundingClientRect();
+  
+  // Position tooltip relative to document
+  const top = rect.top + window.scrollY - 160; 
+  const left = rect.left + window.scrollX + (rect.width / 2);
+  
+  tooltip.style.top = `${top}px`;
+  tooltip.style.left = `${left}px`;
+  tooltip.classList.add('visible');
 }
+
+function hideMapTooltip() {
+  tooltipHideTimeout = setTimeout(() => {
+    const tooltip = document.getElementById('mapNodeTooltip');
+    if (tooltip) tooltip.classList.remove('visible');
+  }, 200);
+}
+
+// Redraw SVG on resize
+window.addEventListener('resize', () => {
+  const container = document.getElementById('active-lessons-grid');
+  if (container) {
+     const svg = container.querySelector('.map-svg-layer');
+     // Re-fetch track from the active HTML class or rely on courseSwitcher active state
+     const activeCourseId = localStorage.getItem('skill-orbit-active-course') || 'html';
+     if (svg) drawMapConnectors(container, svg, activeCourseId);
+  }
+});
 
 // ── Sidebar ───────────────────────────────────────
 function renderSidebar() {

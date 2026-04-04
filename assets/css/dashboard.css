@@ -244,7 +244,109 @@
   padding: 48px 64px;
 }
 
-/* ── Module Section ───────────────────────────── */
+/* ── Dashboard Grid Layout ── */
+.dash-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .dash-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Sidebar Widgets ── */
+.dash-sidebar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  position: sticky;
+  top: 100px;
+}
+
+.dash-sidebar-widget {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.widget-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.widget-title i {
+  color: #fbbf24;
+}
+
+/* Daily Quests */
+.quest-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed rgba(255,255,255,0.1);
+}
+.quest-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.quest-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: rgba(249,115,22,0.15);
+  color: #f97316;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.quest-item:nth-child(3) .quest-icon {
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa;
+}
+.quest-info {
+  flex: 1;
+}
+.quest-info h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.quest-progress {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.quest-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+  border-radius: 10px;
+}
+.quest-reward {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #fbbf24;
+  background: rgba(251,191,36,0.15);
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(251,191,36,0.25);
+}
 .dash-module-section {
   margin-bottom: 60px;
 }
@@ -257,7 +359,7 @@
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.dash-module-header-left {}
+
 .dash-module-tag {
   display: inline-flex;
   align-items: center;
@@ -299,133 +401,240 @@
   white-space: nowrap;
 }
 
-/* ── Section (topic group) ─────────────────── */
-.lesson-topic-group {
-  margin-bottom: 32px;
-}
-
-.lesson-topic-head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
-}
-.lesson-topic-head-main {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.lesson-topic-glyph {
-  width: 34px; height: 34px;
-  border-radius: 9px;
-  background: rgba(124,58,237,0.15);
-  border: 1px solid rgba(124,58,237,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.82rem;
-  color: #a78bfa;
-  flex-shrink: 0;
-}
-.lesson-topic-title {
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-.lesson-topic-meta {
-  font-size: 0.77rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-.lesson-topic-rail {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg,rgba(124,58,237,0.25),transparent);
-}
-
-/* ── Lesson Cards Grid ──────────────────────── */
-.lesson-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 14px;
-}
-
-/* ── Individual Lesson Card ─────────────────── */
-.lesson-card-item {
-  background: rgba(255,255,255,0.033);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 18px;
-  padding: 20px 18px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
-              border-color 0.25s ease,
-              box-shadow 0.25s ease;
+/* ── Progression Map (Duolingo Style) ───────── */
+.progression-map {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 80px;
+  padding: 60px 0 120px;
+  position: relative;
+  min-height: 800px;
+  width: 100%;
 }
 
-/* Bottom gradient accent line */
-.lesson-card-item::after {
-  content: '';
+/* Container for drawn SVG lines */
+.map-svg-layer {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.map-node-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+/* S-Curve offsets (Widened) */
+.map-node-wrapper:nth-child(8n+1) { transform: translateX(0); }
+.map-node-wrapper:nth-child(8n+2) { transform: translateX(110px); }
+.map-node-wrapper:nth-child(8n+3) { transform: translateX(180px); }
+.map-node-wrapper:nth-child(8n+4) { transform: translateX(110px); }
+.map-node-wrapper:nth-child(8n+5) { transform: translateX(0); }
+.map-node-wrapper:nth-child(8n+6) { transform: translateX(-110px); }
+.map-node-wrapper:nth-child(8n+7) { transform: translateX(-180px); }
+.map-node-wrapper:nth-child(8n+8) { transform: translateX(-110px); }
+
+/* Section / Module Marker in the path */
+.map-section-marker {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 24px;
+  border-radius: 50px;
+  margin: 20px 0;
+  z-index: 2;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+/* The clickable node button */
+.map-node {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 4px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  box-shadow: 0 8px 0 rgba(0,0,0,0.2), inset 0 -4px 0 rgba(0,0,0,0.1);
+  transition: transform 0.15s cubic-bezier(0.4,0,0.2,1), filter 0.15s;
+  position: relative;
+  outline: none;
+}
+
+.map-node:active {
+  transform: translateY(6px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.2), inset 0 -2px 0 rgba(0,0,0,0.1);
+}
+
+.map-node:focus-visible {
+  box-shadow: 0 8px 0 rgba(0,0,0,0.2), inset 0 -4px 0 rgba(0,0,0,0.1), 0 0 0 4px #7c3aed;
+}
+
+/* Completed Node */
+.map-node.completed {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: #34d399;
+  color: #fff;
+  box-shadow: 0 8px 0 #065f46, inset 0 -4px 0 rgba(0,0,0,0.2);
+}
+.map-node.completed:active {
+  box-shadow: 0 2px 0 #065f46, inset 0 -2px 0 rgba(0,0,0,0.2);
+}
+
+/* Current Node (Next to do) */
+.map-node.current {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  border-color: #a78bfa;
+  color: #fff;
+  box-shadow: 0 8px 0 #4338ca, inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 0 8px rgba(124,58,237,0.25);
+  animation: nodePulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+.map-node.current:active {
+  animation: none;
+  box-shadow: 0 2px 0 #4338ca, inset 0 -2px 0 rgba(0,0,0,0.2);
+}
+
+@keyframes nodePulse {
+  0% { box-shadow: 0 8px 0 #4338ca, inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 0 0 rgba(124,58,237,0.6); }
+  70% { box-shadow: 0 8px 0 #4338ca, inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 0 20px rgba(124,58,237,0); }
+  100% { box-shadow: 0 8px 0 #4338ca, inset 0 -4px 0 rgba(0,0,0,0.2), 0 0 0 0 rgba(124,58,237,0); }
+}
+
+/* Milestone crown icon */
+.map-node.milestone::after {
+  content: '\f521'; /* fa-crown */
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.3rem;
+  color: #fbbf24;
+  text-shadow: 0 3px 6px rgba(0,0,0,0.4);
+}
+
+/* ── Gamified Tooltip ───────────────────────── */
+.map-tooltip {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 100;
+  width: 250px;
+  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  visibility: hidden;
+  /* Instead of pure translate, we'll position absolute via JS */
+  transition: opacity 0.2sease, visibility 0.2s;
 }
-.lesson-card-item:hover { transform: translateY(-6px); border-color: rgba(124,58,237,0.4); box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(124,58,237,0.1); }
-.lesson-card-item:hover::after { opacity: 1; }
-
-/* Completed state */
-.lesson-card-item.completed {
-  background: rgba(124,58,237,0.06);
-  border-color: rgba(124,58,237,0.22);
+.map-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  /* Tooltip slightly bounces in */
+  animation: tooltipPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
 }
-.lesson-card-item.completed::after { opacity: 0.5; }
 
-/* Lesson number */
-.lesson-num {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+@keyframes tooltipPop {
+  0% { transform: scale(0.9) translateY(10px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.map-tooltip-content {
+  background: rgba(15,10,25,0.95);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,58,237,0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+}
+
+/* Down arrow */
+.map-tooltip-arrow {
+  width: 16px; height: 16px;
+  background: rgba(15,10,25,0.95);
+  border-right: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  margin-left: -8px;
+  transform: rotate(45deg);
+  box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+}
+
+.map-tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-
-/* Lesson title */
-.lesson-card-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.3;
+.map-tooltip-header .xp-badge {
+  color: #fbbf24;
+  background: rgba(251,191,36,0.12);
+  border: 1px solid rgba(251,191,36,0.25);
+  padding: 3px 10px;
+  border-radius: 50px;
+}
+.map-tooltip-content h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.25;
   letter-spacing: -0.01em;
-  flex: 1;
 }
-
-/* XP badge */
-.lesson-xp-badge {
+.map-tooltip-content p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+.btn-tooltip-action {
+  width: 100%;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #fbbf24;
-  background: rgba(251,191,36,0.1);
-  border: 1px solid rgba(251,191,36,0.2);
-  border-radius: 50px;
-  padding: 3px 10px;
-  width: fit-content;
-  margin-top: auto;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #0ea5e9);
+  color: #fff;
+  font-weight: 800;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
-
-/* Completed check mark overlay */
-.lesson-card-item.completed .lesson-card-title {
-  color: #c4b5fd;
+.btn-tooltip-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124,58,237,0.5);
 }
-.lesson-card-item.completed .lesson-num { color: #a78bfa; }
+.btn-tooltip-action.locked {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.4);
+  box-shadow: none;
+  pointer-events: none;
+}
 
 /* ── Badges Section ─────────────────────────── */
 .dash-badges-section {

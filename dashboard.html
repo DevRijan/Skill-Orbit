@@ -233,45 +233,88 @@
     <!-- ── MAIN CONTENT ── -->
     <div class="dash-content">
 
-      <!-- ── COURSE SWITCHER ── -->
-      <div class="course-switcher" id="courseSwitcher" role="tablist" aria-label="Course selector">
-        <!-- Populated by JS -->
-      </div>
-
-      <!-- ── ACTIVE COURSE LESSONS ── -->
-      <div id="activeCourseContent">
-        <!-- Module header + lesson groups injected here -->
-        <section class="dash-module-section active-course-section" id="activeCourseSection">
-          <div class="dash-module-header">
-            <div class="dash-module-header-left">
-              <div class="dash-module-tag html" id="activeCourseTag">
-                <i id="activeCourseTagIcon" class="fa-brands fa-html5"></i>
-                <span id="activeCourseTagName">HTML</span>
-              </div>
-              <h2 class="dash-module-title" id="activeCourseTitle">HTML Module</h2>
-              <p class="dash-module-tagline" id="activeCourseTagline">Structure &amp; semantics — from first tags to advanced layouts.</p>
-            </div>
-            <div class="dash-module-header-right" id="activeCourseProgress"></div>
+      <div class="dash-grid-layout">
+        <!-- LEFT: Progression Map -->
+        <div class="dash-main-column">
+          <!-- ── COURSE SWITCHER ── -->
+          <div class="course-switcher" id="courseSwitcher" role="tablist" aria-label="Course selector">
+            <!-- Populated by JS -->
           </div>
-          <!-- Lesson groups go here -->
-          <div class="module-lesson-groups" id="active-lessons-grid"></div>
-        </section>
-      </div>
 
-      <!-- ── BADGES SECTION ── -->
-      <section class="dash-badges-section" style="margin-top:40px;">
-        <h2 class="dash-section-title">
-          <i class="fa-solid fa-trophy"></i> Your Badges
-          <a href="account.html">View All →</a>
-        </h2>
-        <div class="dash-badges-grid" id="dash-badges-grid"></div>
-      </section>
+          <!-- ── ACTIVE COURSE LESSONS ── -->
+          <div id="activeCourseContent">
+            <section class="dash-module-section active-course-section" id="activeCourseSection">
+              <div class="dash-module-header">
+                <div class="dash-module-header-left">
+                  <div class="dash-module-tag html" id="activeCourseTag">
+                    <i id="activeCourseTagIcon" class="fa-brands fa-html5"></i>
+                    <span id="activeCourseTagName">HTML</span>
+                  </div>
+                  <h2 class="dash-module-title" id="activeCourseTitle">HTML Module</h2>
+                  <p class="dash-module-tagline" id="activeCourseTagline">Structure &amp; semantics — from first tags to advanced layouts.</p>
+                </div>
+                <div class="dash-module-header-right" id="activeCourseProgress"></div>
+              </div>
+              <!-- Progression Map goes here -->
+              <div class="progression-map" id="active-lessons-grid"></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- RIGHT: Gamified Sidebar -->
+        <div class="dash-sidebar-column">
+          
+          <!-- Daily Quests widget -->
+          <div class="dash-sidebar-widget quests-widget">
+            <h3 class="widget-title"><i class="fa-solid fa-scroll"></i> Daily Quests</h3>
+            <div class="quest-item">
+              <div class="quest-icon"><i class="fa-solid fa-fire"></i></div>
+              <div class="quest-info">
+                <h4>Maintain your streak</h4>
+                <div class="quest-progress"><div class="quest-fill" style="width: 100%;"></div></div>
+              </div>
+              <div class="quest-reward">10 XP</div>
+            </div>
+            <div class="quest-item">
+              <div class="quest-icon"><i class="fa-solid fa-book-open"></i></div>
+              <div class="quest-info">
+                <h4>Complete 2 Lessons</h4>
+                <div class="quest-progress"><div class="quest-fill" style="width: 50%;"></div></div>
+              </div>
+              <div class="quest-reward">25 XP</div>
+            </div>
+          </div>
+
+          <!-- ── BADGES SECTION ── -->
+          <section class="dash-badges-section dash-sidebar-widget">
+            <h2 class="dash-section-title widget-title" style="margin-bottom:12px;">
+              <i class="fa-solid fa-trophy"></i> Latest Badges
+              <a href="account.html" style="font-size:0.75rem;">View All →</a>
+            </h2>
+            <div class="dash-badges-grid" id="dash-badges-grid"></div>
+          </section>
+        </div>
+      </div>
 
     </div>
   </div>
 
   <!-- XP Toast -->
   <div id="xpToast"><i class="fa-solid fa-bolt"></i><span id="xpToastText">+20 XP!</span></div>
+
+  <!-- Map Node Hover Tooltip -->
+  <div id="mapNodeTooltip" class="map-tooltip">
+    <div class="map-tooltip-content">
+      <div class="map-tooltip-header">
+        <span id="ttipLessonNum">Lesson 1</span>
+        <span id="ttipLessonXp" class="xp-badge"><i class="fa-solid fa-bolt"></i> 10 XP</span>
+      </div>
+      <h3 id="ttipLessonTitle">Introduction to HTML</h3>
+      <p id="ttipLessonDesc">Learn the structure of the web.</p>
+      <button id="ttipActionBtn" class="btn-tooltip-action">Start Lesson</button>
+    </div>
+    <div class="map-tooltip-arrow"></div>
+  </div>
 
   <canvas id="bg-canvas"></canvas>
 
