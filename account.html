@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skill-Orbit Account — XP, streak, badges and profile management." />
+  <meta name="description" content="Skill-Orbit Account — XP, streak, achievements and profile management." />
   <title>My Account | Skill-Orbit</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
@@ -24,6 +24,153 @@
       font-weight:700; font-size:0.9rem;
       box-shadow:0 8px 32px rgba(124,58,237,0.5);
       display:none; align-items:center; gap:8px; z-index:9999;
+    }
+
+    /* ── Achievement Gallery Styles ── */
+    .achievement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .achievement-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      filter: grayscale(1);
+      opacity: 0.7;
+    }
+
+    .achievement-card.earned {
+      filter: grayscale(0);
+      opacity: 1;
+      background: rgba(124, 58, 237, 0.05);
+      border-color: rgba(124, 58, 237, 0.2);
+    }
+
+    .achievement-card.earned:hover {
+      transform: translateY(-5px) scale(1.02);
+      background: rgba(124, 58, 237, 0.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px rgba(124, 58, 237, 0.1);
+    }
+
+    .achievement-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, var(--accent-glow, rgba(124, 58, 237, 0.15)), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .achievement-card.earned:hover::before {
+      opacity: 1;
+    }
+
+    .achievement-card-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .achievement-card.earned:hover .achievement-card-icon {
+      transform: scale(1.2) rotate(5deg);
+    }
+
+    .achievement-card-name {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .achievement-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      position: relative;
+      z-index: 1;
+    }
+
+    .achievement-card-category {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    .achievement-card-xp {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 2px 8px;
+      border-radius: 50px;
+    }
+
+    .achievement-card.locked .achievement-card-desc {
+      filter: blur(4px);
+      user-select: none;
+    }
+
+    .achievement-card.secret.locked .achievement-card-name {
+      filter: blur(4px);
+    }
+
+    .achievement-card.secret.locked .achievement-card-icon {
+      filter: blur(8px);
+    }
+
+    .achievement-card-status {
+      margin-top: 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .achievement-card.earned .achievement-card-status {
+      color: #10b981;
+    }
+
+    .achievement-category-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin: 40px 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+    }
+
+    .achievement-category-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent);
     }
   </style>
 </head>
@@ -111,7 +258,7 @@
         <div class="acc-stat-row">
           <div class="acc-stat-row-left">
             <div class="acc-stat-row-icon bdg"><i class="fa-solid fa-medal"></i></div>
-            Badges
+            Achievements
           </div>
           <div class="acc-stat-row-val" id="sbBadges">0</div>
         </div>
@@ -128,7 +275,7 @@
           <i class="fa-solid fa-chart-bar"></i> Statistics
         </button>
         <button class="acc-sidebar-nav-btn" data-panel="badges" id="navBadges">
-          <i class="fa-solid fa-trophy"></i> Badges
+          <i class="fa-solid fa-trophy"></i> Achievements
           <span class="nav-badge" id="navBadgeCount">0</span>
         </button>
         <button class="acc-sidebar-nav-btn" data-panel="settings" id="navSettings">
@@ -208,7 +355,7 @@
         <!-- Recent Badges Preview -->
         <div class="acc-card">
           <div class="acc-card-title">
-            <i class="fa-solid fa-award"></i> Earned Badges
+            <i class="fa-solid fa-award"></i> Latest Achievements
             <button class="card-title-badge" id="viewAllBadgesBtn"
               style="cursor:pointer;background:rgba(124,58,237,0.15);border:none;color:#a78bfa;font-family:var(--font-body);font-weight:700;font-size:0.75rem;padding:3px 10px;border-radius:20px;">
               View All →
@@ -275,17 +422,16 @@
         </div>
       </div>
 
-      <!-- ════ BADGES PANEL ════ -->
       <div class="acc-panel" id="panel-badges">
-        <h1 class="acc-panel-title">Badges</h1>
-        <p class="acc-panel-subtitle" id="badgeSubtitle">Unlock achievements as you learn.</p>
+        <h1 class="acc-panel-title">Achievement Gallery</h1>
+        <p class="acc-panel-subtitle" id="badgeSubtitle">Your journey, categorized by mastery.</p>
 
-        <div class="acc-card" style="padding-bottom:8px;">
+        <div class="acc-card" style="padding-bottom:24px;">
           <div class="acc-card-title">
-            <i class="fa-solid fa-trophy"></i> All Badges
-            <span class="card-title-badge" id="allBadgeSummary">0 / 6 earned</span>
+            <i class="fa-solid fa-trophy"></i> My Achievement Progress
+            <span class="card-title-badge" id="allBadgeSummary">0 / 20 earned</span>
           </div>
-          <div class="badges-masonry" id="allBadgesGrid"></div>
+          <div id="allBadgesContainer"></div>
         </div>
       </div>
 
@@ -472,51 +618,82 @@
       return CURR_TOTALS;
     }
 
-    // ── Recent badges ────────────────────────────
-    function buildRecentBadges(progress) {
-      const grid  = document.getElementById('recentBadgesGrid');
-      const defs  = (typeof BADGES !== 'undefined') ? BADGES : [];
-      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
-      const earned = defs.filter(b => b.condition(progress, curriculum));
-      grid.innerHTML = '';
-      if (earned.length === 0) {
-        grid.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;padding:8px 0;">Complete lessons to earn your first badge! 🚀</p>';
-        return;
-      }
-      earned.slice(-4).reverse().forEach(badge => buildBadgeTile(badge, true, grid));
-    }
-
-    // ── All badges ───────────────────────────────
+    // ── All achievements (grouped) ────────────────
     function buildAllBadges() {
       const progress   = loadProgress();
-      const defs       = (typeof BADGES !== 'undefined') ? BADGES : [];
       const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
-      const grid       = document.getElementById('allBadgesGrid');
-      grid.innerHTML   = '';
-      let earned       = 0;
-      defs.forEach(badge => {
-        const isEarned = badge.condition(progress, curriculum);
-        if (isEarned) earned++;
-        buildBadgeTile(badge, isEarned, grid);
+      const container   = document.getElementById('allBadgesContainer');
+      container.innerHTML = '';
+
+      if (typeof ACHIEVEMENTS === 'undefined') return;
+
+      const categories = [...new Set(ACHIEVEMENTS.map(a => a.category))];
+      let totalEarned = 0;
+
+      categories.forEach(cat => {
+        const catHeader = document.createElement('div');
+        catHeader.className = 'achievement-category-title';
+        catHeader.textContent = cat;
+        container.appendChild(catHeader);
+
+        const grid = document.createElement('div');
+        grid.className = 'achievement-grid';
+        container.appendChild(grid);
+
+        const catAchievements = ACHIEVEMENTS.filter(a => a.category === cat);
+        catAchievements.forEach(ach => {
+          const isEarned = ach.condition(progress, curriculum);
+          if (isEarned) totalEarned++;
+          buildAchievementCard(ach, isEarned, grid);
+        });
       });
-      document.getElementById('allBadgeSummary').textContent = `${earned} / ${defs.length} earned`;
-      document.getElementById('badgeSubtitle').textContent = earned > 0
-        ? `You've earned ${earned} of ${defs.length} badges. Keep going!`
-        : 'Unlock achievements as you learn.';
+
+      document.getElementById('allBadgeSummary').textContent = `${totalEarned} / ${ACHIEVEMENTS.length} earned`;
+      document.getElementById('badgeSubtitle').textContent = `You've conquered ${totalEarned} of ${ACHIEVEMENTS.length} milestones.`;
     }
 
-    function buildBadgeTile(badge, earned, container) {
-      const tile = document.createElement('div');
-      tile.className = `badge-tile ${earned ? 'earned' : 'locked'}`;
-      tile.innerHTML = `
-        <div class="badge-tile-glow"></div>
-        ${earned ? '<div class="badge-check"><i class="fa-solid fa-check"></i></div>' : ''}
-        <span class="badge-icon-wrap">${badge.icon}</span>
-        <div class="badge-tile-name">${badge.name}</div>
-        <div class="badge-tile-desc">${badge.description}</div>
-        ${!earned ? '<div class="badge-lock-icon"><i class="fa-solid fa-lock"></i> Locked</div>' : ''}
+    function buildAchievementCard(ach, earned, container) {
+      const isSecret = ach.hidden && !earned;
+      const card = document.createElement('div');
+      card.className = `achievement-card ${earned ? 'earned' : 'locked'} ${isSecret ? 'secret' : ''}`;
+      
+      card.innerHTML = `
+        <div class="achievement-card-category">${isSecret ? '???' : ach.category}</div>
+        ${ach.xpReward > 0 ? `<div class="achievement-card-xp">+${ach.xpReward} XP</div>` : ''}
+        <div class="achievement-card-icon">${isSecret ? '❓' : ach.icon}</div>
+        <div class="achievement-card-name">${isSecret ? 'Secret Achievement' : ach.name}</div>
+        <div class="achievement-card-desc">${isSecret ? 'Unlock this hidden milestone to reveal its story.' : ach.description}</div>
+        <div class="achievement-card-status">
+          ${earned ? '<i class="fa-solid fa-check-circle"></i> Unlocked' : '<i class="fa-solid fa-lock"></i> Locked'}
+        </div>
       `;
-      container.appendChild(tile);
+      container.appendChild(card);
+    }
+
+    function buildRecentBadges(progress) {
+      const grid  = document.getElementById('recentBadgesGrid');
+      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
+      if (typeof ACHIEVEMENTS === 'undefined') return;
+      
+      const earned = ACHIEVEMENTS.filter(a => a.condition(progress, curriculum));
+      grid.innerHTML = '';
+      if (earned.length === 0) {
+        grid.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;padding:8px 0;">Start your journey to unlock achievements! 🚀</p>';
+        return;
+      }
+      
+      // Reusing the same small tile style or adapting it
+      earned.slice(-4).reverse().forEach(ach => {
+        const tile = document.createElement('div');
+        tile.className = 'badge-tile earned'; // Keep existing class for compatibility if styles exist
+        tile.innerHTML = `
+          <div class="badge-tile-glow"></div>
+          <div class="badge-check"><i class="fa-solid fa-check"></i></div>
+          <span class="badge-icon-wrap">${ach.icon}</span>
+          <div class="badge-tile-name">${ach.name}</div>
+        `;
+        grid.appendChild(tile);
+      });
     }
 
     // ── Statistics ───────────────────────────────

@@ -1,0 +1,432 @@
+/* =============================================
+ * SKILL-ORBIT — lesson-interactive.css
+ * Styles for Gamified Interactive Lessons
+ * ============================================= */
+
+.interactive-lesson-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.fade-slide-up {
+  animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Question Hook */
+.interactive-hook {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.hook-icon-wrap {
+  width: 50px;
+  height: 50px;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+.hook-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Interactive Box & Multiple Choice */
+.interactive-box {
+  margin-bottom: 40px;
+}
+
+.mc-options-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.btn-mc-option {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  color: #fff;
+  text-align: left;
+  font-family: inherit;
+  font-size: 1.05rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-mc-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+}
+
+.mc-letter {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+}
+
+.btn-mc-option.selected {
+  border-color: #7c3aed;
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.btn-mc-option.correct-choice {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.btn-mc-option.correct-choice .mc-letter {
+  background: #10b981;
+  color: #fff;
+}
+
+.btn-mc-option.error-choice {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.btn-mc-option.error-choice .mc-letter {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Shake Animation */
+.shake-animation {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* Code Spotlight Interaction */
+.code-spotlight-container {
+  background: #0f172a;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Fira Code', monospace;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  cursor: default;
+}
+
+.code-part {
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.code-part:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.code-part.selected {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: #7c3aed;
+}
+
+.code-part.correct-choice {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.code-part.error-choice {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* Live Type Interaction */
+.live-type-container {
+  background: rgba(255,255,255,0.02);
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.type-input-wrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.type-input-wrapper input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 14px 20px;
+  color: #fff;
+  font-family: 'Fira Code', monospace;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.type-input-wrapper input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
+}
+
+/* Feedback & Explanation */
+.interactive-feedback {
+  margin-top: 50px;
+}
+
+.interactive-feedback.hidden {
+  display: none;
+}
+
+.explanation-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  padding: 30px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+}
+
+.explanation-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+.success-icon {
+  color: #10b981;
+  font-size: 1.5rem;
+}
+
+.explanation-layers {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.exp-layer {
+  display: flex;
+  gap: 20px;
+}
+
+.exp-layer-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.exp-layer-content strong {
+  display: block;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 6px;
+}
+
+.exp-layer-content p {
+  margin: 0;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+.exp-layer-content pre {
+  margin-top: 12px;
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+}
+
+/* Visual Example Render */
+.visual-example-box {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.visual-example-top {
+  background: #f1f5f9;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.browser-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.browser-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e1;
+}
+
+.visual-example-render {
+  min-height: 150px;
+}
+
+.interactive-live-iframe {
+  width: 100%;
+  height: 200px;
+  border: none;
+  display: block;
+}
+
+/* Navigation & Finishing */
+.next-step-wrap {
+  text-align: right;
+}
+
+.btn-next-step {
+  padding: 14px 32px;
+  font-size: 1.1rem;
+}
+
+.interactive-finish-banner {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.trophy-wrap {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #fff;
+  margin: 0 auto 30px;
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+  animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bounceIn {
+  from { opacity: 0; transform: scale(0.3); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.interactive-finish-banner h2 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.interactive-finish-banner p {
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* XP Float Animation */
+.gamified-float-xp {
+  position: fixed;
+  color: #fbbf24;
+  font-weight: 900;
+  pointer-events: none;
+  z-index: 9999;
+  animation: floatUpFade 1.5s forwards;
+  font-size: 1.4rem;
+}
+
+@keyframes floatUpFade {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-100px); opacity: 0; }
+}
+
+/* Progress bar inside lesson */
+.interactive-progress-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.interactive-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+  width: 0;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive-progress-text {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}

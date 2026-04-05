@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/editor.css" />
+  <link rel="stylesheet" href="assets/css/lesson-interactive.css" />
   <link rel="stylesheet" href="assets/css/animations.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -58,10 +59,25 @@
       <div id="lesson-sidebar-content" class="sidebar-lessons"></div>
     </aside>
 
-    <!-- Lesson Layout: Full Screen Theory -->
+    <!-- Lesson Layout: Interactive Gamified Flow -->
     <main class="lesson-theory-container">
       <div class="theory-content-wrapper">
-        <div id="theoryBody" class="theory-body">
+        
+        <!-- NEW INTERACTIVE LESSON CONTAINER -->
+        <div id="interactiveLessonContainer" class="interactive-lesson-container">
+           <!-- The steps will be injected here by interactive.js -->
+           <div id="interactiveStepsMount"></div>
+           
+           <div id="interactiveProgress" class="interactive-progress" style="display:none; margin-top:40px;">
+             <div class="interactive-progress-track">
+               <div class="interactive-progress-bar" id="interactiveProgressBar"></div>
+             </div>
+             <div class="interactive-progress-text" id="interactiveProgressText">Step 1 of 5</div>
+           </div>
+        </div>
+
+        <!-- Legacy static content (hidden by default) -->
+        <div id="theoryBody" class="theory-body" style="display:none;">
           <p>Loading lesson content...</p>
         </div>
         <div id="theoryCodeExample" class="theory-code-example" style="display:none;"></div>
@@ -188,6 +204,7 @@
   <script src="assets/js/cursor.js"></script>
   <script src="assets/js/progress.js"></script>
   <script src="assets/js/lessons.js"></script>
+  <script src="assets/js/interactive.js"></script>
   <script src="assets/js/editor.js"></script>
   <script src="assets/js/quiz.js"></script>
   <script src="assets/js/gamification.js"></script>

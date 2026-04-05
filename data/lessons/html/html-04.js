@@ -3,103 +3,61 @@ window.LESSON_DATA_html_04 = {
   "module": "html",
   "title": "HTML Elements",
   "xp": 40,
-  "theory": `
-    <div class="theory-hero">
-      <i class="fa-solid fa-puzzle-piece theory-hero-icon" style="color: #ec4899;"></i>
-      <h2>The Building Blocks of Webpages</h2>
-      <p>By now, you understand the mandatory 'skeleton' of a webpage. The next logical step is to understand the individual building blocks—the "Elements"—that make up everything from text headers to buttons and images. In this lesson, we will master HTML elements, how they nest within each other like Russian dolls, and the strange case of 'empty' elements.</p>
-    </div>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">What Exactly is an Element?</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      In Lesson 1, we talked about <em>Tags</em>. Many beginners confuse tags and elements. 
-    </p>
-
-    <div style="background: rgba(236, 72, 153, 0.05); border-left: 4px solid #ec4899; padding: 25px; margin: 30px 0; border-radius: 0 12px 12px 0;">
-      <p style="margin: 0; font-size: 1.2rem; line-height: 1.7; color: rgba(255,255,255,0.9);">
-        An <strong>HTML Element</strong> is the <em>entire package</em> from the Start Tag to the End Tag, including everything physically inside it.
-      </p>
-    </div>
-
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      For example, <code>&lt;h1&gt;</code> is just a start tag. But <code>&lt;h1&gt;Welcome to my site!&lt;/h1&gt;</code> is a complete HTML Element. It represents the fully formed idea that the browser will render.
-    </p>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">Nested Elements (Russian Dolls)</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      HTML elements can (and almost always do) contain other HTML elements inside them. This is called <strong>Nesting</strong>. Imagine a set of Russian matryoshka dolls, where a smaller doll fits perfectly inside a larger one.
-    </p>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      If you want to make a single word bold inside a paragraph, you simply "nest" a <code>&lt;b&gt;</code> (bold) element entirely inside a <code>&lt;p&gt;</code> (paragraph) element.
-    </p>
-
-    <div style="background: rgba(15, 23, 42, 0.6); padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center; border: 1px dashed rgba(255,255,255,0.2);">
-      <h3 style="color: #cbd5e1; margin-top: 0; font-size: 1.1rem; text-transform: uppercase;">Correct Nesting Order</h3>
-      
-      <div style="font-family: 'Fira Code', monospace; font-size: 1.5rem; display: inline-block; text-align: left;">
-        <span style="color: #89ddff;">&lt;p&gt;</span>
-        <span style="color: #c3e88d;">This text is normal, but </span>
-        <span style="color: #fca7ea;">&lt;b&gt;</span>
-        <span style="color: #ffffff; font-weight: bold;">this word</span>
-        <span style="color: #fca7ea;">&lt;/b&gt;</span>
-        <span style="color: #c3e88d;"> is bold!</span>
-        <span style="color: #89ddff;">&lt;/p&gt;</span>
-      </div>
-    </div>
-
-    <div class="callout callout-warning" style="margin: 30px 0; border-left-color: #facc15;">
-      <i class="fa-solid fa-triangle-exclamation" style="color: #facc15;"></i>
-      <div>
-        <strong>The "First In, Last Out" Rule</strong><br>
-        When you nest tags, the most recently opened tag MUST be closed first. 
-        <br><br>
-        <strong style="color: #4ade80;">Correct:</strong> <code>&lt;h1&gt;&lt;u&gt;Title&lt;/u&gt;&lt;/h1&gt;</code><br>
-        <strong style="color: #f87171;">Wrong:</strong> <code>&lt;h1&gt;&lt;u&gt;Title&lt;/h1&gt;&lt;/u&gt;</code> (Tags criss-crossing creates absolute chaos for the browser!).
-      </div>
-    </div>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">The Weird Case of Empty Elements</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      Now that we have drilled the importance of closing tags into your memory, it is time to throw a wrench into the system. Some HTML elements don't wrap around text at all. Because they hold zero content, they are called <strong>Empty Elements</strong>. 
-    </p>
-
-    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
-      Because they have no content to wrap, empty elements <em>do not have a closing tag!</em> They stand alone. Look at these two common examples:
-    </p>
-
-    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 30px 0;">
-      <div style="flex: 1; min-width: 250px; background: rgba(255,255,255,0.05); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="color: #60a5fa; margin-top: 0; font-size: 1.4rem;"><code>&lt;br&gt;</code> (The Line Break)</h4>
-        <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 15px; color: #cbd5e1;">Pressing "Enter" inside your code editor doesn't actually create a new line on the webpage (browsers ignore massive spaces). To force a line break, you drop a standalone <code>&lt;br&gt;</code> element like dropping a brick!</p>
-        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; font-family: monospace; color: #a6accd;">&lt;p&gt;Poetry is awesome&lt;br&gt;This is on a new line!&lt;/p&gt;</div>
-      </div>
-      
-      <div style="flex: 1; min-width: 250px; background: rgba(255,255,255,0.05); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-        <h4 style="color: #60a5fa; margin-top: 0; font-size: 1.4rem;"><code>&lt;hr&gt;</code> (The Horizontal Rule)</h4>
-        <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 15px; color: #cbd5e1;">It simply draws a full-width line across the screen to separate content sections. It doesn't wrap around text, it just "exists" as a line. So it has absolutely no closing tag!</p>
-        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; font-family: monospace; color: #a6accd;">&lt;p&gt;Section 1&lt;/p&gt;<br>&lt;hr&gt;<br>&lt;p&gt;Section 2&lt;/p&gt;</div>
-      </div>
-    </div>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-    
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">Is HTML Case-Sensitive?</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      HTML is surprisingly forgiving. It actually doesn't care if you write <code>&lt;P&gt;</code> or <code>&lt;p&gt;</code>. However, the World Wide Web Consortium (the group of super-nerds who define web standards) highly recommends writing all HTML in <strong>lowercase</strong>. It is much easier to read and prevents incredibly ugly massive codes! Let's stick strictly to lowercase tags in this journey!
-    </p>
-
-  `,
+  "theory": "",
+  "interactive_steps": [
+    {
+      "type": "interaction",
+      "hook": "Many beginners confuse 'Tags' and 'Elements'. If `<h1>` is just a 'Start Tag', which of the following is considered a fully complete HTML Element?",
+      "interactionType": "multiple-choice",
+      "options": ["</h1>", "<h1>Welcome!</h1>", "Welcome!"],
+      "correctIndex": 1,
+      "explanation": {
+        "intuition": "An HTML Element is the entire package from the Start Tag to the End Tag, including everything physically inside it.",
+        "mechanism": "The browser reads the Start Tag, the content, and the End Tag together as a single structural component (Element) on the screen.",
+        "code": "<!-- Start Tag => Content => End Tag -->\n<button>Click Me</button>"
+      },
+      "visualExample": "<button style='padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;'>Click Me</button>"
+    },
+    {
+      "type": "interaction",
+      "hook": "HTML elements almost always contain other elements inside them, like Russian dolls. What is the golden 'First In, Last Out' rule for nesting?",
+      "interactionType": "multiple-choice",
+      "options": ["The most recently opened tag MUST be closed first.", "Close them in random order.", "Close the outermost tag first."],
+      "correctIndex": 0,
+      "explanation": {
+        "intuition": "Imagine nesting physical boxes. You must close the inner box before you can close the outer box.",
+        "mechanism": "If you open a `<p>` and then an `<u>` (underline), the browser creates a strict parent-child tree. You must close `</u>` before `</p>` to prevent tag criss-crossing.",
+        "code": "<!-- Correct Nesting -->\n<p>This is <u>underlined</u> text.</p>\n\n<!-- Wrong Nesting (Chaos) -->\n<p>This is <u>underlined</p> text.</u>"
+      },
+      "visualExample": "<p style='margin:0; font-family: sans-serif;'>This is <u style='text-decoration: underline; text-decoration-color: #3b82f6; text-decoration-thickness: 2px;'>underlined</u> text.</p>"
+    },
+    {
+      "type": "interaction",
+      "hook": "There is a weird exception in HTML: 'Empty Elements'. These don't wrap around text, so they don't have a closing tag. Which of these is an empty element?",
+      "interactionType": "multiple-choice",
+      "options": ["<p> (Paragraph)", "<hr> (Horizontal Line)", "<html> (The Document)"],
+      "correctIndex": 1,
+      "explanation": {
+        "intuition": "Some elements just drop a physical object on the screen rather than wrapping around text. A Horizontal Rule is just a line across the screen.",
+        "mechanism": "Because `<hr>` (Horizontal Rule) or `<br>` (Line Break) have no content to wrap, the browser doesn't need a closing tag to know when they end.",
+        "code": "<p>Section 1 text here...</p>\n<!-- Drops a line completely across the screen -->\n<hr>\n<p>Section 2 text here...</p>"
+      },
+      "visualExample": "<div style='font-family:sans-serif; width: 100%; border: 1px dashed #cbd5e1; padding: 10px;'><p style='margin:0;'>Section 1 text here...</p><hr style='border:none; border-top: 2px solid #3b82f6; margin: 10px 0;'><p style='margin:0;'>Section 2 text here...</p></div>"
+    },
+    {
+      "type": "interaction",
+      "hook": "Is HTML strictly case-sensitive? Will your site crash if you write `<P>` instead of `<p>`?",
+      "interactionType": "multiple-choice",
+      "options": ["Yes, it will instantly crash.", "No, but lowercase is highly recommended.", "Yes, uppercase tags generate formatting errors."],
+      "correctIndex": 1,
+      "explanation": {
+        "intuition": "HTML is surprisingly forgiving and doesn't explicitly care, but the global community of developers (W3C) agreed to use all lowercase.",
+        "mechanism": "Browsers automatically normalize tags internally, but adhering to lowercase prevents messy codebases and confusing syntax highlighting.",
+        "code": "<!-- Both work, but the lowercase version is the professional standard -->\n<P>Uppercase</P>\n<p>Lowercase Standard</p>"
+      },
+      "visualExample": "<div style='font-family:sans-serif;'><div style='color:#ef4444; border-bottom:1px solid #ef4444; margin-bottom:5px;'>Uppercase</div><div style='color:#10b981; border-bottom:1px solid #10b981;'>Lowercase Standard</div></div>"
+    }
+  ],
   "codeExample": "<!DOCTYPE html>\n<html>\n  <body>\n    <!-- Standard complete elements -->\n    <h1>The Importance of Elements</h1>\n    \n    <p>\n      This paragraph contains a <b>bolded</b> word to demonstrate what nesting looks like! \n      The <b> tags are fully enclosed.\n    </p>\n\n    <!-- An Empty Element standalone! -->\n    <hr>\n\n    <p>\n      This line ends abruptly.<br>\n      And this continues on the line below thanks to the break tag!\n    </p>\n  </body>\n</html>",
   "challenge": {
     "instruction": "Create an h2 element with the text 'My Daily Plan'. Below it, drop a horizontal rule <hr>. Below the rule, write a paragraph: 'Wake up.<br>Write Code.' Use the <br> tag exactly in the middle of those two sentences to force a new line!",

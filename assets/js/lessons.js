@@ -585,36 +585,51 @@ function renderLesson(lesson) {
   const badgeEl  = document.getElementById('lessonModuleBadge');
   const bodyEl   = document.getElementById('theoryBody');
   const exampleEl = document.getElementById('theoryCodeExample');
+  const interactiveContainer = document.getElementById('interactiveLessonContainer');
 
   if (titleEl)  titleEl.textContent  = lesson.title;
   if (badgeEl)  badgeEl.textContent  = lesson.module.toUpperCase();
   if (typeof updateLiveXPDisplay === 'function') updateLiveXPDisplay();
-  if (bodyEl)   bodyEl.innerHTML     = lesson.theory;
-  
-  // Enhance snippets
-  wrapCodeSnippets(bodyEl, lesson);
 
-  if (exampleEl && lesson.codeExample) {
-    exampleEl.style.display = 'block';
-    exampleEl.innerHTML = `
-      <div class="code-window-lite">
-        <div class="code-window-header">
-          <div class="window-dots">
-            <span class="dot-red"></span>
-            <span class="dot-yellow"></span>
-            <span class="dot-green"></span>
+  // Handle Interactive vs Static Theory
+  if (lesson.interactive_steps && lesson.interactive_steps.length > 0) {
+    if (bodyEl) bodyEl.style.display = 'none';
+    if (exampleEl) exampleEl.style.display = 'none';
+    if (interactiveContainer) interactiveContainer.style.display = 'block';
+    
+    if (typeof initInteractiveLesson === 'function') {
+      initInteractiveLesson(lesson);
+    }
+  } else {
+    if (interactiveContainer) interactiveContainer.style.display = 'none';
+    if (bodyEl) {
+      bodyEl.style.display = 'block';
+      bodyEl.innerHTML = lesson.theory || '';
+      wrapCodeSnippets(bodyEl, lesson);
+    }
+    
+    if (exampleEl && lesson.codeExample) {
+      exampleEl.style.display = 'block';
+      exampleEl.innerHTML = `
+        <div class="code-window-lite">
+          <div class="code-window-header">
+            <div class="window-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            <div class="window-label">example.html</div>
           </div>
-          <div class="window-label">example.html</div>
+          <div class="code-window-body">
+            <button class="btn-snippet-try" onclick="trySnippet('${escapeJs(lesson.codeExample)}')">Try it <i class="fa-solid fa-play"></i></button>
+            <pre><code class="language-html">${escapeHtml(lesson.codeExample)}</code></pre>
+          </div>
         </div>
-        <div class="code-window-body">
-          <button class="btn-snippet-try" onclick="trySnippet('${escapeJs(lesson.codeExample)}')">Try it <i class="fa-solid fa-play"></i></button>
-          <pre><code class="language-html">${escapeHtml(lesson.codeExample)}</code></pre>
-        </div>
-      </div>
-    `;
-    if (window.hljs) hljs.highlightAll();
-  } else if (exampleEl) {
-    exampleEl.style.display = 'none';
+      `;
+      if (window.hljs) hljs.highlightAll();
+    } else if (exampleEl) {
+      exampleEl.style.display = 'none';
+    }
   }
 
   // Challenge

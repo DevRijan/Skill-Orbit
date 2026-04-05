@@ -3,7 +3,35 @@ window.LESSON_DATA_css_01 = {
   "module": "css",
   "title": "What is CSS?",
   "xp": 20,
-  "theory": "<h2>What is CSS?</h2><p><strong>CSS</strong> stands for <em>Cascading Style Sheets</em>. It is the language used to <strong>style</strong> HTML elements — controlling colors, fonts, layouts, sizes, spacing, and much more.</p><p>If HTML is the skeleton of a webpage, then CSS is the skin, clothes, and makeup. It transforms plain HTML into a beautiful, well-designed page.</p><h2>Three ways to add CSS</h2><p><strong>1. Inline:</strong> Using the <code>style</code> attribute directly on an element.<br><code>&lt;p style=\"color: red;\"&gt;Hello&lt;/p&gt;</code></p><p><strong>2. Internal:</strong> Using a <code>&lt;style&gt;</code> tag inside the <code>&lt;head&gt;</code>.</p><p><strong>3. External:</strong> Linking a separate <code>.css</code> file — the recommended approach.</p>",
+  "theory": "",
+  "interactive_steps": [
+    {
+      "type": "interaction",
+      "hook": "If HTML creates the 'skeleton' (the basic structure) of a webpage, what language do we use to add 'clothes, skin, and makeup' like colors, fonts, and layout?",
+      "interactionType": "multiple-choice",
+      "options": ["HTML+", "JavaScript", "CSS (Cascading Style Sheets)"],
+      "correctIndex": 2,
+      "explanation": {
+        "intuition": "CSS transforms a boring, plain-text skeleton into a beautiful, well-designed webpage.",
+        "mechanism": "CSS specifically targets HTML elements and applies visual rules to them, controlling colors, spacing, borders, and responsive layouts.",
+        "code": "/* A simple CSS rule */\nh1 {\n  color: royalblue;\n  font-size: 40px;\n}"
+      },
+      "visualExample": "<div style='display:flex; justify-content:center; gap: 20px; align-items:center;'><div style='border: 1px solid #475569; padding: 10px;'><h1 style='color: black; font-size: 16px; margin:0;'>HTML Only</h1></div> <i class='fa-solid fa-arrow-right' style='color:#94a3b8;'></i> <div style='border: 1px solid #3b82f6; padding: 20px; background: rgba(59,130,246,0.1); border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'><h1 style='color: royalblue; font-size: 24px; margin:0; font-family: sans-serif; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);'>With CSS</h1></div></div>"
+    },
+    {
+      "type": "interaction",
+      "hook": "If we want to add CSS styles to our HTML document, what is the RECOMMENDED, professional way to do it?",
+      "interactionType": "multiple-choice",
+      "options": ["Inline: Adding styles directly inside every single HTML tag.", "External: Writing CSS in a totally separate '.css' file and linking it to the HTML.", "Internal: Typing a giant <style> block inside the <head>."],
+      "correctIndex": 1,
+      "explanation": {
+        "intuition": "You wouldn't store your clothes in the refrigerator! Keep HTML (structure) and CSS (styles) strictly separated in their own files for cleanliness.",
+        "mechanism": "While Inline and Internal CSS work, they create massive, unreadable files. An External style sheet is linked using the `<link rel=\"stylesheet\">` tag in the `<head>`.",
+        "code": "<!-- Placing this inside the <head> links the external file -->\n<link rel=\"stylesheet\" href=\"styles.css\">"
+      },
+      "visualExample": "<div style='font-family:sans-serif; background: #1e293b; color: #a6accd; padding: 15px; border-radius: 8px;'><span style='color: #89ddff;'>&lt;head&gt;</span><br>&nbsp;&nbsp;<span style='color: #fca7ea;'>&lt;link</span> <span style='color:#ffcb6b; font-style:italic;'>rel</span>=<span style='color:#89ddff;'>\"stylesheet\"</span> <span style='color:#ffcb6b; font-style:italic;'>href</span>=<span style='color:#89ddff;'>\"beautiful-theme.css\"</span><span style='color:#fca7ea;'>&gt;</span><br><span style='color: #89ddff;'>&lt;/head&gt;</span></div>"
+    }
+  ],
   "codeExample": "/* This is a CSS comment */\np {\n  color: royalblue;\n  font-size: 18px;\n  font-weight: bold;\n}\n\nh1 {\n  color: #7c3aed;\n  text-align: center;\n}",
   "challenge": {
     "instruction": "Style the paragraph to have the color 'tomato' and the heading to be centered.",

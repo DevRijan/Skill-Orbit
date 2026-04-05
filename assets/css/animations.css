@@ -140,6 +140,117 @@
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--border-radius-sm);
+}/* ── Achievement Unlock Cinematic ── */
+
+@keyframes achievementDim {
+  from { backdrop-filter: blur(0px); background: rgba(0,0,0,0); }
+  to   { backdrop-filter: blur(8px); background: rgba(0,0,0,0.6); }
 }
 
+@keyframes achievementSlideUp {
+  0%   { opacity: 0; transform: translate(-50%, 40px) scale(0.9); }
+  70%  { opacity: 1; transform: translate(-50%, -10px) scale(1.02); }
+  100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
 
+@keyframes achievementBanner {
+  0%   { width: 0; opacity: 0; }
+  100% { width: 100%; opacity: 1; }
+}
+
+@keyframes achievementPulse {
+  0%   { transform: scale(1); filter: drop-shadow(0 0 0px var(--accent, #7c3aed)); }
+  50%  { transform: scale(1.1); filter: drop-shadow(0 0 20px var(--accent, #7c3aed)); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 0px var(--accent, #7c3aed)); }
+}
+
+@keyframes achievementTextReveal {
+  from { opacity: 0; letter-spacing: 4px; filter: blur(4px); }
+  to   { opacity: 1; letter-spacing: 0px; filter: blur(0px); }
+}
+
+.achievement-unlock-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: achievementDim 0.6s ease forwards;
+  pointer-events: none;
+}
+
+.achievement-card-cinematic {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  background: rgba(20, 20, 25, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+  animation: achievementSlideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  overflow: hidden;
+}
+
+.achievement-card-cinematic::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent, #7c3aed), transparent);
+  animation: achievementBanner 1s ease forwards;
+}
+
+.achievement-icon-animated {
+  font-size: 3rem;
+  animation: achievementPulse 2s ease-in-out infinite;
+}
+
+.achievement-info-cinematic {
+  flex: 1;
+}
+
+.achievement-label-cinematic {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent, #a78bfa);
+  margin-bottom: 4px;
+  animation: achievementTextReveal 0.5s 0.3s ease both;
+}
+
+.achievement-title-cinematic {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+  animation: achievementTextReveal 0.6s 0.5s ease both;
+}
+
+.achievement-desc-cinematic {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.4;
+  animation: achievementTextReveal 0.7s 0.7s ease both;
+}
+
+.achievement-xp-badge-cinematic {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  animation: fadeIn 0.5s 1s ease both;
+}

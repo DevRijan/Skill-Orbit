@@ -9,6 +9,7 @@ let activeEditorTab  = 'html'; // 'html' | 'css'
 window.monacoHtmlEditor = null; // Changed to window for global access
 window.monacoCssEditor  = null;
 let currentFontSize  = 14;
+let lastAttemptFailed = false; // Tracks if previous check was incorrect for resilience achievements
 
 // Configure Monaco
 if (window.require) {
@@ -55,9 +56,22 @@ function setupMonaco(lesson) {
     padding: { top: 16 }
   });
 
-  // Live preview on input
-  monacoHtmlEditor.onDidChangeModelContent(updatePreview);
-  monacoCssEditor.onDidChangeModelContent(updatePreview);
+  // Live preview on input + Activity Tracking
+  monacoHtmlEditor.onDidChangeModelContent((e) => {
+    updatePreview();
+    if (typeof updateTrack === 'function') {
+      const charCount = e.changes.reduce((acc, change) => acc + change.text.length, 0);
+      if (charCount > 0) updateTrack('editor_typed_chars', charCount);
+    }
+  });
+
+  monacoCssEditor.onDidChangeModelContent((e) => {
+    updatePreview();
+    if (typeof updateTrack === 'function') {
+      const charCount = e.changes.reduce((acc, change) => acc + change.text.length, 0);
+      if (charCount > 0) updateTrack('editor_typed_chars', charCount);
+    }
+  });
 
   // Tab switching (HTML/CSS)
   document.getElementById('editorTabHTML').addEventListener('click', () => switchEditorTab('html'));
@@ -327,7 +341,34 @@ async function checkChallenge() {
 
   result.style.display = 'flex';
 
+  // ── Achievement/Activity Tracking Analysis ──
+  const cssVal = monacoCssEditor ? monacoCssEditor.getValue().trim() : '';
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlVal, 'text/html');
+  
+  // Track Custom Styles (if they added meaningful CSS)
+  if (cssVal.length > 30 && typeof updateTrack === 'function') updateTrack('custom_styles', 1);
+  
+  // Track Nested Elements (if depth > 2)
+  function getDepth(node) {
+    let depth = 0;
+    if (node.children) {
+      for (let i = 0; i < node.children.length; i++) {
+        depth = Math.max(depth, getDepth(node.children[i]));
+      }
+    }
+    return 1 + depth;
+  }
+  const maxDepth = getDepth(doc.body);
+  if (maxDepth > 3 && typeof updateTrack === 'function') updateTrack('nested_elements', 1);
+
   if (correct) {
+    // Track Resilience Fixes (if they failed before)
+    if (lastAttemptFailed && typeof updateTrack === 'function') {
+      updateTrack('resilience_fixes', 1);
+      lastAttemptFailed = false;
+    }
+    
     // 1. Award lesson completion XP (10 XP, one-time)
     const { xpAwarded: lessonXP } = await markLessonComplete(currentLesson.id);
 
@@ -370,6 +411,12 @@ async function checkChallenge() {
       checkBadges(progress, curriculum);
     }
   } else {
+    // Track Broken Structure & Failures
+    lastAttemptFailed = true;
+    if ((htmlVal.match(/</g) || []).length !== (htmlVal.match(/>/g) || []).length) {
+      if (typeof updateTrack === 'function') updateTrack('broken_structure', 1);
+    }
+
     result.className = 'challenge-result-box error animate-fadeInUp';
     result.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> <span>Not quite. Check the hint or review the theory.</span>';
   }

@@ -3,105 +3,61 @@ window.LESSON_DATA_html_02 = {
   "module": "html",
   "title": "HTML Code Editors",
   "xp": 45,
-  "theory": `
-    <div class="theory-hero">
-      <i class="fa-solid fa-laptop-code theory-hero-icon" style="color: #60a5fa;"></i>
-      <h2>Where Do We Actually Type The Code?</h2>
-      <p>Now that you know what HTML is, the most logical next question is: <em>"Where do I actually type these tags?"</em> In this lesson, we will explore the software required to write code and the secret superpowers professional developers use.</p>
-    </div>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">The Surprising Truth About Writing HTML</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      Here is an industry secret that surprises most beginners: <strong>You do not need to buy any special software to write HTML.</strong> HTML code is nothing more than pure, unformatted text.
-    </p>
-
-    <div class="callout callout-info" style="margin: 30px 0;">
-      <i class="fa-solid fa-file-lines"></i>
-      <div>
-        <strong>Did You Know?</strong> You could write an award-winning website using the free "Notepad" app on Windows, or the free "TextEdit" app on a Mac. Literally any program that lets you type letters can create a webpage!
-      </div>
-    </div>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">Why Can't I Just Use Microsoft Word?</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      If you can use any typing program, why don't developers just use Microsoft Word or Google Docs? Because those programs are <strong>Word Processors</strong>, not Text Editors.
-    </p>
-
-    <table style="width: 100%; border-collapse: collapse; margin: 30px 0; background: rgba(0,0,0,0.2); border-radius: 12px; overflow: hidden;">
-      <thead>
-        <tr style="background: rgba(255,255,255,0.05);">
-          <th style="padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); width: 50%;">Word Processors (Like MS Word)</th>
-          <th style="padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); width: 50%;">Text Editors (Like Notepad)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.1); vertical-align: top;">
-            <p style="margin: 0 0 10px 0;">They secretly save massive amounts of invisible "formatting code" behind your text (font sizes, bolding formatting, margin data).</p>
-            <p style="margin: 0; color: #f87171;"><strong>Web browsers cannot read this hidden formatting data!</strong> They strictly expect raw text.</p>
-          </td>
-          <td style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top;">
-            <p style="margin: 0 0 10px 0;">They save <em>only</em> the pure characters you type on the keyboard without adding any hidden styling data.</p>
-            <p style="margin: 0; color: #4ade80;"><strong>This creates a perfectly pure .txt or .html file</strong> that the browser can seamlessly understand.</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">Enter the Professional "Code Editors"</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      While you <em>could</em> use a basic Text Editor, doing so would be like a professional carpenter trying to build a skyscraper with a pocket knife. Instead, developers use specialized text editors explicitly designed for programming, known as <strong>Code Editors</strong> or IDEs (Integrated Development Environments).
-    </p>
-
-    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
-      The most popular free code editor in the world right now is <strong>Visual Studio Code (VS Code)</strong> by Microsoft. Code Editors give developers vital "superpowers" to write code faster and stop them from making silly mistakes. 
-    </p>
-
-    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 30px 0;">
-      <div style="flex: 1; min-width: 250px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 20px;">
-        <h4 style="color: #38bdf8; margin-top: 0; font-size: 1.2rem;"><i class="fa-solid fa-palette"></i> Syntax Highlighting</h4>
-        <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">Instead of displaying boring black and white text, the editor paints your HTML tags neon pink, your text yellow, and your links green. This makes spotting errors incredibly easy on the eyes.</p>
-      </div>
-      
-      <div style="flex: 1; min-width: 250px; background: rgba(163, 230, 53, 0.1); border: 1px solid rgba(163, 230, 53, 0.3); border-radius: 12px; padding: 20px;">
-        <h4 style="color: #a3e635; margin-top: 0; font-size: 1.2rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Completion</h4>
-        <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">When you type the opening <code>&lt;h1&gt;</code> bracket, a smart editor will instantly inject the closing <code>&lt;/h1&gt;</code> tag for you automatically before you even press a key, saving you millions of keystrokes!</p>
-      </div>
-      
-      <div style="flex: 1; min-width: 250px; background: rgba(251, 146, 60, 0.1); border: 1px solid rgba(251, 146, 60, 0.3); border-radius: 12px; padding: 20px;">
-        <h4 style="color: #fb923c; margin-top: 0; font-size: 1.2rem;"><i class="fa-solid fa-bug"></i> Error Detection</h4>
-        <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">Did you accidentally forget the slash in a closing tag? The editor will instantly underline your mistake in a squiggly red line, exactly like the spellcheck in MS Word.</p>
-      </div>
-    </div>
-
-    <hr style="margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
-
-    <h2 style="font-size: 2rem; margin-bottom: 20px;">The Skill-Orbit Code Space</h2>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      To save you from having to download and set up complex software right now, we have embedded a professional-grade Code Editor directly into your browser! The editor panel waiting for you in the Challenge section below has Syntax Highlighting and Auto-Completion already activated. 
-    </p>
-    
-    <p style="font-size: 1.1rem; line-height: 1.8;">
-      Whenever you are ready to experiment on your own computer, we highly recommend downloading <strong>Visual Studio Code</strong> for free on your PC or Mac!
-    </p>
-
-    <div class="callout callout-warning" style="margin-top: 30px;">
-      <i class="fa-solid fa-shield-halved"></i>
-      <div>
-        <strong>The Golden Rule of Saving Files:</strong> When saving an HTML file on your own computer, you must forcefully end the file name with the extension <code>.html</code> (for example: <em>index.html</em>). If you save it as a <em>.txt</em> file, your computer will just open it as boring text instead of opening it with your web browser. This <em>.html</em> extension is what signals your computer to render the website!
-      </div>
-    </div>
-  `,
+  "theory": "",
+  "interactive_steps": [
+    {
+      "type": "interaction",
+      "hook": "Before we write more HTML, what special software do you think is absolutely required to buy to build a website?",
+      "interactionType": "multiple-choice",
+      "options": ["An expensive programming license", "Microsoft Word", "None! Any basic app like 'Notepad' works"],
+      "correctIndex": 2,
+      "explanation": {
+        "intuition": "You don't need any special software! HTML is nothing more than pure, unformatted text. If a program lets you type letters, you can build a webpage.",
+        "mechanism": "A web browser natively understands plain text files. It doesn't care what app you used to type the text.",
+        "code": "<!-- Written in a basic free Notepad app! -->\n<h1>No fancy software required</h1>"
+      },
+      "visualExample": "<h1>No fancy software required</h1>"
+    },
+    {
+      "type": "interaction",
+      "hook": "If we can use any typing program, why can't we just use Microsoft Word or Google Docs to type our HTML?",
+      "interactionType": "multiple-choice",
+      "options": ["They secretly embed invisible formatting codes that break web browsers.", "They do not allow you to type '<' and '>' characters properly."],
+      "correctIndex": 0,
+      "explanation": {
+        "intuition": "Word processors are designed to print beautiful pages. They secretly save margin sizes, font choices, and bold styles behind your text.",
+        "mechanism": "Browsers expect 100% pure text. When they encounter Microsoft Word's hidden formatting data, they fail to read your HTML tags properly.",
+        "code": "<!-- What a Word Processor actually saves behind the scenes (simplified) -->\n{\\rtf1\\ansi\\ansicpg1252\\deff0{\\fonttbl{\\f0\\fnil\\fcharset0 Calibri;}}\n<h1>My Website</h1>}"
+      },
+      "visualExample": "<div style='color:red; font-family:monospace; padding:10px; border:1px solid red; background:#ffebeb;'>ERROR: Unrecognized file formatting data detected by browser!</div>"
+    },
+    {
+      "type": "interaction",
+      "hook": "Instead of Notepad, professional developers use specialized 'Code Editors' (like VS Code). Why?",
+      "interactionType": "multiple-choice",
+      "options": ["They automatically write websites for you using AI.", "They provide 'Syntax Highlighting' and 'Auto-Completion' to code faster with fewer typos."],
+      "correctIndex": 1,
+      "explanation": {
+        "intuition": "It's like giving a carpenter an electric saw instead of a pocket knife. They give developers superpowers to stop silly typos.",
+        "mechanism": "A Code Editor actively analyzes your file. It paints tags neon pink and text white (Syntax Highlighting), and automatically injects closing tags the moment you type an opening tag.",
+        "code": "<!-- In an editor, tags are vividly colored so you spot missing slashes immediately -->\n<h1 style=\"color: #f472b6;\">Hello from a Code Editor!</h1>"
+      },
+      "visualExample": "<h1 style=\"color: #f472b6; text-shadow: 0 0 10px rgba(244,114,182,0.5);\">Hello from a Code Editor!</h1>"
+    },
+    {
+      "type": "interaction",
+      "hook": "The Golden Rule: When saving your plain text file on your computer, what MUST you name the file so it actually opens as a website?",
+      "interactionType": "multiple-choice",
+      "options": ["website.vbs", "my_website.txt", "my_website.html"],
+      "correctIndex": 2,
+      "explanation": {
+        "intuition": "The file extension is a direct signal to your computer system about what the file is supposed to do.",
+        "mechanism": "Saving as '.txt' tells your computer to open a boring text reader. Saving forcefully with the '.html' extension signals the Operating System to boot up the Chrome/Safari browser to render it.",
+        "code": "<!-- Correct File Name: index.html -->\n<h1>My First Real Website</h1>"
+      },
+      "visualExample": "<h1>My First Real Website <i class=\"fa-brands fa-html5\" style=\"color:#e34c26;\"></i></h1>"
+    }
+  ],
   "codeExample": "<!-- This snippet demonstrates what code highlighting looks like! -->\n<html>\n  <head>\n    <!-- Headings give metadata, not shown on the page -->\n  </head>\n  <body>\n    <!-- Notice how different colors are assigned to tags vs raw text -->\n    <h1>The power of colors!</h1>\n    <p>Writing code is significantly easier when the code editor highlights different parts of your markup with distinct neon colors.</p>\n  </body>\n</html>",
   "challenge": {
     "instruction": "Let's explore the Editor! In the box below, type an opening <p> tag. Notice how the editor colors it differently.",

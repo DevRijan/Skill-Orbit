@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skill-Orbit Dashboard — Track your HTML & CSS learning path, progress, and achievements." />
+  <meta name="description"
+    content="Skill-Orbit Dashboard — Track your modern skills learning path, progress, and achievements." />
   <title>Dashboard | Skill-Orbit</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/animations.css" />
   <link rel="stylesheet" href="assets/css/auth.css" />
   <link rel="stylesheet" href="assets/css/dashboard.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     /* ── Course Switcher ───────────────────────── */
@@ -25,65 +29,95 @@
       flex: 1;
       min-width: 180px;
       max-width: 280px;
-      background: rgba(255,255,255,0.03);
-      border: 1.5px solid rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1.5px solid rgba(255, 255, 255, 0.07);
       border-radius: 20px;
       padding: 20px 22px;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       display: flex;
       align-items: center;
       gap: 14px;
       user-select: none;
     }
+
     .course-card::before {
       content: '';
       position: absolute;
       inset: 0;
       border-radius: 18px;
-      background: linear-gradient(135deg, rgba(124,58,237,0.06) 0%, transparent 60%);
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, transparent 60%);
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.25s;
     }
-    .course-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.14); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-    .course-card:hover::before { opacity: 1; }
+
+    .course-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .course-card:hover::before {
+      opacity: 1;
+    }
 
     .course-card.active {
-      border-color: var(--course-accent, rgba(124,58,237,0.6));
-      background: rgba(124,58,237,0.08);
-      box-shadow: 0 0 0 1px var(--course-accent, rgba(124,58,237,0.3)), 0 12px 40px rgba(0,0,0,0.35);
+      border-color: var(--course-accent, rgba(124, 58, 237, 0.6));
+      background: rgba(124, 58, 237, 0.08);
+      box-shadow: 0 0 0 1px var(--course-accent, rgba(124, 58, 237, 0.3)), 0 12px 40px rgba(0, 0, 0, 0.35);
       transform: translateY(-2px);
     }
-    .course-card.active::before { opacity: 1; }
+
+    .course-card.active::before {
+      opacity: 1;
+    }
 
     /* Active bottom bar */
     .course-card::after {
       content: '';
       position: absolute;
-      bottom: 0; left: 16px; right: 16px;
+      bottom: 0;
+      left: 16px;
+      right: 16px;
       height: 2px;
       border-radius: 2px;
       background: var(--course-accent, transparent);
       opacity: 0;
       transition: opacity 0.25s;
     }
-    .course-card.active::after { opacity: 1; }
+
+    .course-card.active::after {
+      opacity: 1;
+    }
 
     .course-card-icon {
-      width: 44px; height: 44px;
+      width: 44px;
+      height: 44px;
       border-radius: 13px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1.5rem;
       flex-shrink: 0;
       transition: transform 0.2s ease;
     }
-    .course-card:hover .course-card-icon { transform: scale(1.1) rotate(-3deg); }
-    .course-card.active .course-card-icon { transform: scale(1.08); }
 
-    .course-card-info { flex: 1; min-width: 0; }
+    .course-card:hover .course-card-icon {
+      transform: scale(1.1) rotate(-3deg);
+    }
+
+    .course-card.active .course-card-icon {
+      transform: scale(1.08);
+    }
+
+    .course-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
     .course-card-name {
       font-size: 0.95rem;
       font-weight: 800;
@@ -94,51 +128,69 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .course-card-meta {
       font-size: 0.75rem;
       color: var(--text-muted);
       font-weight: 500;
     }
+
     .course-card-progress-track {
       height: 3px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       border-radius: 50px;
       overflow: hidden;
       margin-top: 8px;
     }
+
     .course-card-progress-fill {
       height: 100%;
       border-radius: 50px;
       background: var(--course-accent, #7c3aed);
-      transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .course-card-check {
       position: absolute;
-      top: 12px; right: 12px;
-      width: 18px; height: 18px;
-      background: linear-gradient(135deg,#10b981,#059669);
+      top: 12px;
+      right: 12px;
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(135deg, #10b981, #059669);
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 0.55rem;
       color: #fff;
       display: none;
     }
-    .course-card.done .course-card-check { display: flex; }
+
+    .course-card.done .course-card-check {
+      display: flex;
+    }
 
     /* ── Active Course Section ─────────────────── */
     .active-course-section {
-      animation: courseSlideIn 0.3s cubic-bezier(0.34,1.06,0.64,1);
+      animation: courseSlideIn 0.3s cubic-bezier(0.34, 1.06, 0.64, 1);
     }
+
     @keyframes courseSlideIn {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* ── Add Course Placeholder ───────────────── */
     .course-card-add {
       border-style: dashed;
-      border-color: rgba(255,255,255,0.1);
+      border-color: rgba(255, 255, 255, 0.1);
       opacity: 0.5;
       cursor: default;
       justify-content: center;
@@ -150,11 +202,25 @@
       align-items: center;
       padding: 18px;
     }
-    .course-card-add:hover { opacity: 0.7; transform: none; }
-    .course-card-add i { font-size: 1.2rem; color: var(--text-muted); }
-    .course-card-add span { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+
+    .course-card-add:hover {
+      opacity: 0.7;
+      transform: none;
+    }
+
+    .course-card-add i {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .course-card-add span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- Custom Cursor -->
@@ -222,9 +288,9 @@
             <div class="dash-stat-label">Day Streak</div>
           </div>
           <div class="dash-stat-card">
-            <div class="dash-stat-emoji">🏅</div>
+            <div class="dash-stat-emoji">🏆</div>
             <div class="dash-stat-val" id="statBadges">0</div>
-            <div class="dash-stat-label">Badges</div>
+            <div class="dash-stat-label">Achievements</div>
           </div>
         </div>
       </div>
@@ -251,7 +317,8 @@
                     <span id="activeCourseTagName">HTML</span>
                   </div>
                   <h2 class="dash-module-title" id="activeCourseTitle">HTML Module</h2>
-                  <p class="dash-module-tagline" id="activeCourseTagline">Structure &amp; semantics — from first tags to advanced layouts.</p>
+                  <p class="dash-module-tagline" id="activeCourseTagline">Structure &amp; semantics — from first tags to
+                    advanced layouts.</p>
                 </div>
                 <div class="dash-module-header-right" id="activeCourseProgress"></div>
               </div>
@@ -263,7 +330,7 @@
 
         <!-- RIGHT: Gamified Sidebar -->
         <div class="dash-sidebar-column">
-          
+
           <!-- Daily Quests widget -->
           <div class="dash-sidebar-widget quests-widget">
             <h3 class="widget-title"><i class="fa-solid fa-scroll"></i> Daily Quests</h3>
@@ -271,7 +338,9 @@
               <div class="quest-icon"><i class="fa-solid fa-fire"></i></div>
               <div class="quest-info">
                 <h4>Maintain your streak</h4>
-                <div class="quest-progress"><div class="quest-fill" style="width: 100%;"></div></div>
+                <div class="quest-progress">
+                  <div class="quest-fill" style="width: 100%;"></div>
+                </div>
               </div>
               <div class="quest-reward">10 XP</div>
             </div>
@@ -279,16 +348,18 @@
               <div class="quest-icon"><i class="fa-solid fa-book-open"></i></div>
               <div class="quest-info">
                 <h4>Complete 2 Lessons</h4>
-                <div class="quest-progress"><div class="quest-fill" style="width: 50%;"></div></div>
+                <div class="quest-progress">
+                  <div class="quest-fill" style="width: 50%;"></div>
+                </div>
               </div>
               <div class="quest-reward">25 XP</div>
             </div>
           </div>
 
-          <!-- ── BADGES SECTION ── -->
+          <!-- ── ACHIEVEMENTS SECTION ── -->
           <section class="dash-badges-section dash-sidebar-widget">
             <h2 class="dash-section-title widget-title" style="margin-bottom:12px;">
-              <i class="fa-solid fa-trophy"></i> Latest Badges
+              <i class="fa-solid fa-trophy"></i> Achievements
               <a href="account.html" style="font-size:0.75rem;">View All →</a>
             </h2>
             <div class="dash-badges-grid" id="dash-badges-grid"></div>
@@ -329,109 +400,111 @@
   <script src="assets/js/visuals.js"></script>
 
   <script>
-  /* ═══════════════════════════════════════════
-     Dashboard — Course Switcher Architecture
-     Add future courses to COURSE_REGISTRY below
-     ═══════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════
+       Dashboard — Course Switcher Architecture
+       Add future courses to COURSE_REGISTRY below
+       ═══════════════════════════════════════════ */
 
-  /**
-   * COURSE_REGISTRY — add new courses here.
-   * Each entry maps to a curriculum module id.
-   */
-  const COURSE_REGISTRY = [
-    {
-      id:       'html',
-      name:     'HTML',
-      subtitle: 'Structure & semantics — from first tags to advanced layouts.',
-      icon:     '🌐',
-      iconClass:'fa-brands fa-html5',
-      tagClass: 'html',
-      accent:   'rgba(249,115,22,0.7)',
-      bgIcon:   'rgba(249,115,22,0.15)',
-      colorIcon:'#f97316',
-    },
-    {
-      id:       'css',
-      name:     'CSS',
-      subtitle: 'Style, layout & polish — the visual layer of the web.',
-      icon:     '🎨',
-      iconClass:'fa-brands fa-css3-alt',
-      tagClass: 'css',
-      accent:   'rgba(59,130,246,0.7)',
-      bgIcon:   'rgba(59,130,246,0.15)',
-      colorIcon:'#60a5fa',
-    },
-    // ── FUTURE COURSES — uncomment & fill when ready ──
-    // { id: 'js', name: 'JavaScript', subtitle: 'Make the web interactive.', icon: '⚡', iconClass: 'fa-brands fa-js', tagClass: 'js', accent: 'rgba(234,179,8,0.7)', bgIcon: 'rgba(234,179,8,0.15)', colorIcon: '#eab308' },
-    // { id: 'react', name: 'React', subtitle: 'Build modern UIs.', icon: '⚛️', iconClass: 'fa-brands fa-react', tagClass: 'react', accent: 'rgba(14,165,233,0.7)', bgIcon: 'rgba(14,165,233,0.15)', colorIcon: '#38bdf8' },
-  ];
+    /**
+     * COURSE_REGISTRY — add new courses here.
+     * Each entry maps to a curriculum module id.
+     */
+    const COURSE_REGISTRY = [
+      {
+        id: 'html',
+        name: 'HTML',
+        subtitle: 'Structure & semantics — from first tags to advanced layouts.',
+        icon: '🌐',
+        iconClass: 'fa-brands fa-html5',
+        tagClass: 'html',
+        accent: 'rgba(249,115,22,0.7)',
+        bgIcon: 'rgba(249,115,22,0.15)',
+        colorIcon: '#f97316',
+      },
+      {
+        id: 'css',
+        name: 'CSS',
+        subtitle: 'Master layout physics, mental models, and responsive architectures.',
+        icon: '🎨',
+        iconClass: 'fa-brands fa-css3-alt',
+        tagClass: 'css',
+        accent: 'rgba(59,130,246,0.7)',
+        bgIcon: 'rgba(59,130,246,0.15)',
+        colorIcon: '#60a5fa',
+      },
+      // ── FUTURE COURSES — uncomment & fill when ready ──
+      // { id: 'js', name: 'JavaScript', subtitle: 'Make the web interactive.', icon: '⚡', iconClass: 'fa-brands fa-js', tagClass: 'js', accent: 'rgba(234,179,8,0.7)', bgIcon: 'rgba(234,179,8,0.15)', colorIcon: '#eab308' },
+      // { id: 'react', name: 'React', subtitle: 'Build modern UIs.', icon: '⚛️', iconClass: 'fa-brands fa-react', tagClass: 'react', accent: 'rgba(14,165,233,0.7)', bgIcon: 'rgba(14,165,233,0.15)', colorIcon: '#38bdf8' },
+    ];
 
-  let activeCourseId = localStorage.getItem('skill-orbit-active-course') || COURSE_REGISTRY[0].id;
+    let activeCourseId = localStorage.getItem('skill-orbit-active-course') || COURSE_REGISTRY[0].id;
 
-  /* ── Boot ─────────────────────────────────── */
-  document.addEventListener('DOMContentLoaded', () => {
-    initAuth({ requireLogin: false });
-    // Wait for curriculum + gamification to be available
-    loadDashboard(); // from lessons.js — populates CURRICULUM
-    updateDashboardHero();
-    buildCourseSwitcher();
-    switchCourse(activeCourseId, false);
-    renderDashboardBadges();
-  });
+    /* ── Boot ─────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', () => {
+      initAuth({ requireLogin: false });
+      // Wait for curriculum + gamification to be available
+      loadDashboard(); // from lessons.js — populates CURRICULUM
+      updateDashboardHero();
+      buildCourseSwitcher();
+      switchCourse(activeCourseId, false);
+      renderDashboardBadges();
+    });
 
-  window.addEventListener('authChanged', () => {
-    updateDashboardHero();
-    buildCourseSwitcher();
-    switchCourse(activeCourseId, false);
-    renderDashboardBadges();
-  });
+    window.addEventListener('authChanged', () => {
+      updateDashboardHero();
+      buildCourseSwitcher();
+      switchCourse(activeCourseId, false);
+      renderDashboardBadges();
+    });
 
-  /* ── Hero ─────────────────────────────────── */
-  function updateDashboardHero() {
-    const profile  = typeof getProfile  === 'function' ? getProfile()  : null;
-    const progress = typeof loadProgress === 'function' ? loadProgress() : { xp:0, streak:0, completedLessons:[], badges:[] };
-    const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
-    const BADGES_DEF  = (typeof BADGES !== 'undefined') ? BADGES : [];
+    /* ── Hero ─────────────────────────────────── */
+    function updateDashboardHero() {
+      const profile = typeof getProfile === 'function' ? getProfile() : null;
+      const progress = typeof loadProgress === 'function' ? loadProgress() : { xp: 0, streak: 0, completedLessons: [], badges: [] };
+      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
+      const BADGES_DEF = (typeof BADGES !== 'undefined') ? BADGES : [];
 
-    const hour = new Date().getHours();
-    const greeting = hour < 12 ? '☀️ Good Morning' : hour < 18 ? '⚡ Good Afternoon' : '🌙 Good Evening';
-    const greetEl = document.getElementById('greetingLabel');
-    if (greetEl) greetEl.textContent = greeting;
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? '☀️ Good Morning' : hour < 18 ? '⚡ Good Afternoon' : '🌙 Good Evening';
+      const greetEl = document.getElementById('greetingLabel');
+      if (greetEl) greetEl.textContent = greeting;
 
-    const nameEl = document.getElementById('heroName');
-    if (nameEl && profile) nameEl.textContent = profile.name || 'Learner';
+      const nameEl = document.getElementById('heroName');
+      if (nameEl && profile) nameEl.textContent = profile.name || 'Learner';
 
-    document.getElementById('statXP').textContent    = progress.xp || 0;
-    document.getElementById('statStreak').textContent = progress.streak || 0;
+      document.getElementById('statXP').textContent = progress.xp || 0;
+      document.getElementById('statStreak').textContent = progress.streak || 0;
 
-    const earnedCount = BADGES_DEF.filter(b => b.condition(progress, curriculum)).length;
-    document.getElementById('statBadges').textContent = earnedCount;
-  }
+      const earnedCount = (typeof ACHIEVEMENTS !== 'undefined') 
+        ? ACHIEVEMENTS.filter(b => b.condition(progress, curriculum)).length
+        : 0;
+      document.getElementById('statBadges').textContent = earnedCount;
+    }
 
-  /* ── Course Switcher Cards ────────────────── */
-  function buildCourseSwitcher() {
-    const progress   = typeof loadProgress === 'function' ? loadProgress() : { completedLessons: [] };
-    const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
+    /* ── Course Switcher Cards ────────────────── */
+    function buildCourseSwitcher() {
+      const progress = typeof loadProgress === 'function' ? loadProgress() : { completedLessons: [] };
+      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
 
-    const container = document.getElementById('courseSwitcher');
-    container.innerHTML = '';
+      const container = document.getElementById('courseSwitcher');
+      container.innerHTML = '';
 
-    COURSE_REGISTRY.forEach(course => {
-      const total    = curriculum.filter(l => l.module === course.id).length || 0;
-      const done     = progress.completedLessons.filter(id => id.startsWith(course.id)).length;
-      const pct      = total ? Math.round((done / total) * 100) : 0;
-      const complete = total > 0 && done === total;
+      COURSE_REGISTRY.forEach(course => {
+        const total = curriculum.filter(l => l.module === course.id).length || 0;
+        const done = progress.completedLessons.filter(id => id.startsWith(course.id)).length;
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        const complete = total > 0 && done === total;
 
-      const card = document.createElement('div');
-      card.className = `course-card${activeCourseId === course.id ? ' active' : ''}${complete ? ' done' : ''}`;
-      card.dataset.courseId = course.id;
-      card.style.setProperty('--course-accent', course.accent);
-      card.setAttribute('role', 'tab');
-      card.setAttribute('aria-selected', activeCourseId === course.id ? 'true' : 'false');
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-label', `${course.name} course`);
+        const card = document.createElement('div');
+        card.className = `course-card${activeCourseId === course.id ? ' active' : ''}${complete ? ' done' : ''}`;
+        card.dataset.courseId = course.id;
+        card.style.setProperty('--course-accent', course.accent);
+        card.setAttribute('role', 'tab');
+        card.setAttribute('aria-selected', activeCourseId === course.id ? 'true' : 'false');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `${course.name} course`);
 
-      card.innerHTML = `
+        card.innerHTML = `
         <div class="course-card-check"><i class="fa-solid fa-check"></i></div>
         <div class="course-card-icon" style="background:${course.bgIcon};color:${course.colorIcon};">
           <i class="${course.iconClass}"></i>
@@ -444,102 +517,110 @@
           </div>
         </div>
       `;
-      card.addEventListener('click', () => switchCourse(course.id, true));
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); switchCourse(course.id, true); }
+        card.addEventListener('click', () => switchCourse(course.id, true));
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); switchCourse(course.id, true); }
+        });
+        container.appendChild(card);
       });
-      container.appendChild(card);
-    });
 
-    // "Coming Soon" placeholder
-    const placeholder = document.createElement('div');
-    placeholder.className = 'course-card course-card-add';
-    placeholder.innerHTML = `<i class="fa-solid fa-plus"></i><span>More courses<br/>coming soon</span>`;
-    container.appendChild(placeholder);
-  }
+      // "Coming Soon" placeholder
+      const placeholder = document.createElement('div');
+      placeholder.className = 'course-card course-card-add';
+      placeholder.innerHTML = `<i class="fa-solid fa-plus"></i><span>More courses<br/>coming soon</span>`;
+      container.appendChild(placeholder);
+    }
 
-  /* ── Switch Active Course ─────────────────── */
-  function switchCourse(courseId, animate = true) {
-    activeCourseId = courseId;
-    localStorage.setItem('skill-orbit-active-course', courseId);
+    /* ── Switch Active Course ─────────────────── */
+    function switchCourse(courseId, animate = true) {
+      activeCourseId = courseId;
+      localStorage.setItem('skill-orbit-active-course', courseId);
 
-    const course   = COURSE_REGISTRY.find(c => c.id === courseId);
-    if (!course) return;
+      const course = COURSE_REGISTRY.find(c => c.id === courseId);
+      if (!course) return;
 
-    const progress   = typeof loadProgress === 'function' ? loadProgress() : { completedLessons:[] };
-    const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
+      const progress = typeof loadProgress === 'function' ? loadProgress() : { completedLessons: [] };
+      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
 
-    // Update switcher card states
-    document.querySelectorAll('.course-card[data-course-id]').forEach(card => {
-      const isActive = card.dataset.courseId === courseId;
-      card.classList.toggle('active', isActive);
-      card.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
+      // Update switcher card states
+      document.querySelectorAll('.course-card[data-course-id]').forEach(card => {
+        const isActive = card.dataset.courseId === courseId;
+        card.classList.toggle('active', isActive);
+        card.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
 
-    // Update active course header
-    const tagEl = document.getElementById('activeCourseTag');
-    if (tagEl) { tagEl.className = `dash-module-tag ${course.tagClass}`; }
-    const tagIconEl = document.getElementById('activeCourseTagIcon');
-    if (tagIconEl) tagIconEl.className = course.iconClass;
-    const tagNameEl = document.getElementById('activeCourseTagName');
-    if (tagNameEl) tagNameEl.textContent = course.name;
+      // Update active course header
+      const tagEl = document.getElementById('activeCourseTag');
+      if (tagEl) { tagEl.className = `dash-module-tag ${course.tagClass}`; }
+      const tagIconEl = document.getElementById('activeCourseTagIcon');
+      if (tagIconEl) tagIconEl.className = course.iconClass;
+      const tagNameEl = document.getElementById('activeCourseTagName');
+      if (tagNameEl) tagNameEl.textContent = course.name;
 
-    document.getElementById('activeCourseTitle').textContent   = `${course.name} Module`;
-    document.getElementById('activeCourseTagline').textContent = course.subtitle;
+      document.getElementById('activeCourseTitle').textContent = `${course.name} Module`;
+      document.getElementById('activeCourseTagline').textContent = course.subtitle;
 
-    // Progress summary in header
-    const total = curriculum.filter(l => l.module === courseId).length || 0;
-    const done  = progress.completedLessons.filter(id => id.startsWith(courseId)).length;
-    document.getElementById('activeCourseProgress').textContent = `${done} of ${total || '?'} completed`;
+      // Progress summary in header
+      const total = curriculum.filter(l => l.module === courseId).length || 0;
+      const done = progress.completedLessons.filter(id => id.startsWith(courseId)).length;
+      document.getElementById('activeCourseProgress').textContent = `${done} of ${total || '?'} completed`;
 
-    // Re-render lesson grid
-    const grid = document.getElementById('active-lessons-grid');
-    grid.innerHTML = '';
-    const moduleLessons = curriculum.filter(l => l.module === courseId);
-    if (typeof renderModuleLessonGroups === 'function' && moduleLessons.length > 0) {
-      renderModuleLessonGroups(grid, moduleLessons, courseId);
-    } else if (moduleLessons.length === 0) {
-      grid.innerHTML = `
+      // Re-render lesson grid
+      const grid = document.getElementById('active-lessons-grid');
+      grid.innerHTML = '';
+      const moduleLessons = curriculum.filter(l => l.module === courseId);
+      if (typeof renderModuleLessonGroups === 'function' && moduleLessons.length > 0) {
+        renderModuleLessonGroups(grid, moduleLessons, courseId);
+      } else if (moduleLessons.length === 0) {
+        grid.innerHTML = `
         <div style="padding:40px;text-align:center;color:var(--text-muted);">
           <i class="fa-solid fa-hourglass-half" style="font-size:2rem;margin-bottom:12px;display:block;color:#a78bfa;"></i>
           <strong style="color:var(--text-primary);font-size:1rem;">Coming Soon</strong>
           <p style="margin-top:6px;font-size:0.85rem;">This course is currently under development. Stay tuned!</p>
         </div>`;
-    }
+      }
 
-    // Animate section
-    if (animate) {
-      const section = document.getElementById('activeCourseSection');
-      if (section) {
-        section.classList.remove('active-course-section');
-        void section.offsetWidth; // reflow
-        section.classList.add('active-course-section');
+      // Animate section
+      if (animate) {
+        const section = document.getElementById('activeCourseSection');
+        if (section) {
+          section.classList.remove('active-course-section');
+          void section.offsetWidth; // reflow
+          section.classList.add('active-course-section');
+        }
       }
     }
-  }
 
-  /* ── Badges ───────────────────────────────── */
-  function renderDashboardBadges() {
-    const progress   = typeof loadProgress === 'function' ? loadProgress() : { completedLessons:[], xp:0, streak:0, badges:[] };
-    const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
-    const BADGES_DEF  = (typeof BADGES !== 'undefined') ? BADGES : [];
-    const grid = document.getElementById('dash-badges-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    BADGES_DEF.forEach(badge => {
-      const earned = badge.condition(progress, curriculum);
-      const chip   = document.createElement('div');
-      chip.className = `dash-badge-chip ${earned ? 'earned' : 'locked'}`;
-      chip.title     = badge.description;
-      chip.innerHTML = `
-        <span class="dash-badge-emoji">${badge.icon}</span>
-        <span class="dash-badge-name">${badge.name}</span>
-        ${earned ? '<i class="fa-solid fa-check" style="margin-left:4px;color:#10b981;font-size:0.7rem;"></i>' : ''}
-      `;
-      grid.appendChild(chip);
-    });
-  }
+    /* ── Achievements ─────────────────────────── */
+    function renderDashboardBadges() {
+      const progress = typeof loadProgress === 'function' ? loadProgress() : { completedLessons: [], xp: 0, streak: 0, badges: [] };
+      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
+      if (typeof ACHIEVEMENTS === 'undefined') return;
+
+      const grid = document.getElementById('dash-badges-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      // Show a subset for dashboard sidebar
+      const visible = ACHIEVEMENTS.slice(0, 8); 
+
+      visible.forEach(ach => {
+        const earned = ach.condition(progress, curriculum);
+        const isSecret = ach.hidden && !earned;
+        const chip = document.createElement('div');
+        chip.className = `dash-badge-chip ${earned ? 'earned' : 'locked'} ${isSecret ? 'secret' : ''}`;
+        
+        chip.title = isSecret ? 'Secret Achievement' : (earned ? ach.name : ach.description);
+        chip.innerHTML = `
+          <span class="dash-badge-emoji">${isSecret ? '❓' : ach.icon}</span>
+          <span class="dash-badge-name">${isSecret ? '???' : ach.name}</span>
+          ${earned ? '<i class="fa-solid fa-check" style="margin-left:4px;color:#10b981;font-size:0.7rem;"></i>' : ''}
+        `;
+        grid.appendChild(chip);
+      });
+    }
   </script>
 
 </body>
+
 </html>

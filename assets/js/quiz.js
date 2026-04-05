@@ -184,11 +184,13 @@ async function handleAnswer(selected, correctIndex, questionIndex, clickedBtn) {
       setTimeout(() => counter.style.transform = 'scale(1)', 300);
     }
     if (typeof updateLiveXPDisplay === 'function') updateLiveXPDisplay();
+    if (typeof updateTrack === 'function') updateTrack('quiz_streak', 1);
   } else {
     // Lock out XP for this question permanently
     if (quizLessonId && typeof recordQuizWrong === 'function') {
       await recordQuizWrong(quizLessonId, questionIndex);
     }
+    if (typeof updateTrack === 'function') updateTrack('quiz_streak', 0); // Reset streak
     if (feedback) feedback.innerHTML = `
       <div>
         <span style="color:var(--color-danger);font-weight:700;">❌ Wrong.</span>
