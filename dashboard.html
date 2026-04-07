@@ -287,11 +287,7 @@
             <div class="dash-stat-val" id="statStreak">0</div>
             <div class="dash-stat-label">Day Streak</div>
           </div>
-          <div class="dash-stat-card">
-            <div class="dash-stat-emoji">🏆</div>
-            <div class="dash-stat-val" id="statBadges">0</div>
-            <div class="dash-stat-label">Achievements</div>
-          </div>
+
         </div>
       </div>
     </section>
@@ -356,14 +352,7 @@
             </div>
           </div>
 
-          <!-- ── ACHIEVEMENTS SECTION ── -->
-          <section class="dash-badges-section dash-sidebar-widget">
-            <h2 class="dash-section-title widget-title" style="margin-bottom:12px;">
-              <i class="fa-solid fa-trophy"></i> Achievements
-              <a href="account.html" style="font-size:0.75rem;">View All →</a>
-            </h2>
-            <div class="dash-badges-grid" id="dash-badges-grid"></div>
-          </section>
+
         </div>
       </div>
 
@@ -454,7 +443,6 @@
       updateDashboardHero();
       buildCourseSwitcher();
       switchCourse(activeCourseId, false);
-      renderDashboardBadges();
     });
 
     /* ── Hero ─────────────────────────────────── */
@@ -462,7 +450,7 @@
       const profile = typeof getProfile === 'function' ? getProfile() : null;
       const progress = typeof loadProgress === 'function' ? loadProgress() : { xp: 0, streak: 0, completedLessons: [], badges: [] };
       const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
-      const BADGES_DEF = (typeof BADGES !== 'undefined') ? BADGES : [];
+
 
       const hour = new Date().getHours();
       const greeting = hour < 12 ? '☀️ Good Morning' : hour < 18 ? '⚡ Good Afternoon' : '🌙 Good Evening';
@@ -475,10 +463,7 @@
       document.getElementById('statXP').textContent = progress.xp || 0;
       document.getElementById('statStreak').textContent = progress.streak || 0;
 
-      const earnedCount = (typeof ACHIEVEMENTS !== 'undefined') 
-        ? ACHIEVEMENTS.filter(b => b.condition(progress, curriculum)).length
-        : 0;
-      document.getElementById('statBadges').textContent = earnedCount;
+
     }
 
     /* ── Course Switcher Cards ────────────────── */
@@ -591,34 +576,7 @@
       }
     }
 
-    /* ── Achievements ─────────────────────────── */
-    function renderDashboardBadges() {
-      const progress = typeof loadProgress === 'function' ? loadProgress() : { completedLessons: [], xp: 0, streak: 0, badges: [] };
-      const curriculum = (typeof CURRICULUM !== 'undefined' && Array.isArray(CURRICULUM)) ? CURRICULUM : [];
-      if (typeof ACHIEVEMENTS === 'undefined') return;
 
-      const grid = document.getElementById('dash-badges-grid');
-      if (!grid) return;
-      grid.innerHTML = '';
-
-      // Show a subset for dashboard sidebar
-      const visible = ACHIEVEMENTS.slice(0, 8); 
-
-      visible.forEach(ach => {
-        const earned = ach.condition(progress, curriculum);
-        const isSecret = ach.hidden && !earned;
-        const chip = document.createElement('div');
-        chip.className = `dash-badge-chip ${earned ? 'earned' : 'locked'} ${isSecret ? 'secret' : ''}`;
-        
-        chip.title = isSecret ? 'Secret Achievement' : (earned ? ach.name : ach.description);
-        chip.innerHTML = `
-          <span class="dash-badge-emoji">${isSecret ? '❓' : ach.icon}</span>
-          <span class="dash-badge-name">${isSecret ? '???' : ach.name}</span>
-          ${earned ? '<i class="fa-solid fa-check" style="margin-left:4px;color:#10b981;font-size:0.7rem;"></i>' : ''}
-        `;
-        grid.appendChild(chip);
-      });
-    }
   </script>
 
 </body>

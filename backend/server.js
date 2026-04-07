@@ -83,7 +83,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth',         authLimiter, require('./routes/auth'));
 app.use('/api/progress',     apiLimiter,  require('./routes/progress'));
 app.use('/api/leaderboard',  apiLimiter,  require('./routes/leaderboard'));
-app.use('/api/badges',       apiLimiter,  require('./routes/gamification'));
+
 app.use('/api/lessons',      apiLimiter,  require('./routes/lessons').router);
 
 // ── Serve frontend static files (optional — for production) ──────────────────

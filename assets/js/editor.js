@@ -9,8 +9,8 @@ let activeEditorTab  = 'html'; // 'html' | 'css'
 window.monacoHtmlEditor = null; // Changed to window for global access
 window.monacoCssEditor  = null;
 let currentFontSize  = 14;
-let lastAttemptFailed = false; // Tracks if previous check was incorrect for resilience achievements
-
+const isLight = document.body.classList.contains('light-mode');
+const themeMode = isLight ? 'vs' : 'vs-dark';
 // Configure Monaco
 if (window.require) {
   require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.46.0/min/vs' }});
@@ -59,18 +59,10 @@ function setupMonaco(lesson) {
   // Live preview on input + Activity Tracking
   monacoHtmlEditor.onDidChangeModelContent((e) => {
     updatePreview();
-    if (typeof updateTrack === 'function') {
-      const charCount = e.changes.reduce((acc, change) => acc + change.text.length, 0);
-      if (charCount > 0) updateTrack('editor_typed_chars', charCount);
-    }
   });
 
   monacoCssEditor.onDidChangeModelContent((e) => {
     updatePreview();
-    if (typeof updateTrack === 'function') {
-      const charCount = e.changes.reduce((acc, change) => acc + change.text.length, 0);
-      if (charCount > 0) updateTrack('editor_typed_chars', charCount);
-    }
   });
 
   // Tab switching (HTML/CSS)
@@ -347,7 +339,7 @@ async function checkChallenge() {
   const doc = parser.parseFromString(htmlVal, 'text/html');
   
   // Track Custom Styles (if they added meaningful CSS)
-  if (cssVal.length > 30 && typeof updateTrack === 'function') updateTrack('custom_styles', 1);
+
   
   // Track Nested Elements (if depth > 2)
   function getDepth(node) {
@@ -360,14 +352,10 @@ async function checkChallenge() {
     return 1 + depth;
   }
   const maxDepth = getDepth(doc.body);
-  if (maxDepth > 3 && typeof updateTrack === 'function') updateTrack('nested_elements', 1);
+
 
   if (correct) {
-    // Track Resilience Fixes (if they failed before)
-    if (lastAttemptFailed && typeof updateTrack === 'function') {
-      updateTrack('resilience_fixes', 1);
-      lastAttemptFailed = false;
-    }
+
     
     // 1. Award lesson completion XP (10 XP, one-time)
     const { xpAwarded: lessonXP } = await markLessonComplete(currentLesson.id);
@@ -400,21 +388,12 @@ async function checkChallenge() {
 
     if (totalNew > 0) showXPToast(totalNew);
 
-    // Refresh gamification
-    const progress = loadProgress();
-    if (typeof renderGamification === 'function') {
-      const curriculum = (typeof CURRICULUM !== 'undefined') ? CURRICULUM : [];
-      renderGamification(progress, curriculum);
-    }
-    if (typeof checkBadges === 'function') {
-      const curriculum = (typeof CURRICULUM !== 'undefined') ? CURRICULUM : [];
-      checkBadges(progress, curriculum);
-    }
+    if (totalNew > 0) showXPToast(totalNew);
   } else {
     // Track Broken Structure & Failures
-    lastAttemptFailed = true;
+
     if ((htmlVal.match(/</g) || []).length !== (htmlVal.match(/>/g) || []).length) {
-      if (typeof updateTrack === 'function') updateTrack('broken_structure', 1);
+
     }
 
     result.className = 'challenge-result-box error animate-fadeInUp';

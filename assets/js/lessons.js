@@ -5,12 +5,37 @@
 
 let CURRICULUM = [];
 
+function toEmptyLesson(lesson = {}) {
+  return {
+    ...lesson,
+    title: 'Empty Lesson',
+    subtitle: '',
+    theory: '',
+    steps: [],
+    interactive_steps: [],
+    codeExample: '',
+    challenge: {
+      instruction: '',
+      hint: '',
+      startCode: '',
+      startingCode: '',
+      solution: '',
+    },
+    quiz: [],
+  };
+}
+
+function getUpgradedCurriculum(rawCurriculum) {
+  const base = Array.isArray(rawCurriculum) ? rawCurriculum : [];
+  return base.map((lesson) => toEmptyLesson(lesson));
+}
+
 /**
  * Loads curriculum.json and renders the dashboard/sidebar.
  */
 async function loadDashboard() {
   try {
-    CURRICULUM = window.SKILL_ORBIT_CURRICULUM || [];
+    CURRICULUM = getUpgradedCurriculum(window.SKILL_ORBIT_CURRICULUM || []);
     // renderDashboard(); // Obsolete, replaced by switchCourse
     renderSidebar();
     updateProgressBars();
@@ -501,7 +526,7 @@ async function initLessonPage() {
   try {
     // 1. Ensure CURRICULUM is loaded
     if (!CURRICULUM || CURRICULUM.length === 0) {
-      CURRICULUM = window.SKILL_ORBIT_CURRICULUM || [];
+      CURRICULUM = getUpgradedCurriculum(window.SKILL_ORBIT_CURRICULUM || []);
     }
     
     // 2. Find the lesson metadata/content

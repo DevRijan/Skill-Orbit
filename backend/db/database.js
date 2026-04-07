@@ -51,13 +51,7 @@ const MIGRATIONS = [
     updated_at         TEXT    NOT NULL DEFAULT (datetime('now'))
   );
 
-  CREATE TABLE IF NOT EXISTS badges (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    badge_id   TEXT    NOT NULL,
-    earned_at  TEXT    NOT NULL DEFAULT (datetime('now')),
-    UNIQUE(user_id, badge_id)
-  );
+
 
   CREATE TABLE IF NOT EXISTS schema_migrations (
     version    INTEGER PRIMARY KEY,
@@ -66,7 +60,7 @@ const MIGRATIONS = [
 
   CREATE INDEX IF NOT EXISTS idx_progress_user_id ON progress(user_id);
   CREATE INDEX IF NOT EXISTS idx_progress_xp ON progress(xp_total DESC);
-  CREATE INDEX IF NOT EXISTS idx_badges_user_id ON badges(user_id);
+
   `,
 ];
 
@@ -106,13 +100,8 @@ function getLeaderboard(limit = 50) {
         COALESCE(p.streak, 0)                     AS streak,
         COALESCE(p.last_visit, u.last_seen)       AS last_seen,
         COALESCE(json_array_length(p.completed_lessons), 0) AS lessons_count,
-        COALESCE(p.updated_at, u.joined_at)       AS updated_at,
-        COALESCE(bc.badge_count, 0)               AS badge_count
        FROM users u
        LEFT JOIN progress p ON p.user_id = u.id
-       LEFT JOIN (
-         SELECT user_id, COUNT(*) AS badge_count FROM badges GROUP BY user_id
-       ) bc ON bc.user_id = u.id
        WHERE u.is_active = 1
        ORDER BY xp DESC, u.joined_at ASC
        LIMIT ?`
@@ -140,13 +129,9 @@ function getWeeklyLeaderboard(limit = 50) {
         COALESCE(p.streak, 0)                     AS streak,
         COALESCE(p.last_visit, u.last_seen)       AS last_seen,
         COALESCE(json_array_length(p.completed_lessons), 0) AS lessons_count,
-        COALESCE(p.activity_log, '{}')            AS activity_log,
-        COALESCE(bc.badge_count, 0)               AS badge_count
+        COALESCE(p.activity_log, '{}')            AS activity_log
        FROM users u
        LEFT JOIN progress p ON p.user_id = u.id
-       LEFT JOIN (
-         SELECT user_id, COUNT(*) AS badge_count FROM badges GROUP BY user_id
-       ) bc ON bc.user_id = u.id
        WHERE u.is_active = 1`
     )
     .all();
@@ -192,13 +177,9 @@ function getUserPublicProfile(userId) {
         COALESCE(p.xp_total, 0)                   AS xp,
         COALESCE(p.streak, 0)                     AS streak,
         COALESCE(p.last_visit, u.last_seen)       AS last_seen,
-        COALESCE(json_array_length(p.completed_lessons), 0) AS lessons_count,
-        COALESCE(bc.badge_count, 0)               AS badge_count
+        COALESCE(json_array_length(p.completed_lessons), 0) AS lessons_count
        FROM users u
        LEFT JOIN progress p ON p.user_id = u.id
-       LEFT JOIN (
-         SELECT user_id, COUNT(*) AS badge_count FROM badges GROUP BY user_id
-       ) bc ON bc.user_id = u.id
        WHERE u.id = ? AND u.is_active = 1`
     )
     .get(userId);
@@ -228,10 +209,7 @@ const queries = {
      WHERE user_id = ?`
   ),
 
-  // Badges
-  getUserBadges:   db.prepare('SELECT badge_id, earned_at FROM badges WHERE user_id = ?'),
-  awardBadge:      db.prepare('INSERT OR IGNORE INTO badges (user_id, badge_id) VALUES (?, ?)'),
-  hasBadge:        db.prepare('SELECT 1 FROM badges WHERE user_id = ? AND badge_id = ?'),
+
 };
 
 module.exports = { db, queries, getLeaderboard, getWeeklyLeaderboard, getUserRank, getUserPublicProfile };

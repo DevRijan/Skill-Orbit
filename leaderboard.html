@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Skill-Orbit Leaderboard — Compete with other learners, track your rank, and climb the XP rankings." />
+  <meta name="description"
+    content="Skill-Orbit Leaderboard — Compete with other learners, track your rank, and climb the XP rankings." />
   <title>Leaderboard | Skill-Orbit</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/animations.css" />
   <link rel="stylesheet" href="assets/css/auth.css" />
   <link rel="stylesheet" href="assets/css/leaderboard.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+
 <body>
 
   <div id="custom-cursor"></div>
@@ -51,7 +55,7 @@
             <span>Leaderboard</span>
           </h1>
           <p class="lb-hero-sub">Compete, earn XP, and climb the rankings. Every correct answer counts.</p>
-          
+
           <div class="lb-controls">
             <div class="lb-toggle-wrap">
               <button class="lb-toggle-btn active" id="btnWeekly">This Week</button>
@@ -75,23 +79,35 @@
 
       <!-- XP Breakdown Info -->
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;" id="xpBreakdownRow">
-        <div style="flex:1;min-width:180px;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:14px 18px;">
-          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">📖 Lesson Theory</div>
+        <div
+          style="flex:1;min-width:180px;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:14px 18px;">
+          <div
+            style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">
+            📖 Lesson Theory</div>
           <div style="font-size:1.3rem;font-weight:900;color:#10b981;">10 XP</div>
           <div style="font-size:0.75rem;color:var(--text-muted);">earn once per lesson</div>
         </div>
-        <div style="flex:1;min-width:180px;background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:14px;padding:14px 18px;">
-          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">❓ Quiz Questions</div>
+        <div
+          style="flex:1;min-width:180px;background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:14px;padding:14px 18px;">
+          <div
+            style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">
+            ❓ Quiz Questions</div>
           <div style="font-size:1.3rem;font-weight:900;color:#fbbf24;">1 XP each</div>
           <div style="font-size:0.75rem;color:var(--text-muted);">wrong = lost forever · max 10/lesson</div>
         </div>
-        <div style="flex:1;min-width:180px;background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.2);border-radius:14px;padding:14px 18px;">
-          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">💻 Code Challenge</div>
+        <div
+          style="flex:1;min-width:180px;background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.2);border-radius:14px;padding:14px 18px;">
+          <div
+            style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">
+            💻 Code Challenge</div>
           <div style="font-size:1.3rem;font-weight:900;color:#a78bfa;">10 XP</div>
           <div style="font-size:0.75rem;color:var(--text-muted);">correct code · once per lesson</div>
         </div>
-        <div style="flex:1;min-width:180px;background:rgba(249,115,22,0.07);border:1px solid rgba(249,115,22,0.2);border-radius:14px;padding:14px 18px;">
-          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">🏆 Max Per Lesson</div>
+        <div
+          style="flex:1;min-width:180px;background:rgba(249,115,22,0.07);border:1px solid rgba(249,115,22,0.2);border-radius:14px;padding:14px 18px;">
+          <div
+            style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:4px;">
+            🏆 Max Per Lesson</div>
           <div style="font-size:1.3rem;font-weight:900;color:#f97316;">30 XP</div>
           <div style="font-size:0.75rem;color:var(--text-muted);">10 lesson + 10 quiz + 10 challenge</div>
         </div>
@@ -106,7 +122,8 @@
       <div class="lb-table-section">
         <h2 class="lb-table-title">
           <i class="fa-solid fa-list-ol"></i> All Rankings
-          <span style="margin-left:auto;font-size:0.75rem;font-weight:600;color:var(--text-muted);" id="totalUsersLabel"></span>
+          <span style="margin-left:auto;font-size:0.75rem;font-weight:600;color:var(--text-muted);"
+            id="totalUsersLabel"></span>
         </h2>
         <div id="lbTableWrap">
           <!-- Filled by JS -->
@@ -117,7 +134,8 @@
       <div class="lb-note">
         <i class="fa-solid fa-circle-info"></i>
         <span id="lbNote">
-          <strong>Global Leaderboard:</strong> All registered learners compete together in real time. Complete lessons to earn XP and climb the rankings!
+          <strong>Global Leaderboard:</strong> All registered learners compete together in real time. Complete lessons
+          to earn XP and climb the rankings!
         </span>
       </div>
 
@@ -137,7 +155,7 @@
             <div id="pmJoined">Joined ...</div>
           </div>
         </div>
-        
+
         <div class="profile-level-card">
           <div class="pm-level-header">
             <span class="pm-lvl-title" id="pmLevelTitle">Level 1 - Beginner</span>
@@ -189,127 +207,127 @@
   <script src="assets/js/visuals.js"></script>
 
   <script>
-  let currentMode = 'weekly';
-  let isFetching = false;
+    let currentMode = 'weekly';
+    let isFetching = false;
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    initAuth({ requireLogin: false });
-    syncLeaderboard();
-    setupEventListeners();
-    await renderLeaderboardPage();
-  });
-
-  window.addEventListener('authChanged', async () => {
-    syncLeaderboard();
-    await renderLeaderboardPage();
-  });
-
-  const MEDAL = ['🥇','🥈','🥉'];
-  const RANK_CLASS = ['gold','silver','bronze'];
-
-  function setupEventListeners() {
-    document.getElementById('btnWeekly').addEventListener('click', () => setMode('weekly'));
-    document.getElementById('btnAllTime').addEventListener('click', () => setMode('alltime'));
-    
-    document.getElementById('closeProfileBtn').addEventListener('click', closeProfileModal);
-    document.getElementById('userProfileModal').addEventListener('click', (e) => {
-      if(e.target === e.currentTarget) closeProfileModal();
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAuth({ requireLogin: false });
+      syncLeaderboard();
+      setupEventListeners();
+      await renderLeaderboardPage();
     });
-  }
 
-  async function setMode(mode) {
-    if (currentMode === mode || isFetching) return;
-    currentMode = mode;
-    
-    document.getElementById('btnWeekly').classList.toggle('active', mode === 'weekly');
-    document.getElementById('btnAllTime').classList.toggle('active', mode === 'alltime');
-    
-    const wrapper = document.getElementById('lbTableWrap');
-    const podium = document.getElementById('lbPodium');
-    if(wrapper) wrapper.style.opacity = '0.5';
-    if(podium) podium.style.opacity = '0.5';
-    
-    await renderLeaderboardPage();
-    
-    if(wrapper) wrapper.style.opacity = '1';
-    if(podium) podium.style.opacity = '1';
-  }
+    window.addEventListener('authChanged', async () => {
+      syncLeaderboard();
+      await renderLeaderboardPage();
+    });
 
-  function getMyId() {
-    const p = typeof getProfile === 'function' ? getProfile() : null;
-    if (!p) return p ? (p.id || null) : null;
-    return p.id || (p.name + '_' + (p.joinedAt || '').slice(0, 10));
-  }
+    const MEDAL = ['🥇', '🥈', '🥉'];
+    const RANK_CLASS = ['gold', 'silver', 'bronze'];
 
-  async function renderLeaderboardPage() {
-    isFetching = true;
-    const lbData = typeof getLeaderboard === 'function' ? await getLeaderboard(currentMode) : { board: [] };
-    const board = lbData.board || [];
-    const myProfile = typeof getProfile === 'function' ? getProfile() : null;
-    const myId   = myProfile ? (myProfile.id || (myProfile.name + '_' + (myProfile.joinedAt || '').slice(0, 10))) : null;
-    isFetching = false;
+    function setupEventListeners() {
+      document.getElementById('btnWeekly').addEventListener('click', () => setMode('weekly'));
+      document.getElementById('btnAllTime').addEventListener('click', () => setMode('alltime'));
 
-    // Reset Label & Toggle Text logic
-    const resetInfo = document.getElementById('lbResetInfo');
-    const resetText = document.getElementById('resetText');
-    if (currentMode === 'weekly') {
-      resetInfo.style.display = 'inline-flex';
-      if (lbData.resetAt) {
-        const d = new Date(lbData.resetAt);
-        const days = Math.floor((d - new Date()) / (1000 * 60 * 60 * 24));
-        resetText.textContent = days > 0 ? `Resets in ${days} day${days>1?'s':''}` : 'Resets tonight';
+      document.getElementById('closeProfileBtn').addEventListener('click', closeProfileModal);
+      document.getElementById('userProfileModal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeProfileModal();
+      });
+    }
+
+    async function setMode(mode) {
+      if (currentMode === mode || isFetching) return;
+      currentMode = mode;
+
+      document.getElementById('btnWeekly').classList.toggle('active', mode === 'weekly');
+      document.getElementById('btnAllTime').classList.toggle('active', mode === 'alltime');
+
+      const wrapper = document.getElementById('lbTableWrap');
+      const podium = document.getElementById('lbPodium');
+      if (wrapper) wrapper.style.opacity = '0.5';
+      if (podium) podium.style.opacity = '0.5';
+
+      await renderLeaderboardPage();
+
+      if (wrapper) wrapper.style.opacity = '1';
+      if (podium) podium.style.opacity = '1';
+    }
+
+    function getMyId() {
+      const p = typeof getProfile === 'function' ? getProfile() : null;
+      if (!p) return p ? (p.id || null) : null;
+      return p.id || (p.name + '_' + (p.joinedAt || '').slice(0, 10));
+    }
+
+    async function renderLeaderboardPage() {
+      isFetching = true;
+      const lbData = typeof getLeaderboard === 'function' ? await getLeaderboard(currentMode) : { board: [] };
+      const board = lbData.board || [];
+      const myProfile = typeof getProfile === 'function' ? getProfile() : null;
+      const myId = myProfile ? (myProfile.id || (myProfile.name + '_' + (myProfile.joinedAt || '').slice(0, 10))) : null;
+      isFetching = false;
+
+      // Reset Label & Toggle Text logic
+      const resetInfo = document.getElementById('lbResetInfo');
+      const resetText = document.getElementById('resetText');
+      if (currentMode === 'weekly') {
+        resetInfo.style.display = 'inline-flex';
+        if (lbData.resetAt) {
+          const d = new Date(lbData.resetAt);
+          const days = Math.floor((d - new Date()) / (1000 * 60 * 60 * 24));
+          resetText.textContent = days > 0 ? `Resets in ${days} day${days > 1 ? 's' : ''}` : 'Resets tonight';
+        } else {
+          resetText.textContent = 'Weekly rankings';
+        }
       } else {
-        resetText.textContent = 'Weekly rankings';
+        resetInfo.style.display = 'none';
       }
-    } else {
-      resetInfo.style.display = 'none';
+
+      // Hero rank chip
+      const myEntry = board.find(e => e.id === myId);
+      const rankChip = document.getElementById('myRankChip');
+      if (myEntry && rankChip) {
+        rankChip.style.display = 'block';
+        const myRank = board.findIndex(e => e.id === myId) + 1;
+        document.getElementById('myRankNum').textContent = '#' + myRank;
+        document.getElementById('myXPDisplay').textContent = myEntry.xp + ' XP';
+      }
+
+      // Label
+      const totalLabel = document.getElementById('totalUsersLabel');
+      if (totalLabel) totalLabel.textContent = `${board.length} learner${board.length !== 1 ? 's' : ''}`;
+
+      // Podium (top 3)
+      renderPodium(board.slice(0, 3), myId);
+
+      // Full table
+      renderTable(board, myId);
     }
 
-    // Hero rank chip
-    const myEntry = board.find(e => e.id === myId);
-    const rankChip = document.getElementById('myRankChip');
-    if (myEntry && rankChip) {
-      rankChip.style.display = 'block';
-      const myRank = board.findIndex(e => e.id === myId) + 1;
-      document.getElementById('myRankNum').textContent  = '#' + myRank;
-      document.getElementById('myXPDisplay').textContent = myEntry.xp + ' XP';
-    }
+    function renderPodium(top3, myId) {
+      const el = document.getElementById('lbPodium');
+      if (!el) return;
 
-    // Label
-    const totalLabel = document.getElementById('totalUsersLabel');
-    if (totalLabel) totalLabel.textContent = `${board.length} learner${board.length !== 1 ? 's' : ''}`;
-
-    // Podium (top 3)
-    renderPodium(board.slice(0, 3), myId);
-
-    // Full table
-    renderTable(board, myId);
-  }
-
-  function renderPodium(top3, myId) {
-    const el = document.getElementById('lbPodium');
-    if (!el) return;
-
-    if (top3.length === 0) {
-      el.innerHTML = `
+      if (top3.length === 0) {
+        el.innerHTML = `
         <div class="lb-empty" style="width:100%;">
           <i class="fa-solid fa-trophy"></i>
           <h3>No Rankings Yet</h3>
           <p>Complete lessons to earn XP and claim your spot!</p>
         </div>`;
-      return;
-    }
+        return;
+      }
 
-    el.innerHTML = '';
-    top3.forEach((user, i) => {
-      const rankNum = i + 1;
-      const isYou   = user.id === myId;
-      const card = document.createElement('div');
-      card.className = `podium-card rank-${rankNum}${isYou ? ' you' : ''}`;
-      card.style.cursor = 'pointer';
-      card.onclick = () => openProfileModal(user.id);
+      el.innerHTML = '';
+      top3.forEach((user, i) => {
+        const rankNum = i + 1;
+        const isYou = user.id === myId;
+        const card = document.createElement('div');
+        card.className = `podium-card rank-${rankNum}${isYou ? ' you' : ''}`;
+        card.style.cursor = 'pointer';
+        card.onclick = () => openProfileModal(user.id);
 
-      card.innerHTML = `
+        card.innerHTML = `
         <div class="podium-medal">${MEDAL[i] || rankNum}</div>
         <div class="podium-avatar">${user.avatar}</div>
         <div class="podium-name" title="${user.name}">${user.name}</div>
@@ -317,27 +335,27 @@
         <div class="podium-level">Lv.${user.level} ${user.levelTitle}</div>
         ${isYou ? '<div class="you-tag">You</div>' : ''}
       `;
-      el.appendChild(card);
-    });
-  }
+        el.appendChild(card);
+      });
+    }
 
-  function renderTable(board, myId) {
-    const wrap = document.getElementById('lbTableWrap');
-    if (!wrap) return;
+    function renderTable(board, myId) {
+      const wrap = document.getElementById('lbTableWrap');
+      if (!wrap) return;
 
-    if (board.length === 0) {
-      wrap.innerHTML = `
+      if (board.length === 0) {
+        wrap.innerHTML = `
         <div class="lb-empty">
           <i class="fa-solid fa-users"></i>
           <h3>No Learners Yet</h3>
           <p>Be the first to earn XP. Complete a lesson to appear here!</p>
         </div>`;
-      return;
-    }
+        return;
+      }
 
-    const table = document.createElement('table');
-    table.className = 'lb-table';
-    table.innerHTML = `
+      const table = document.createElement('table');
+      table.className = 'lb-table';
+      table.innerHTML = `
       <thead>
         <tr>
           <th style="width:48px;">#</th>
@@ -350,27 +368,27 @@
       </thead>
       <tbody id="lbTbody"></tbody>`;
 
-    wrap.innerHTML = '';
-    wrap.appendChild(table);
+      wrap.innerHTML = '';
+      wrap.appendChild(table);
 
-    const tbody = document.getElementById('lbTbody');
+      const tbody = document.getElementById('lbTbody');
 
-    board.forEach((user, i) => {
-      const rank  = i + 1;
-      const isYou = user.id === myId;
-      const tr    = document.createElement('tr');
-      tr.className = `lb-row${isYou ? ' lb-you' : ''}`;
-      tr.style.cursor = 'pointer';
-      tr.onclick = () => openProfileModal(user.id);
+      board.forEach((user, i) => {
+        const rank = i + 1;
+        const isYou = user.id === myId;
+        const tr = document.createElement('tr');
+        tr.className = `lb-row${isYou ? ' lb-you' : ''}`;
+        tr.style.cursor = 'pointer';
+        tr.onclick = () => openProfileModal(user.id);
 
-      let rankDisplay;
-      if (rank <= 3) {
-        rankDisplay = `<span class="lb-rank-num ${RANK_CLASS[rank-1]}">${MEDAL[rank-1]}</span>`;
-      } else {
-        rankDisplay = `<span class="lb-rank-num">${rank}</span>`;
-      }
+        let rankDisplay;
+        if (rank <= 3) {
+          rankDisplay = `<span class="lb-rank-num ${RANK_CLASS[rank - 1]}">${MEDAL[rank - 1]}</span>`;
+        } else {
+          rankDisplay = `<span class="lb-rank-num">${rank}</span>`;
+        }
 
-      tr.innerHTML = `
+        tr.innerHTML = `
         <td>${rankDisplay}</td>
         <td>
           <div class="lb-user-cell">
@@ -390,77 +408,78 @@
         <td><span class="lb-xp-val">${user.xp.toLocaleString()}</span></td>
       `;
 
-      tbody.appendChild(tr);
-    });
-  }
+        tbody.appendChild(tr);
+      });
+    }
 
-  // ── USER PROFILE MODAL ──────────────────────────────────────────────────────
+    // ── USER PROFILE MODAL ──────────────────────────────────────────────────────
 
-  async function openProfileModal(userId) {
-    const modal = document.getElementById('userProfileModal');
-    const bdy = document.getElementById('profileModalBody');
-    const ldr = document.getElementById('profileModalLoader');
-    
-    modal.classList.add('visible');
-    bdy.style.display = 'none';
-    ldr.style.display = 'flex';
+    async function openProfileModal(userId) {
+      const modal = document.getElementById('userProfileModal');
+      const bdy = document.getElementById('profileModalBody');
+      const ldr = document.getElementById('profileModalLoader');
 
-    try {
-      if(!window.SkillOrbitAPI || !window.SkillOrbitAPI.isOnline()) {
-        throw new Error('Offline check not fully supported for detailed profiles.');
-      }
-      
-      const res = await window.SkillOrbitAPI.leaderboard.getUserProfile(userId);
-      const p = res.profile;
+      modal.classList.add('visible');
+      bdy.style.display = 'none';
+      ldr.style.display = 'flex';
 
-      document.getElementById('pmAvatar').textContent = p.avatar;
-      document.getElementById('pmName').textContent = p.name;
-      const joinedDate = new Date(p.joinedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      document.getElementById('pmJoined').textContent = `Joined ${joinedDate}`;
+      try {
+        if (!window.SkillOrbitAPI || !window.SkillOrbitAPI.isOnline()) {
+          throw new Error('Offline check not fully supported for detailed profiles.');
+        }
 
-      document.getElementById('pmLevelTitle').textContent = `Level ${p.level} — ${p.levelTitle}`;
-      const nextXpText = p.nextLevelXP ? ` / ${p.nextLevelXP}` : '';
-      document.getElementById('pmXpText').textContent = `${p.xp}${nextXpText} XP`;
-      document.getElementById('pmProgressFill').style.width = `${p.xpPercent || 100}%`;
+        const res = await window.SkillOrbitAPI.leaderboard.getUserProfile(userId);
+        const p = res.profile;
 
-      document.getElementById('pmStreak').textContent = p.streak;
-      document.getElementById('pmLessons').textContent = p.lessonsCount;
-      document.getElementById('pmTotalXp').textContent = p.xp.toLocaleString();
+        document.getElementById('pmAvatar').textContent = p.avatar;
+        document.getElementById('pmName').textContent = p.name;
+        const joinedDate = new Date(p.joinedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('pmJoined').textContent = `Joined ${joinedDate}`;
 
-      const badgesGrid = document.getElementById('pmBadgesGrid');
-      badgesGrid.innerHTML = '';
-      if(p.badges && p.badges.length) {
-        p.badges.forEach(b => {
-          const bdg = document.createElement('div');
-          bdg.className = `pm-badge-item ${b.earned ? 'earned' : 'locked'}`;
-          bdg.title = b.description;
-          bdg.innerHTML = `
+        document.getElementById('pmLevelTitle').textContent = `Level ${p.level} — ${p.levelTitle}`;
+        const nextXpText = p.nextLevelXP ? ` / ${p.nextLevelXP}` : '';
+        document.getElementById('pmXpText').textContent = `${p.xp}${nextXpText} XP`;
+        document.getElementById('pmProgressFill').style.width = `${p.xpPercent || 100}%`;
+
+        document.getElementById('pmStreak').textContent = p.streak;
+        document.getElementById('pmLessons').textContent = p.lessonsCount;
+        document.getElementById('pmTotalXp').textContent = p.xp.toLocaleString();
+
+        const badgesGrid = document.getElementById('pmBadgesGrid');
+        badgesGrid.innerHTML = '';
+        if (p.badges && p.badges.length) {
+          p.badges.forEach(b => {
+            const bdg = document.createElement('div');
+            bdg.className = `pm-badge-item ${b.earned ? 'earned' : 'locked'}`;
+            bdg.title = b.description;
+            bdg.innerHTML = `
             <div class="pm-bdg-icon">${b.icon}</div>
             <div class="pm-bdg-name">${b.name}</div>
           `;
-          badgesGrid.appendChild(bdg);
-        });
-      } else {
-        badgesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.8rem;">No badges available.</div>';
-      }
+            badgesGrid.appendChild(bdg);
+          });
+        } else {
+          badgesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.8rem;">No badges available.</div>';
+        }
 
-      ldr.style.display = 'none';
-      bdy.style.display = 'block';
+        ldr.style.display = 'none';
+        bdy.style.display = 'block';
 
-    } catch(err) {
-      ldr.innerHTML = `
+      } catch (err) {
+        ldr.innerHTML = `
         <div style="color:#ef4444;text-align:center;">
           <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;margin-bottom:10px;"></i>
           <div>Could not load profile.</div>
         </div>`;
-      console.error(err);
+        console.error(err);
+      }
     }
-  }
 
-  function closeProfileModal() {
-    document.getElementById('userProfileModal').classList.remove('visible');
-  }
+    function closeProfileModal() {
+      document.getElementById('userProfileModal').classList.remove('visible');
+    }
   </script>
 
 </body>
+
 </html>

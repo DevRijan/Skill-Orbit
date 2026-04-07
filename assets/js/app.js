@@ -33,7 +33,7 @@ function initTheme() {
         ? '<i class="fa-solid fa-sun"></i>'
         : '<i class="fa-solid fa-moon"></i>';
       
-      if (typeof updateTrack === 'function') updateTrack('theme_toggles', 1);
+
       
       if (window.updateEditorTheme) {
         window.updateEditorTheme(isLight);

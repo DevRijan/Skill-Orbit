@@ -132,15 +132,7 @@ const SkillOrbitAPI = (() => {
     return apiFetch('GET', `/leaderboard/user/${userId}`);
   }
 
-  // ── Badges API ──────────────────────────────
 
-  async function getBadges() {
-    return apiFetch('GET', '/badges');
-  }
-
-  async function checkBadges() {
-    return apiFetch('POST', '/badges/check', {});
-  }
 
   // ── Lessons API ─────────────────────────────
 
@@ -198,10 +190,6 @@ const SkillOrbitAPI = (() => {
       getUserProfile,
     },
 
-    badges: {
-      getAll: getBadges,
-      check:  checkBadges,
-    },
 
     lessons: {
       getAll: getLessons,
