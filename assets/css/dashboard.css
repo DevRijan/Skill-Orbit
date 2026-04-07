@@ -294,6 +294,7 @@
   padding: 48px 64px;
 }
 
+<<<<<<< HEAD
 /* ── Dashboard Grid Layout ── */
 .dash-grid-layout {
   display: grid;
@@ -410,6 +411,9 @@
   border: 1px solid rgba(251, 191, 36, 0.25);
 }
 
+=======
+/* ── Module Section ───────────────────────────── */
+>>>>>>> parent of 7cca945 (Created a Gamified Dashboard Path)
 .dash-module-section {
   margin-bottom: 60px;
 }
@@ -422,7 +426,7 @@
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-
+.dash-module-header-left {}
 .dash-module-tag {
   display: inline-flex;
   align-items: center;
@@ -469,18 +473,12 @@
   white-space: nowrap;
 }
 
-/* ── Progression Map (Duolingo Style) ───────── */
-.progression-map {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 80px;
-  padding: 60px 0 120px;
-  position: relative;
-  min-height: 800px;
-  width: 100%;
+/* ── Section (topic group) ─────────────────── */
+.lesson-topic-group {
+  margin-bottom: 32px;
 }
 
+<<<<<<< HEAD
 /* Container for drawn SVG lines */
 .map-svg-layer {
   position: absolute;
@@ -686,16 +684,20 @@
 }
 
 .map-tooltip-header {
+=======
+.lesson-topic-head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  gap: 14px;
+  margin-bottom: 16px;
 }
+.lesson-topic-head-main {
+>>>>>>> parent of 7cca945 (Created a Gamified Dashboard Path)
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+<<<<<<< HEAD
 
 .map-tooltip-header .xp-badge {
   color: #fbbf24;
@@ -707,19 +709,36 @@
 
 .map-tooltip-content h3 {
   font-size: 1.15rem;
+=======
+.lesson-topic-glyph {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.82rem;
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+.lesson-topic-title {
+  font-size: 1rem;
+>>>>>>> parent of 7cca945 (Created a Gamified Dashboard Path)
   font-weight: 800;
-  color: #fff;
-  margin-bottom: 8px;
-  line-height: 1.25;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
 }
+<<<<<<< HEAD
 
 .map-tooltip-content p {
   font-size: 0.85rem;
+=======
+.lesson-topic-meta {
+  font-size: 0.77rem;
+>>>>>>> parent of 7cca945 (Created a Gamified Dashboard Path)
   color: var(--text-muted);
-  line-height: 1.5;
-  margin-bottom: 18px;
+  font-weight: 500;
 }
+<<<<<<< HEAD
 
 .btn-tooltip-action {
   width: 100%;
@@ -750,7 +769,98 @@
   color: rgba(255, 255, 255, 0.4);
   box-shadow: none;
   pointer-events: none;
+=======
+.lesson-topic-rail {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg,rgba(124,58,237,0.25),transparent);
 }
+
+/* ── Lesson Cards Grid ──────────────────────── */
+.lesson-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+/* ── Individual Lesson Card ─────────────────── */
+.lesson-card-item {
+  background: rgba(255,255,255,0.033);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 20px 18px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Bottom gradient accent line */
+.lesson-card-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.lesson-card-item:hover { transform: translateY(-6px); border-color: rgba(124,58,237,0.4); box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(124,58,237,0.1); }
+.lesson-card-item:hover::after { opacity: 1; }
+
+/* Completed state */
+.lesson-card-item.completed {
+  background: rgba(124,58,237,0.06);
+  border-color: rgba(124,58,237,0.22);
+}
+.lesson-card-item.completed::after { opacity: 0.5; }
+
+/* Lesson number */
+.lesson-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+/* Lesson title */
+.lesson-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+
+/* XP badge */
+.lesson-xp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 50px;
+  padding: 3px 10px;
+  width: fit-content;
+  margin-top: auto;
+}
+
+/* Completed check mark overlay */
+.lesson-card-item.completed .lesson-card-title {
+  color: #c4b5fd;
+>>>>>>> parent of 7cca945 (Created a Gamified Dashboard Path)
+}
+.lesson-card-item.completed .lesson-num { color: #a78bfa; }
 
 /* ── Badges Section ─────────────────────────── */
 .dash-badges-section {

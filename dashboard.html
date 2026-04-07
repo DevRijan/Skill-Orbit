@@ -295,6 +295,7 @@
     <!-- ── MAIN CONTENT ── -->
     <div class="dash-content">
 
+<<<<<<< HEAD
       <div class="dash-grid-layout">
         <!-- LEFT: Progression Map -->
         <div class="dash-main-column">
@@ -354,27 +355,47 @@
 
 
         </div>
+=======
+      <!-- ── COURSE SWITCHER ── -->
+      <div class="course-switcher" id="courseSwitcher" role="tablist" aria-label="Course selector">
+        <!-- Populated by JS -->
+>>>>>>> parent of 7cca945 (Created a Gamified Dashboard Path)
       </div>
+
+      <!-- ── ACTIVE COURSE LESSONS ── -->
+      <div id="activeCourseContent">
+        <!-- Module header + lesson groups injected here -->
+        <section class="dash-module-section active-course-section" id="activeCourseSection">
+          <div class="dash-module-header">
+            <div class="dash-module-header-left">
+              <div class="dash-module-tag html" id="activeCourseTag">
+                <i id="activeCourseTagIcon" class="fa-brands fa-html5"></i>
+                <span id="activeCourseTagName">HTML</span>
+              </div>
+              <h2 class="dash-module-title" id="activeCourseTitle">HTML Module</h2>
+              <p class="dash-module-tagline" id="activeCourseTagline">Structure &amp; semantics — from first tags to advanced layouts.</p>
+            </div>
+            <div class="dash-module-header-right" id="activeCourseProgress"></div>
+          </div>
+          <!-- Lesson groups go here -->
+          <div class="module-lesson-groups" id="active-lessons-grid"></div>
+        </section>
+      </div>
+
+      <!-- ── BADGES SECTION ── -->
+      <section class="dash-badges-section" style="margin-top:40px;">
+        <h2 class="dash-section-title">
+          <i class="fa-solid fa-trophy"></i> Your Badges
+          <a href="account.html">View All →</a>
+        </h2>
+        <div class="dash-badges-grid" id="dash-badges-grid"></div>
+      </section>
 
     </div>
   </div>
 
   <!-- XP Toast -->
   <div id="xpToast"><i class="fa-solid fa-bolt"></i><span id="xpToastText">+20 XP!</span></div>
-
-  <!-- Map Node Hover Tooltip -->
-  <div id="mapNodeTooltip" class="map-tooltip">
-    <div class="map-tooltip-content">
-      <div class="map-tooltip-header">
-        <span id="ttipLessonNum">Lesson 1</span>
-        <span id="ttipLessonXp" class="xp-badge"><i class="fa-solid fa-bolt"></i> 10 XP</span>
-      </div>
-      <h3 id="ttipLessonTitle">Introduction to HTML</h3>
-      <p id="ttipLessonDesc">Learn the structure of the web.</p>
-      <button id="ttipActionBtn" class="btn-tooltip-action">Start Lesson</button>
-    </div>
-    <div class="map-tooltip-arrow"></div>
-  </div>
 
   <canvas id="bg-canvas"></canvas>
 
